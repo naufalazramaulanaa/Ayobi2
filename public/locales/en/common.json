@@ -1,0 +1,57 @@
+{
+  "dashboard": "Dasbor",
+  "dashboardSubtitle": "Atur LMS kamu",
+  "totalUsers": "Total Pengguna",
+  "growthUsers": "+12% dari bulan kemarin",
+  "totalCourses": "TTotal kursus",
+  "growthCourses": "+8% dari bulan kemarin",
+  "monthlyRevenue": "Penghasilan bulanan",
+  "growthRevenue": "+15% dari bulan kemarin",
+  "activeInstructors": "Instruktur yang aktif",
+  "growthInstructors": "+5% dari bulan kemarin",
+  "revenueChart": {
+    "title": "Pertembuhan penghasilan dan kursus",
+    "description": "Tren pertembuhan penghasilan dan kursus"
+  },
+  "userGrowth": {
+    "title": "Perkembangan Pengguna",
+    "description": "Tren pendaftaran siswa dan instruktur"
+  },
+  "courseDistribution": {
+    "title": "distribusi kursus",
+    "description": "Courses by category"
+  },
+  "recentUsers": {
+    "title": "Pengguna Terbaru",
+    "description": "Pendaftaran pengguna terbaru",
+    "name": "Nama",
+    "email": "Email",
+    "role": "Peran",
+    "status": "Status",
+    "joinDate": "Join Date",
+    "actions": "Aksi"
+  },
+  "pending": {
+    "title": "Review kursus yang tertunda",
+    "description": "Kursus menunggu persetujuan admin",
+    "courseTitle": "Judul kursus",
+    "instructor": "Instruktur",
+    "status": "Status",
+    "submitted": "Tersubmit",
+    "actions": "Aksi"
+  },
+  "actions": {
+    "view": "Lihat",
+    "approve": "Setuju",
+    "review": "Review"
+  },
+  "courseCategory": {
+  "Web Development": "Pengembangan Web",
+  "Mobile Development": "Pengembangan Mobile",
+  "UI/UX Design": "Desain UI/UX",
+  "Data Science": "Ilmu Data",
+  "Others": "Lainnya"
+}
+
+
+}

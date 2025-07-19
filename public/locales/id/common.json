@@ -1,0 +1,56 @@
+{
+  "dashboard": "Admin Dashboard",
+  "dashboardSubtitle": "Manage your LMS platform",
+  "totalUsers": "Total Users",
+  "growthUsers": "+12% from last month",
+  "totalCourses": "Total Courses",
+  "growthCourses": "+8% from last month",
+  "monthlyRevenue": "Monthly Revenue",
+  "growthRevenue": "+15% from last month",
+  "activeInstructors": "Active Instructors",
+  "growthInstructors": "+5% from last month",
+  "revenueChart": {
+    "title": "Revenue & Course Growth",
+    "description": "Monthly revenue and course creation trends"
+  },
+  "userGrowth": {
+    "title": "User Growth",
+    "description": "Student and instructor registration trends"
+  },
+  "courseDistribution": {
+    "title": "Course Distribution",
+    "description": "Courses by category"
+  },
+  "recentUsers": {
+    "title": "Recent Users",
+    "description": "Latest user registrations",
+    "name": "Name",
+    "email": "Email",
+    "role": "Role",
+    "status": "Status",
+    "joinDate": "Join Date",
+    "actions": "Actions"
+  },
+  "pending": {
+    "title": "Pending Course Reviews",
+    "description": "Courses waiting for admin approval",
+    "courseTitle": "Course Title",
+    "instructor": "Instructor",
+    "status": "Status",
+    "submitted": "Submitted",
+    "actions": "Actions"
+  },
+  "actions": {
+    "view": "View",
+    "approve": "Approve",
+    "review": "Review"
+  },
+  "courseCategory": {
+  "Web Development": "Web Development",
+  "Mobile Development": "Mobile Development",
+  "UI/UX Design": "UI/UX Design",
+  "Data Science": "Data Science",
+  "Others": "Others"
+}
+
+}

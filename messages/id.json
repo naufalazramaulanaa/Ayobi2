@@ -1,0 +1,15 @@
+{
+  "navbar.home": "Home",
+  "navbar.courses": "Courses",
+  "navbar.allCourses": "All Courses",
+  "navbar.demo": "Demo",
+  "navbar.contact": "Contact",
+  "demo.studentDashboard": "Student Dashboard",
+  "demo.instructorDashboard": "Instructor Dashboard",
+  "demo.adminDashboard": "Admin Dashboard",
+  "auth.signin": "Sign In",
+  "auth.getstarted": "Get Started",
+  "language.english": "English",
+  "language.indonesian": "Bahasa",
+  "search.placeholder": "Search courses..."
+}

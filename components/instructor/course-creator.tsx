@@ -1,0 +1,2799 @@
+"use client";
+
+import type React from "react";
+
+import { useEffect, useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Progress } from "@/components/ui/progress";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  Plus,
+  Upload,
+  Video,
+  BookOpen,
+  Edit,
+  Trash2,
+  Download,
+  Eye,
+  Save,
+  X,
+  Sparkles,
+  HelpCircle,
+  CheckCircle,
+  AlertCircle,
+} from "lucide-react";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
+import { fetchData } from "@/lib/api";
+import { toast } from "sonner";
+
+interface Module {
+  id: string;
+  title: string;
+  description: string;
+  order: number;
+  contents: Content[];
+}
+
+interface Content {
+  id: string;
+  title: string;
+  type: "lesson" | "quiz";
+  order: number;
+  data: any;
+  settings?: {
+    passingScore?: number;
+    timeLimit?: number;
+    attemptsAllowed?: boolean | number;
+    autoGrading?: boolean;
+    showAnswers?: boolean;
+  };
+}
+
+interface Course {
+  is_visible: any;
+  id: string;
+  title: string;
+  description: string;
+  categories: string[];
+  tags: string[];
+  level: string;
+  price: number;
+  thumbnail: string;
+  modules: Module[];
+  certificate: {
+    enabled: boolean;
+    template: string;
+    requirements: string[];
+  };
+  freePreview: boolean;
+  coupons: Coupon[];
+}
+
+interface Coupon {
+  id: string;
+  code: string;
+  discount: number;
+  type: "percentage" | "fixed";
+  validUntil: string;
+  usageLimit: number;
+  used: number;
+}
+
+interface QuizQuestion {
+  id: string;
+  type: "multiple-choice" | "true-false";
+  question: string;
+  options?: string[];
+  correctAnswer: string | number;
+  explanation?: string;
+}
+
+export function CourseCreator() {
+  const [currentStep, setCurrentStep] = useState(0);
+
+  const [course, setCourse] = useState<Course>({
+    id: "",
+    title: "",
+    description: "",
+    categories: [],
+    tags: [],
+    level: "",
+    price: 0,
+    thumbnail: "",
+    modules: [],
+    certificate: {
+      enabled: false,
+      template: "default",
+      requirements: ["Complete all modules", "Pass all quizzes with 80%"],
+    },
+    freePreview: false,
+    coupons: [],
+  });
+
+  const handleThumbnailUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setCourse((prev) => ({ ...prev, thumbnail: "" })); // clear preview dulu
+    autoSaveField("thumbnail", file);
+  };
+
+  const [courseId, setCourseId] = useState<string | null>(null);
+
+  const [isModuleDialogOpen, setIsModuleDialogOpen] = useState(false);
+  const [isLessonDialogOpen, setIsLessonDialogOpen] = useState(false);
+  const [isQuizDialogOpen, setIsQuizDialogOpen] = useState(false);
+  const [isCouponDialogOpen, setIsCouponDialogOpen] = useState(false);
+  const [selectedModuleId, setSelectedModuleId] = useState<string>("");
+  const [moduleSaveStatus, setModuleSaveStatus] = useState<string>("");
+  const [contentSaveStatus, setContentSaveStatus] = useState<string>("");
+
+  // Untuk dialog & data edit Module
+  const [isEditModuleOpen, setIsEditModuleOpen] = useState(false);
+  const [editingModuleIndex, setEditingModuleIndex] = useState<number | null>(
+    null
+  );
+
+  // Untuk dialog & data edit Lesson
+  const [isEditLessonOpen, setIsEditLessonOpen] = useState(false);
+  const [editingLesson, setEditingLesson] = useState<{
+    moduleIndex: number;
+    contentIndex: number;
+  } | null>(null);
+
+  // Untuk dialog & data edit Quiz
+  const [isEditQuizOpen, setIsEditQuizOpen] = useState(false);
+  const [editingQuiz, setEditingQuiz] = useState<{
+    moduleIndex: number;
+    contentIndex: number;
+  } | null>(null);
+
+  const [selectedModuleIdForContent, setSelectedModuleIdForContent] =
+    useState<string>("");
+
+  // Available categories and tags
+  const [availableCategories] = useState([
+    "Web Development",
+    "Mobile Development",
+    "UI/UX Design",
+    "Data Science",
+    "Machine Learning",
+    "DevOps",
+    "Cybersecurity",
+    "Game Development",
+  ]);
+
+  const [availableTags] = useState([
+    "Beginner Friendly",
+    "Hands-on Projects",
+    "Certificate Included",
+    "Lifetime Access",
+    "Mobile Friendly",
+    "Interactive",
+    "Updated 2024",
+    "Best Seller",
+    "New Release",
+    "Popular",
+  ]);
+  const [saveStatus, setSaveStatus] = useState<{ [key: string]: string }>({});
+  const autoInitiate = async () => {
+    try {
+      const res = await fetchData("/instructor/courses/initiate", {
+        method: "POST",
+      });
+      const newId = res.data?.id || res.id;
+
+      if (newId) {
+        setCourseId(newId);
+        setCourse((prev) => ({
+          ...prev,
+          ...res.data,
+          thumbnail: null,
+          video: res.data?.video || "",
+        }));
+      }
+    } catch (err) {
+      console.error("Auto-initiate gagal:", err);
+    }
+  };
+
+  const autoSaveField = async (field: string, value: any) => {
+    const endpoint = courseId
+      ? `/instructor/courses/${courseId}`
+      : `/instructor/courses/initiate`;
+    const method = "POST";
+    const isUpdate = Boolean(courseId);
+
+    let body: FormData | any;
+    let isFormData = false;
+
+    if (field === "thumbnail") {
+      body = new FormData();
+      body.append("title", course.title);
+      body.append("description", course.description);
+      body.append("price", course.price?.toString() || "0");
+      body.append("approval_status", "draft");
+      body.append("is_visible", course.is_visible ? "true" : "false");
+      body.append("is_published", "true");
+      body.append("thumbnail", value);
+      if (isUpdate) body.append("_method", "PUT");
+      isFormData = true;
+    } else {
+      body = {
+        ...course,
+        [field]: value,
+        is_visible: course.is_visible,
+        is_published: true,
+        approval_status: "draft",
+        thumbnail: course.thumbnail,
+        video: course.video || "",
+      };
+      if (isUpdate) body._method = "PUT";
+    }
+
+    try {
+      const response = await fetchData(endpoint, {
+        method,
+        body,
+        headers: isFormData ? {} : undefined,
+      });
+
+      if (!courseId && (response.data?.id || response.id)) {
+        setCourseId(response.data?.id || response.id);
+      }
+
+      setSaveStatus((prev) => ({ ...prev, [field]: "✅ Disimpan" }));
+    } catch {
+      setSaveStatus((prev) => ({ ...prev, [field]: "❌ Gagal menyimpan" }));
+    }
+
+    setTimeout(() => {
+      setSaveStatus((prev) => ({ ...prev, [field]: "" }));
+    }, 3000);
+  };
+
+  useEffect(() => {
+    autoInitiate();
+  }, []);
+
+  const steps = [
+    "Basic Information",
+    "Course Structure",
+    "Pricing & Coupons",
+    "Final Step",
+  ];
+
+  const addModule = (moduleData: Omit<Module, "id" | "order" | "contents">) => {
+    const newModule: Module = {
+      ...moduleData,
+      id: Date.now().toString(),
+      order: course.modules.length + 1,
+      contents: [],
+    };
+
+    setCourse((prev) => {
+      const updatedModules = [...prev.modules, newModule];
+      const updatedCourse = { ...prev, modules: updatedModules };
+
+      autoSaveField("modules", updatedModules)
+        .then(() => setModuleSaveStatus("✅ Modul berhasil disimpan"))
+        .catch(() => setModuleSaveStatus("❌ Gagal menyimpan modul"));
+
+      return updatedCourse;
+    });
+
+    setIsModuleDialogOpen(false);
+
+    // Reset alert setelah 3 detik
+    setTimeout(() => setModuleSaveStatus(""), 3000);
+  };
+
+  const updateModule = async (moduleId: string, updatedData: any) => {
+    updateModule[moduleIndex] = result.data;
+    setCourse((prev) => ({ ...prev, modules: updateModule }));
+    const formData = new FormData();
+    formData.append("_method", "PUT");
+    formData.append("title", updatedData.title);
+    formData.append("description", updatedData.description || "");
+    // formData.append("order", updatedData.order.toString());
+
+    try {
+      const token =
+        typeof window !== "undefined"
+          ? localStorage.getItem("access_token")
+          : null;
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/instructor/courses/modules/${moduleId}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`, // Ganti `token` dengan state/token aktualmu
+          },
+          body: formData,
+        }
+      );
+      const result = await res.json();
+      if (result.success) {
+        console.log("✅ Module updated:", result.data);
+        return result.data;
+      }
+    } catch (error) {
+      console.error("❌ Update module failed:", error);
+    }
+  };
+
+  const updateLesson = async (lessonId: string, updatedData: any) => {
+    const formData = new FormData();
+    formData.append("_method", "PUT");
+    formData.append("title", updatedData.title);
+    formData.append("description", updatedData.description || "");
+    formData.append("content", updatedData.content || "");
+    formData.append("module_id", updatedData.module_id);
+    // formData.append("order", updatedData.order.toString());
+
+    try {
+      const token =
+        typeof window !== "undefined"
+          ? localStorage.getItem("access_token")
+          : null;
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/instructor/courses/modules/lessons/${lessonId}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        }
+      );
+      const result = await res.json();
+      if (result.success) {
+        console.log("✅ Lesson updated:", result.data);
+        return result.data;
+      }
+    } catch (error) {
+      console.error("❌ Update lesson failed:", error);
+    }
+  };
+
+  const updateQuiz = async (quizId: string, updatedData: any) => {
+    const settings = {
+      passing_grade: updatedData.passing_grade?.toString() ?? "0",
+      time_limit: updatedData.time_limit?.toString() ?? "0",
+      max_attempts: updatedData.max_attempts?.toString() ?? "1",
+      show_correct_answers: updatedData.show_correct_answers?.toString() ?? "0",
+      automatically_graded: updatedData.automatically_graded?.toString() ?? "0",
+    };
+    const formData = new FormData();
+    formData.append("_method", "PUT");
+    formData.append("title", updatedData.title);
+    formData.append("description", updatedData.description || "");
+    // formData.append("order", updatedData.order.toString());
+    formData.append("module_id", updatedData.module_id);
+    formData.append("settings", JSON.stringify(settings));
+    // formData.append(
+    //   "show_correct_answers",
+    //   updatedData.show_correct_answers ? "1" : "0"
+    // );
+    // formData.append(
+    //   "automatically_graded",
+    //   updatedData.automatically_graded ? "1" : "0"
+    // );
+
+    try {
+      const token =
+        typeof window !== "undefined"
+          ? localStorage.getItem("access_token")
+          : null;
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/instructor/courses/quizzes/${quizId}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        }
+      );
+      const result = await res.json();
+      if (result.success) {
+        console.log("✅ Quiz updated:", result.data);
+        return result.data;
+      }
+    } catch (error) {
+      console.error("❌ Update quiz failed:", error);
+    }
+  };
+
+  const [editedModuleIndex, setEditedModuleIndex] = useState<number | null>(
+    null
+  );
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (editedModuleIndex !== null && course.modules[editedModuleIndex]) {
+        const mod = course.modules[editedModuleIndex];
+        updateModule(mod.id, {
+          title: mod.title,
+          description: mod.description,
+        })
+          .then(() => setModuleSaveStatus("✅ Modul berhasil disimpan"))
+          .catch(() => setModuleSaveStatus("❌ Gagal menyimpan modul"));
+      }
+    }, 5000);
+
+    return () => clearTimeout(timeout);
+  }, [course.modules, editedModuleIndex]);
+
+  // Fungsi hapus modul
+  const deleteModule = async (moduleId: string) => {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/instructor/courses/modules/${moduleId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            "x-api-key": process.env.NEXT_PUBLIC_API_KEY!,
+            Accept: "application/json",
+          },
+        }
+      );
+
+      const result = await res.json();
+      if (!res.ok) {
+        const fallbackMsg =
+          result?.message || result?.error || "Gagal menghapus modul";
+        throw new Error(fallbackMsg);
+      }
+
+      // Hapus dari state
+      const updatedModules = course.modules.filter(
+        (mod) => mod.id !== moduleId
+      );
+      setCourse((prev) => ({ ...prev, modules: updatedModules }));
+      toast.success("✅ Modul berhasil dihapus");
+    } catch (error: any) {
+      console.error("❌ Gagal hapus modul:", error);
+      toast.error(`❌ ${error.message || "Gagal menghapus modul"}`);
+    }
+  };
+
+  // Fungsi hapus lesson
+  const deleteQuiz = async (
+    quizId: string,
+    moduleIndex: number,
+    contentIndex: number
+  ) => {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/instructor/courses/quizzes/${quizId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            "x-api-key": process.env.NEXT_PUBLIC_API_KEY!,
+            Accept: "application/json",
+          },
+        }
+      );
+
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.message || "Failed to delete quiz");
+
+      const updatedModules = [...course.modules];
+      updatedModules[moduleIndex].contents.splice(contentIndex, 1);
+      setCourse((prev) => ({ ...prev, modules: updatedModules }));
+      toast.success("✅ Quiz berhasil dihapus");
+    } catch (error) {
+      console.error("❌ Gagal hapus quiz:", error);
+      toast.error("❌ Gagal menghapus quiz");
+    }
+  };
+
+  // ✅ Tambahkan atau update module ke state
+  const updateModuleInState = (moduleData: any) => {
+    setCourse((prev) => {
+      const modules = [...prev.modules];
+      const moduleIndex = modules.findIndex((m) => m.id === moduleData.id);
+      if (moduleIndex !== -1) {
+        modules[moduleIndex] = { ...modules[moduleIndex], ...moduleData };
+      } else {
+        modules.push({ ...moduleData, contents: [] });
+      }
+      return { ...prev, modules };
+    });
+  };
+
+  // ✅ Tambahkan atau update lesson ke state
+  const updateLessonInState = (lessonData: any) => {
+    setCourse((prev) => {
+      const modules = [...prev.modules];
+      const targetModule = modules.find(
+        (mod) => mod.id === lessonData.module_id
+      );
+      if (targetModule) {
+        const contentIndex = targetModule.contents.findIndex(
+          (c) => c.id === lessonData.id
+        );
+        if (contentIndex !== -1) {
+          targetModule.contents[contentIndex] = {
+            ...targetModule.contents[contentIndex],
+            ...lessonData,
+          };
+        } else {
+          targetModule.contents.push({ ...lessonData, type: "lesson" });
+        }
+      }
+      return { ...prev, modules };
+    });
+  };
+
+  // ✅ Tambahkan atau update quiz ke state
+  const updateQuizInState = (quizData: any) => {
+    setCourse((prev) => {
+      const modules = [...prev.modules];
+      const targetModule = modules.find((mod) => mod.id === quizData.module_id);
+      if (targetModule) {
+        const contentIndex = targetModule.contents.findIndex(
+          (c) => c.id === quizData.id
+        );
+        if (contentIndex !== -1) {
+          targetModule.contents[contentIndex] = {
+            ...targetModule.contents[contentIndex],
+            ...quizData,
+          };
+        } else {
+          targetModule.contents.push({ ...quizData, type: "quiz" });
+        }
+      }
+      return { ...prev, modules };
+    });
+  };
+
+  const addContent = (
+    moduleId: string,
+    contentData: Omit<Content, "id" | "order">
+  ) => {
+    const newContent: Content = {
+      ...contentData,
+      id: Date.now().toString(),
+      order: getModuleContents(moduleId).length + 1,
+    };
+
+    setCourse((prev) => {
+      const updatedModules = prev.modules.map((module) =>
+        module.id === moduleId
+          ? {
+              ...module,
+              contents: [...(module.contents || []), newContent],
+            }
+          : module
+      );
+
+      const updatedCourse = { ...prev, modules: updatedModules };
+
+      autoSaveField("modules", updatedModules)
+        .then(() => setContentSaveStatus("✅ Konten berhasil disimpan"))
+        .catch(() => setContentSaveStatus("❌ Gagal menyimpan konten"));
+
+      return updatedCourse;
+    });
+
+    setIsLessonDialogOpen(false);
+    setIsQuizDialogOpen(false);
+
+    // Reset alert setelah 3 detik
+    setTimeout(() => setContentSaveStatus(""), 3000);
+  };
+  const [editedLessonIndex, setEditedLessonIndex] = useState<{
+    moduleIndex: number;
+    lessonIndex: number;
+  } | null>(null);
+  const [lessonSaveStatus, setLessonSaveStatus] = useState("");
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (editedLessonIndex !== null) {
+        const { moduleIndex, lessonIndex } = editedLessonIndex;
+        const module = course.modules[moduleIndex];
+        const lesson = module.contents[lessonIndex];
+
+        if (lesson && lesson.type === "lesson") {
+          updateLesson(lesson.id, {
+            title: lesson.title,
+            content: lesson.data,
+          })
+            .then(() => setLessonSaveStatus("✅ Lesson berhasil disimpan"))
+            .catch(() => setLessonSaveStatus("❌ Gagal menyimpan lesson"));
+        }
+      }
+    }, 5000);
+
+    return () => clearTimeout(timeout);
+  }, [course.modules, editedLessonIndex]);
+
+  const [editedQuizIndex, setEditedQuizIndex] = useState<{
+    moduleIndex: number;
+    quizIndex: number;
+  } | null>(null);
+  const [quizSaveStatus, setQuizSaveStatus] = useState("");
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (editedQuizIndex !== null) {
+        const { moduleIndex, quizIndex } = editedQuizIndex;
+        const module = course.modules[moduleIndex];
+        const quiz = module.contents[quizIndex];
+
+        if (quiz && quiz.type === "quiz") {
+          updateQuiz(quiz.id, {
+            title: quiz.title,
+            description: quiz.data?.description || "",
+            time_limit: quiz.settings?.timeLimit,
+            passing_score: quiz.settings?.passingScore,
+          })
+            .then(() => setQuizSaveStatus("✅ Quiz berhasil disimpan"))
+            .catch(() => setQuizSaveStatus("❌ Gagal menyimpan quiz"));
+        }
+      }
+    }, 5000);
+
+    return () => clearTimeout(timeout);
+  }, [course.modules, editedQuizIndex]);
+
+  const addCoupon = (couponData: Omit<Coupon, "id" | "used">) => {
+    const newCoupon: Coupon = {
+      ...couponData,
+      id: Date.now().toString(),
+      used: 0,
+    };
+    setCourse((prev) => ({
+      ...prev,
+      coupons: [...prev.coupons, newCoupon],
+    }));
+    setIsCouponDialogOpen(false);
+  };
+
+  const getStepProgress = () => {
+    return ((currentStep + 1) / steps.length) * 100;
+  };
+
+  const getModuleContents = (moduleId: string) => {
+    const module = course.modules.find((m) => m.id === moduleId);
+    return module?.contents || [];
+  };
+
+  const handleContentDragEnd = (result: any, moduleId: string) => {
+    if (!result.destination) return;
+
+    const sourceIndex = result.source.index;
+    const destinationIndex = result.destination.index;
+
+    setCourse((prev) => ({
+      ...prev,
+      modules: prev.modules.map((module) =>
+        module.id === moduleId
+          ? {
+              ...module,
+              contents: reorderContents(
+                module.contents || [],
+                sourceIndex,
+                destinationIndex
+              ),
+            }
+          : module
+      ),
+    }));
+  };
+
+  const reorderContents = (
+    contents: Content[],
+    sourceIndex: number,
+    destinationIndex: number
+  ) => {
+    const result = Array.from(contents);
+    const [removed] = result.splice(sourceIndex, 1);
+    result.splice(destinationIndex, 0, removed);
+
+    // Update order numbers
+    return result.map((content, index) => ({
+      ...content,
+      order: index + 1,
+    }));
+  };
+
+  const addCategory = (category: string) => {
+    if (!course.categories.includes(category)) {
+      const updated = [...course.categories, category];
+      setCourse((prev) => ({ ...prev, categories: updated }));
+      autoSaveField("categories", updated);
+    }
+  };
+
+  const removeCategory = (category: string) => {
+    const updated = course.categories.filter((c) => c !== category);
+    setCourse((prev) => ({ ...prev, categories: updated }));
+    autoSaveField("categories", updated);
+  };
+
+  const addTag = (tag: string) => {
+    if (!course.tags.includes(tag)) {
+      const updated = [...course.tags, tag];
+      setCourse((prev) => ({ ...prev, tags: updated }));
+      autoSaveField("tags", updated);
+    }
+  };
+
+  const removeTag = (tag: string) => {
+    setCourse((prev) => ({
+      ...prev,
+      tags: prev.tags.filter((t) => t !== tag),
+    }));
+    const updated = course.tags.filter((t) => t !== tag);
+    setCourse((prev) => ({ ...prev, tags: updated }));
+    autoSaveField("tags", updated);
+  };
+
+  const generateDescription = async () => {
+    // Simulate AI description generation
+    const aiDescriptions = [
+      `Master ${course.title} with hands-on projects and real-world examples. This comprehensive course covers everything from basics to advanced concepts, perfect for ${course.level} learners.`,
+      `Learn ${course.title} through practical exercises and industry best practices. Build your skills with step-by-step guidance and expert instruction.`,
+      `Comprehensive ${course.title} course designed for ${course.level} students. Gain practical experience and build portfolio-worthy projects.`,
+    ];
+
+    const randomDescription =
+      aiDescriptions[Math.floor(Math.random() * aiDescriptions.length)];
+    setCourse((prev) => ({ ...prev, description: randomDescription }));
+  };
+
+  const setDescription = (value: string) => {
+    setCourse((prev) => ({ ...prev, description: value }));
+    autoSaveField("description", value);
+  };
+
+  return (
+    <div className="p-6 space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-bold text-midnight-blue-800">
+            Create New Course
+          </h1>
+          <p className="text-muted-foreground">
+            Build and publish your course step by step
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="outline">
+            <Save className="w-4 h-4 mr-2" />
+            Save Draft
+          </Button>
+          <Button className="bg-midnight-blue-800 hover:bg-midnight-blue-900">
+            <Eye className="w-4 h-4 mr-2" />
+            Preview Course
+          </Button>
+        </div>
+      </div>
+
+      {/* Progress Bar */}
+      <Card>
+        <CardContent className="p-6">
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <span className="text-sm font-medium">
+                Course Creation Progress
+              </span>
+              <span className="text-sm text-muted-foreground">
+                {Math.round(getStepProgress())}% Complete
+              </span>
+            </div>
+            <Progress value={getStepProgress()} className="h-2" />
+            <div className="flex justify-between text-xs text-muted-foreground">
+              {steps.map((step, index) => (
+                <span
+                  key={index}
+                  className={`${
+                    index <= currentStep
+                      ? "text-midnight-blue-800 font-medium"
+                      : ""
+                  }`}
+                >
+                  {index + 1}. {step}
+                </span>
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Tabs
+        value={currentStep.toString()}
+        onValueChange={(value) => setCurrentStep(Number.parseInt(value))}
+      >
+        <TabsList className="grid w-full grid-cols-4">
+          {steps.map((step, index) => (
+            <TabsTrigger
+              key={index}
+              value={index.toString()}
+              className="text-xs"
+            >
+              {index + 1}
+            </TabsTrigger>
+          ))}
+        </TabsList>
+
+        {/* Step 1: Basic Information */}
+        <TabsContent value="0" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Basic Course Information</CardTitle>
+              <CardDescription>
+                Set up the fundamental details of your course
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="title">Course Title</Label>
+                  <Input
+                    id="title"
+                    placeholder="e.g., Complete React Developer Course"
+                    value={course.title}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setCourse((prev) => ({ ...prev, title: val }));
+                      autoSaveField("title", val);
+                    }}
+                  />
+                  {saveStatus.title && (
+                    <p className="text-xs text-muted-foreground">
+                      {saveStatus.title}
+                    </p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="level">Difficulty Level</Label>
+                  <Select
+                    value={course.level}
+                    onValueChange={(value) => {
+                      setCourse((prev) => ({ ...prev, level: value }));
+                      autoSaveField("level", value);
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select level" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="beginner">Beginner</SelectItem>
+                      <SelectItem value="intermediate">Intermediate</SelectItem>
+                      <SelectItem value="advanced">Advanced</SelectItem>
+                      <SelectItem value="expert">Expert</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {/* Letakkan di sini, setelah Select */}
+                  {saveStatus.level && (
+                    <p className="text-xs text-muted-foreground">
+                      {saveStatus.level}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Categories */}
+              <div className="space-y-3">
+                <Label>Categories</Label>
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {course.categories.map((category) => (
+                    <Badge
+                      key={category}
+                      variant="secondary"
+                      className="flex items-center gap-1"
+                    >
+                      {category}
+                      <X
+                        className="w-3 h-3 cursor-pointer"
+                        onClick={() => removeCategory(category)}
+                      />
+                    </Badge>
+                  ))}
+                </div>
+                <Select onValueChange={addCategory}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Add category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableCategories
+                      .filter((cat) => !course.categories.includes(cat))
+                      .map((category) => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+                {/* Status Save */}
+                {saveStatus.categories && (
+                  <p className="text-xs text-muted-foreground">
+                    {saveStatus.categories}
+                  </p>
+                )}
+                <div className="flex gap-2">
+                  <Input placeholder="Add new category" id="new-category" />
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      const input = document.getElementById(
+                        "new-category"
+                      ) as HTMLInputElement;
+                      if (input.value.trim()) {
+                        addCategory(input.value.trim());
+                        input.value = "";
+                      }
+                    }}
+                  >
+                    <Plus className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+
+              {/* Tags */}
+              <div className="space-y-3">
+                <Label>Tags</Label>
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {course.tags.map((tag) => (
+                    <Badge
+                      key={tag}
+                      variant="outline"
+                      className="flex items-center gap-1"
+                    >
+                      {tag}
+                      <X
+                        className="w-3 h-3 cursor-pointer"
+                        onClick={() => removeTag(tag)}
+                      />
+                    </Badge>
+                  ))}
+                </div>
+                <Select onValueChange={addTag}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Add tag" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableTags
+                      .filter((tag) => !course.tags.includes(tag))
+                      .map((tag) => (
+                        <SelectItem key={tag} value={tag}>
+                          {tag}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+                {/* Status Save */}
+                {saveStatus.tags && (
+                  <p className="text-xs text-muted-foreground">
+                    {saveStatus.tags}
+                  </p>
+                )}
+                <div className="flex gap-2">
+                  <Input placeholder="Add new tag" id="new-tag" />
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      const input = document.getElementById(
+                        "new-tag"
+                      ) as HTMLInputElement;
+                      if (input.value.trim()) {
+                        addTag(input.value.trim());
+                        input.value = "";
+                      }
+                    }}
+                  >
+                    <Plus className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+
+              {/* Description with AI */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="description">Course Description</Label>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={generateDescription}
+                    className="flex items-center gap-2 bg-transparent"
+                  >
+                    <Sparkles className="w-4 h-4 text-purple-600" />
+                    Generate with AI
+                  </Button>
+                </div>
+                <RichTextEditor
+                  value={course.description}
+                  onChange={setDescription}
+                  placeholder="Describe what students will learn in this course..."
+                />
+                {saveStatus.description && (
+                  <p className="text-xs text-muted-foreground">
+                    {saveStatus.description}
+                  </p>
+                )}
+              </div>
+
+              {/* Course Settings */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="free-preview"
+                    checked={course.freePreview}
+                    onCheckedChange={(checked) => {
+                      setCourse((prev) => ({ ...prev, freePreview: checked }));
+                      autoSaveField("freePreview", checked);
+                    }}
+                  />
+                  {saveStatus.freePreview && (
+                    <p className="text-xs text-muted-foreground">
+                      {saveStatus.freePreview}
+                    </p>
+                  )}
+
+                  <Label htmlFor="free-preview">Enable free preview</Label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Switch
+                    checked={course.is_visible}
+                    onCheckedChange={(val) => {
+                      setCourse((prev) => ({ ...prev, is_visible: val }));
+                      autoSaveField("is_visible", val);
+                    }}
+                  />
+                  <Label>Public Course Visibility</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="enable-certificate"
+                    checked={course.certificate.enabled}
+                    onCheckedChange={(checked) => {
+                      const newCert = {
+                        ...course.certificate,
+                        enabled: checked,
+                      };
+                      setCourse((prev) => ({ ...prev, certificate: newCert }));
+                      autoSaveField("certificate", newCert);
+                    }}
+                  />
+                  {saveStatus.certificate && (
+                    <p className="text-xs text-muted-foreground">
+                      {saveStatus.certificate}
+                    </p>
+                  )}
+
+                  <Label htmlFor="enable-certificate">
+                    Enable certificate generation
+                  </Label>
+                </div>
+              </div>
+
+              {/* Thumbnail Upload */}
+              <div className="space-y-2">
+                <Label htmlFor="thumbnail">Course Thumbnail</Label>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                  {course.thumbnail ? (
+                    <img
+                      src={course.thumbnail}
+                      alt="Thumbnail"
+                      className="mx-auto mb-4 max-h-40 rounded-md"
+                    />
+                  ) : (
+                    <>
+                      <Upload className="mx-auto h-12 w-12 text-gray-400" />
+                      <p className="text-sm text-gray-500">
+                        No thumbnail uploaded
+                      </p>
+                    </>
+                  )}
+
+                  <div className="mt-4 flex justify-center">
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleThumbnailUpload}
+                      className="w-auto cursor-pointer"
+                    />
+                  </div>
+
+                  <p className="mt-2 text-sm text-gray-500">
+                    PNG, JPG up to 2MB (1280x720 recommended)
+                  </p>
+                  {saveStatus.thumbnail && (
+                    <p className="text-xs text-muted-foreground">
+                      {saveStatus.thumbnail}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Step 2: Course Structure */}
+        <TabsContent value="1" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                Course Structure
+                <Dialog
+                  open={isModuleDialogOpen}
+                  onOpenChange={setIsModuleDialogOpen}
+                >
+                  <DialogTrigger asChild>
+                    <Button className="bg-midnight-blue-800 hover:bg-midnight-blue-900 flex items-center gap-2">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add Module
+                    </Button>
+                  </DialogTrigger>
+
+                  <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle>Add New Module</DialogTitle>
+                      <DialogDescription>
+                        Create a new module to organize your course content
+                      </DialogDescription>
+                    </DialogHeader>
+                    <ModuleForm onSubmit={addModule} />
+                  </DialogContent>
+                </Dialog>
+                <Dialog
+                  open={isEditModuleOpen}
+                  onOpenChange={setIsEditModuleOpen}
+                >
+                  <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle>Edit Module</DialogTitle>
+                      <DialogDescription>
+                        Edit existing module
+                      </DialogDescription>
+                    </DialogHeader>
+                    {editingModuleIndex !== null && (
+                      <ModuleForm
+                        module={course.modules[editingModuleIndex]}
+                        onSubmit={(updatedData) => {
+                          updateModule(
+                            course.modules[editingModuleIndex].id,
+                            updatedData
+                          );
+                          const updatedModules = [...course.modules];
+                          updatedModules[editingModuleIndex] = {
+                            ...updatedModules[editingModuleIndex],
+                            ...updatedData,
+                          };
+                          setCourse((prev) => ({
+                            ...prev,
+                            modules: updatedModules,
+                          }));
+                          setIsEditModuleOpen(false);
+                        }}
+                      />
+                    )}
+                  </DialogContent>
+                </Dialog>
+              </CardTitle>
+              {moduleSaveStatus && (
+                <p className="text-sm text-muted-foreground pl-1">
+                  {moduleSaveStatus}
+                </p>
+              )}
+              <CardDescription>
+                Organize your course into modules and add lessons or quizzes
+                directly
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {course.modules.length === 0 ? (
+                <div className="text-center py-8">
+                  <BookOpen className="mx-auto h-12 w-12 text-gray-400" />
+                  <h3 className="mt-4 text-lg font-medium">No modules yet</h3>
+                  <p className="mt-2 text-gray-500">
+                    Start by adding your first module
+                  </p>
+                </div>
+              ) : (
+                <Accordion type="single" collapsible className="space-y-4">
+                  {course.modules.map((module, moduleIndex) => (
+                    <AccordionItem key={module.id} value={module.id}>
+                      <div className="flex items-start justify-between w-full">
+                        <AccordionTrigger className="hover:no-underline w-full pr-4">
+                          <div className="flex items-center gap-3">
+                            <Badge variant="outline">{moduleIndex + 1}</Badge>
+                            <div className="text-left">
+                              <h4 className="font-medium">{module.title}</h4>
+                              <p className="text-sm text-muted-foreground">
+                                {module.contents.length} contents
+                              </p>
+                            </div>
+                          </div>
+                        </AccordionTrigger>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={() => {
+                              setEditingModuleIndex(moduleIndex);
+                              setIsEditModuleOpen(true);
+                            }}
+                          >
+                            <Edit className="w-4 h-4" />
+                          </Button>
+
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="text-red-600 bg-transparent"
+                            onClick={() => {
+                              if (
+                                !window.confirm(
+                                  "Hapus modul ini beserta isinya?"
+                                )
+                              )
+                                return;
+                              deleteModule(module.id);
+                            }}
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </Button>
+                        </div>
+                      </div>
+
+                      <AccordionContent>
+                        <div className="space-y-4 pt-4">
+                          <div className="flex justify-between items-start">
+                            <div
+                              className="text-sm text-muted-foreground prose prose-sm max-w-none"
+                              dangerouslySetInnerHTML={{
+                                __html: module.description,
+                              }}
+                            />
+                            <div className="flex gap-2 ml-4">
+                              <Dialog
+                                open={
+                                  isLessonDialogOpen &&
+                                  selectedModuleIdForContent === module.id
+                                }
+                                onOpenChange={(open) => {
+                                  setIsLessonDialogOpen(open);
+                                  if (open) {
+                                    setSelectedModuleIdForContent(module.id);
+                                  }
+                                }}
+                              >
+                                <DialogTrigger asChild>
+                                  <Button size="sm" variant="outline">
+                                    <BookOpen className="w-3 h-3 mr-1" />
+                                    Add Lesson
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                                  <DialogHeader>
+                                    <DialogTitle>
+                                      Add Lesson to {module.title}
+                                    </DialogTitle>
+                                    <DialogDescription>
+                                      Create lesson content with materials
+                                    </DialogDescription>
+                                  </DialogHeader>
+                                  <LessonForm
+                                    onSubmit={(data) =>
+                                      addContent(module.id, data)
+                                    }
+                                  />
+                                </DialogContent>
+                              </Dialog>
+                              {/* {contentSaveStatus && (
+  <p className="text-sm text-muted-foreground pl-1">{contentSaveStatus}</p>
+)} */}
+                              <Dialog
+                                open={
+                                  isQuizDialogOpen &&
+                                  selectedModuleIdForContent === module.id
+                                }
+                                onOpenChange={(open) => {
+                                  setIsQuizDialogOpen(open);
+                                  if (open) {
+                                    setSelectedModuleIdForContent(module.id);
+                                  }
+                                }}
+                              >
+                                <DialogTrigger asChild>
+                                  <Button size="sm" variant="outline">
+                                    <HelpCircle className="w-3 h-3 mr-1" />
+                                    Add Quiz
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                                  <DialogHeader>
+                                    <DialogTitle>
+                                      Add Quiz to {module.title}
+                                    </DialogTitle>
+                                    <DialogDescription>
+                                      Create quiz with questions and settings
+                                    </DialogDescription>
+                                  </DialogHeader>
+                                  <QuizForm
+                                    onSubmit={(data) =>
+                                      addContent(module.id, data)
+                                    }
+                                  />
+                                </DialogContent>
+                              </Dialog>
+
+                              <Dialog
+                                open={isEditLessonOpen}
+                                onOpenChange={setIsEditLessonOpen}
+                              >
+                                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                                  <DialogHeader>
+                                    <DialogTitle>
+                                      Edit Lesson:{" "}
+                                      {
+                                        course.modules[
+                                          editingLesson?.moduleIndex
+                                        ]?.title
+                                      }
+                                    </DialogTitle>
+                                    <DialogDescription>
+                                      Update lesson content and materials
+                                    </DialogDescription>
+                                  </DialogHeader>
+
+                                  {editingLesson && (
+                                    <LessonForm
+                                      lesson={{
+                                        title:
+                                          course.modules[
+                                            editingLesson.moduleIndex
+                                          ].contents[editingLesson.contentIndex]
+                                            .title,
+                                        content:
+                                          course.modules[
+                                            editingLesson.moduleIndex
+                                          ].contents[editingLesson.contentIndex]
+                                            .data,
+                                      }}
+                                      onSubmit={(updatedData) => {
+                                        const lessonId =
+                                          course.modules[
+                                            editingLesson.moduleIndex
+                                          ].contents[editingLesson.contentIndex]
+                                            .id;
+
+                                        updateLesson(lessonId, {
+                                          ...updatedData,
+                                          module_id:
+                                            course.modules[
+                                              editingLesson.moduleIndex
+                                            ].id,
+                                          order: editingLesson.contentIndex + 1,
+                                        });
+
+                                        const updatedModules = [
+                                          ...course.modules,
+                                        ];
+                                        updatedModules[
+                                          editingLesson.moduleIndex
+                                        ].contents[editingLesson.contentIndex] =
+                                          {
+                                            ...updatedModules[
+                                              editingLesson.moduleIndex
+                                            ].contents[
+                                              editingLesson.contentIndex
+                                            ],
+                                            ...updatedData,
+                                          };
+
+                                        setCourse((prev) => ({
+                                          ...prev,
+                                          modules: updatedModules,
+                                        }));
+                                        setIsEditLessonOpen(false);
+                                      }}
+                                    />
+                                  )}
+                                </DialogContent>
+                              </Dialog>
+
+                              <Dialog
+                                open={isEditQuizOpen}
+                                onOpenChange={setIsEditQuizOpen}
+                              >
+                                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                                  <DialogHeader>
+                                    <DialogTitle>
+                                      Edit Quiz:{" "}
+                                      {
+                                        course.modules[editingQuiz?.moduleIndex]
+                                          ?.title
+                                      }
+                                    </DialogTitle>
+                                    <DialogDescription>
+                                      Update quiz settings and description
+                                    </DialogDescription>
+                                  </DialogHeader>
+
+                                  {editingQuiz && (
+                                    <QuizForm
+                                      quiz={{
+                                        title:
+                                          course.modules[
+                                            editingQuiz.moduleIndex
+                                          ].contents[editingQuiz.contentIndex]
+                                            .title,
+                                        description:
+                                          course.modules[
+                                            editingQuiz.moduleIndex
+                                          ].contents[editingQuiz.contentIndex]
+                                            ?.data?.description || "",
+                                      }}
+                                      onSubmit={(updatedData) => {
+                                        const quizId =
+                                          course.modules[
+                                            editingQuiz.moduleIndex
+                                          ].contents[editingQuiz.contentIndex]
+                                            .id;
+
+                                        updateQuiz(quizId, {
+                                          ...updatedData,
+                                          module_id:
+                                            course.modules[
+                                              editingQuiz.moduleIndex
+                                            ].id,
+                                          order: editingQuiz.contentIndex + 1,
+                                        });
+
+                                        const updatedModules = [
+                                          ...course.modules,
+                                        ];
+                                        updatedModules[
+                                          editingQuiz.moduleIndex
+                                        ].contents[editingQuiz.contentIndex] = {
+                                          ...updatedModules[
+                                            editingQuiz.moduleIndex
+                                          ].contents[editingQuiz.contentIndex],
+                                          ...updatedData,
+                                        };
+
+                                        setCourse((prev) => ({
+                                          ...prev,
+                                          modules: updatedModules,
+                                        }));
+                                        setIsEditQuizOpen(false);
+                                      }}
+                                    />
+                                  )}
+                                </DialogContent>
+                              </Dialog>
+
+                              {contentSaveStatus && (
+                                <p className="text-sm text-muted-foreground pl-1">
+                                  {contentSaveStatus}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+
+                          {module.contents && module.contents.length === 0 ? (
+                            <div className="text-center py-4 border-2 border-dashed border-gray-200 rounded-lg">
+                              <p className="text-sm text-gray-500">
+                                No contents in this module yet
+                              </p>
+                              <p className="text-xs text-gray-400 mt-1">
+                                Click "Add Lesson" or "Add Quiz" to get started
+                              </p>
+                            </div>
+                          ) : (
+                            <div className="space-y-2">
+                              {/* Content List */}
+                              {module.contents &&
+                                module.contents.length > 0 && (
+                                  <div className="space-y-2">
+                                    <DragDropContext
+                                      onDragEnd={(result) =>
+                                        handleContentDragEnd(result, module.id)
+                                      }
+                                    >
+                                      <Droppable
+                                        droppableId={`module-${module.id}`}
+                                      >
+                                        {(provided) => (
+                                          <div
+                                            {...provided.droppableProps}
+                                            ref={provided.innerRef}
+                                            className="space-y-2"
+                                          >
+                                            {module.contents
+                                              .sort((a, b) => a.order - b.order)
+                                              .map((content, contentIndex) => (
+                                                <Draggable
+                                                  key={content.id}
+                                                  draggableId={content.id}
+                                                  index={contentIndex}
+                                                >
+                                                  {(provided, snapshot) => (
+                                                    <div
+                                                      ref={provided.innerRef}
+                                                      {...provided.draggableProps}
+                                                      {...provided.dragHandleProps}
+                                                      className={`flex items-center justify-between p-3 border rounded-lg bg-white ${
+                                                        snapshot.isDragging
+                                                          ? "shadow-lg"
+                                                          : ""
+                                                      }`}
+                                                    >
+                                                      <div className="flex items-center gap-3">
+                                                        <Badge
+                                                          variant="outline"
+                                                          className="text-xs"
+                                                        >
+                                                          {contentIndex + 1}
+                                                        </Badge>
+                                                        {content.type ===
+                                                          "lesson" && (
+                                                          <Button
+                                                            variant="outline"
+                                                            size="icon"
+                                                            onClick={() => {
+                                                              setEditingLesson({
+                                                                moduleIndex,
+                                                                contentIndex,
+                                                              }); // ← Index konten Lesson
+                                                              setIsEditLessonOpen(
+                                                                true
+                                                              ); // ← Buka dialog
+                                                            }}
+                                                          >
+                                                            <Edit className="w-4 h-4" />
+                                                          </Button>
+                                                        )}
+
+                                                        {content.type ===
+                                                          "quiz" && (
+                                                          <Button
+                                                            variant="outline"
+                                                            size="icon"
+                                                            onClick={() => {
+                                                              setEditingQuiz({
+                                                                moduleIndex,
+                                                                contentIndex,
+                                                              }); // ← Index konten Quiz
+                                                              setIsEditQuizOpen(
+                                                                true
+                                                              ); // ← Buka dialog
+                                                            }}
+                                                          >
+                                                            <Edit className="w-4 h-4" />
+                                                          </Button>
+                                                        )}
+
+                                                        <div>
+                                                          <span className="text-sm font-medium">
+                                                            {content.title}
+                                                          </span>
+                                                          <Badge
+                                                            variant="secondary"
+                                                            className="text-xs ml-2"
+                                                          >
+                                                            {content.type}
+                                                          </Badge>
+                                                        </div>
+                                                      </div>
+                                                      <div className="flex items-center gap-1">
+                                                        {/* <Button
+                                                          size="sm"
+                                                          variant="outline"
+                                                        >
+                                                          <Edit className="w-3 h-3" />
+                                                        </Button> */}
+                                                        <Button
+                                                          size="sm"
+                                                          variant="outline"
+                                                          className="text-red-600 bg-transparent"
+                                                          onClick={() => {
+                                                            if (
+                                                              !window.confirm(
+                                                                "Yakin ingin menghapus?"
+                                                              )
+                                                            )
+                                                              return;
+
+                                                            const isLesson =
+                                                              content.type ===
+                                                              "lesson";
+                                                            const isQuiz =
+                                                              content.type ===
+                                                              "quiz";
+
+                                                            if (isLesson) {
+                                                              deleteLesson(
+                                                                content.id,
+                                                                moduleIndex,
+                                                                contentIndex
+                                                              );
+                                                            } else if (isQuiz) {
+                                                              deleteQuiz(
+                                                                content.id,
+                                                                moduleIndex,
+                                                                contentIndex
+                                                              );
+                                                            }
+                                                          }}
+                                                        >
+                                                          <Trash2 className="w-3 h-3" />
+                                                        </Button>
+                                                      </div>
+                                                    </div>
+                                                  )}
+                                                </Draggable>
+                                              ))}
+                                            {provided.placeholder}
+                                          </div>
+                                        )}
+                                      </Droppable>
+                                    </DragDropContext>
+                                  </div>
+                                )}
+                            </div>
+                          )}
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Step 3: Pricing & Coupons */}
+        <TabsContent value="2" className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Pricing Strategy</CardTitle>
+                <CardDescription>
+                  Set your course pricing and payment options
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Course Price</Label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                      Rp
+                    </span>
+                    <Input
+                      type="number"
+                      placeholder="0"
+                      className="pl-8"
+                      value={course.price}
+                      onChange={(e) => {
+                        const val = Number.parseFloat(e.target.value) || 0;
+                        setCourse((prev) => ({ ...prev, price: val }));
+                        autoSaveField("price", val);
+                      }}
+                    />
+                    {saveStatus.price && (
+                      <p className="text-xs text-muted-foreground">
+                        {saveStatus.price}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Pricing Type</Label>
+                  <Select
+                    value={course.price === 0 ? "free" : "one-time"}
+                    disabled={course.price === 0}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select pricing type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {course.price === 0 ? (
+                        <SelectItem value="free">Free Course</SelectItem>
+                      ) : (
+                        <>
+                          <SelectItem value="one-time">
+                            One-time Payment
+                          </SelectItem>
+                          <SelectItem value="subscription">
+                            Monthly Subscription
+                          </SelectItem>
+                        </>
+                      )}
+                    </SelectContent>
+                  </Select>
+                  {course.price === 0 && (
+                    <p className="text-sm text-muted-foreground">
+                      Free courses automatically use "Free Course" pricing type
+                    </p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  Discount Coupons
+                  <Dialog
+                    open={isCouponDialogOpen}
+                    onOpenChange={setIsCouponDialogOpen}
+                  >
+                    <DialogTrigger asChild>
+                      <Button
+                        size="sm"
+                        className="bg-midnight-blue-800 hover:bg-midnight-blue-900"
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        Create Coupon
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                      <DialogHeader>
+                        <DialogTitle>Create Discount Coupon</DialogTitle>
+                        <DialogDescription>
+                          Create promotional codes for your course
+                        </DialogDescription>
+                      </DialogHeader>
+                      <CouponForm onSubmit={addCoupon} />
+                    </DialogContent>
+                  </Dialog>
+                </CardTitle>
+                <CardDescription>
+                  Create promotional codes to boost sales
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {course.coupons.length === 0 ? (
+                  <div className="text-center py-4">
+                    <p className="text-sm text-gray-500">
+                      No coupons created yet
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {course.coupons.map((coupon) => (
+                      <div
+                        key={coupon.id}
+                        className="flex items-center justify-between p-3 border rounded-lg"
+                      >
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline">{coupon.code}</Badge>
+                            <span className="text-sm font-medium">
+                              {coupon.type === "percentage"
+                                ? `${coupon.discount}% off`
+                                : `Rp${coupon.discount} off`}
+                            </span>
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            Valid until {coupon.validUntil} • {coupon.used}/
+                            {coupon.usageLimit} used
+                          </p>
+                        </div>
+                        <div className="flex gap-1">
+                          <Button size="sm" variant="outline">
+                            <Edit className="w-3 h-3" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="text-red-600 bg-transparent"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* Step 4: Final Step */}
+        <TabsContent value="3" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Final Step</CardTitle>
+              <CardDescription>
+                Review your course and submit for approval
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <h3 className="font-semibold">Course Summary</h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Title:</span>
+                      <span>{course.title || "Not set"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Categories:</span>
+                      <span>
+                        {course.categories.length > 0
+                          ? course.categories.join(", ")
+                          : "Not set"}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Tags:</span>
+                      <span>
+                        {course.tags.length > 0
+                          ? course.tags.join(", ")
+                          : "Not set"}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Level:</span>
+                      <span>{course.level || "Not set"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Price:</span>
+                      <span>Rp{course.price}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Modules:</span>
+                      <span>{course.modules.length}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">
+                        Total Contents:
+                      </span>
+                      <span>
+                        {course.modules.reduce(
+                          (acc, module) => acc + module.contents.length,
+                          0
+                        )}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">
+                        Free Preview:
+                      </span>
+                      <span>{course.freePreview ? "Enabled" : "Disabled"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">
+                        Certificate:
+                      </span>
+                      <span>
+                        {course.certificate.enabled ? "Enabled" : "Disabled"}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Coupons:</span>
+                      <span>{course.coupons.length}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <h3 className="font-semibold">Course Status</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      {course.title ? (
+                        <CheckCircle className="w-4 h-4 text-green-600" />
+                      ) : (
+                        <AlertCircle className="w-4 h-4 text-red-600" />
+                      )}
+                      <span className="text-sm">Course title</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {course.description ? (
+                        <CheckCircle className="w-4 h-4 text-green-600" />
+                      ) : (
+                        <AlertCircle className="w-4 h-4 text-red-600" />
+                      )}
+                      <span className="text-sm">Course description</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {course.categories.length > 0 ? (
+                        <CheckCircle className="w-4 h-4 text-green-600" />
+                      ) : (
+                        <AlertCircle className="w-4 h-4 text-red-600" />
+                      )}
+                      <span className="text-sm">At least one category</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {course.modules.length > 0 ? (
+                        <CheckCircle className="w-4 h-4 text-green-600" />
+                      ) : (
+                        <AlertCircle className="w-4 h-4 text-red-600" />
+                      )}
+                      <span className="text-sm">At least one module</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-4">
+                <Button variant="outline" className="flex-1 bg-transparent">
+                  <Eye className="w-4 h-4 mr-2" />
+                  Preview Course
+                </Button>
+                <Button className="flex-1 bg-green-600 hover:bg-green-700">
+                  <Upload className="w-4 h-4 mr-2" />
+                  Submit for Review
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+
+      {/* Navigation */}
+      <div className="flex justify-between">
+        <Button
+          variant="outline"
+          onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
+          disabled={currentStep === 0}
+        >
+          Previous
+        </Button>
+        <Button
+          onClick={() =>
+            setCurrentStep(Math.min(steps.length - 1, currentStep + 1))
+          }
+          disabled={currentStep === steps.length - 1}
+          className="bg-midnight-blue-800 hover:bg-midnight-blue-900"
+        >
+          Next
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+// Form Components
+function ModuleForm({
+  onSubmit,
+}: {
+  onSubmit: (data: Omit<Module, "id" | "order" | "contents">) => void;
+}) {
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit(formData);
+    setFormData({ title: "", description: "" });
+  };
+
+  const generateModuleDescription = () => {
+    const aiDescriptions = [
+      `This module covers the fundamental concepts and practical applications of ${formData.title}. Students will learn through hands-on exercises and real-world examples.`,
+      `Comprehensive introduction to ${formData.title} with step-by-step guidance and practical projects to build your skills.`,
+      `Master ${formData.title} through interactive lessons, practical exercises, and industry best practices.`,
+    ];
+
+    const randomDescription =
+      aiDescriptions[Math.floor(Math.random() * aiDescriptions.length)];
+    setFormData((prev) => ({ ...prev, description: randomDescription }));
+  };
+
+  const setDescription = (value: string) => {
+    setFormData((prev) => ({ ...prev, description: value }));
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="module-title">Module Title</Label>
+        <Input
+          id="module-title"
+          placeholder="e.g., Introduction to React"
+          value={formData.title}
+          onChange={(e) =>
+            setFormData((prev) => ({ ...prev, title: e.target.value }))
+          }
+          required
+        />
+      </div>
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <Label htmlFor="module-description">Description</Label>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={generateModuleDescription}
+            className="flex items-center gap-2 bg-transparent"
+          >
+            <Sparkles className="w-4 h-4 text-purple-600" />
+            Generate with AI
+          </Button>
+        </div>
+        <RichTextEditor
+          value={formData.description}
+          onChange={setDescription}
+          placeholder="Describe what this module covers..."
+        />
+      </div>
+      <DialogFooter>
+        <Button
+          type="submit"
+          className="bg-midnight-blue-800 hover:bg-midnight-blue-900"
+        >
+          Add Module
+        </Button>
+      </DialogFooter>
+    </form>
+  );
+}
+
+function LessonForm({
+  onSubmit,
+}: {
+  onSubmit: (data: Omit<Content, "id" | "order">) => void;
+}) {
+  const [formData, setFormData] = useState({
+    title: "",
+    content: "",
+    images: [] as File[],
+    videos: [] as File[],
+    files: [] as File[],
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit({
+      title: formData.title,
+      type: "lesson",
+      data: {
+        content: formData.content,
+        images: formData.images,
+        videos: formData.videos,
+        files: formData.files,
+      },
+    });
+    setFormData({ title: "", content: "", images: [], videos: [], files: [] });
+  };
+
+  const generateLessonContent = () => {
+    const aiContents = [
+      `<h1>${formData.title}</h1>
+
+<h2>Introduction</h2>
+<p>Welcome to this comprehensive lesson on ${formData.title}. In this lesson, you'll learn the fundamental concepts and practical applications.</p>
+
+<h2>Learning Objectives</h2>
+<p>By the end of this lesson, you will be able to:</p>
+<ul>
+<li>Understand the core concepts of ${formData.title}</li>
+<li>Apply the knowledge in real-world scenarios</li>
+<li>Implement best practices and industry standards</li>
+</ul>
+
+<h2>Key Concepts</h2>
+<p>Let's dive into the essential concepts you need to master...</p>
+
+<h2>Practical Examples</h2>
+<p>Here are some hands-on examples to help you understand better...</p>
+
+<h2>Summary</h2>
+<p>In this lesson, we covered the important aspects of ${formData.title}. Practice these concepts to strengthen your understanding.</p>`,
+
+      `<h1>Understanding ${formData.title}</h1>
+
+<h2>Overview</h2>
+<p>This lesson provides a comprehensive introduction to ${formData.title}, covering both theoretical foundations and practical implementations.</p>
+
+<h2>What You'll Learn</h2>
+<ul>
+<li>Core principles and concepts</li>
+<li>Step-by-step implementation guide</li>
+<li>Common challenges and solutions</li>
+<li>Best practices and tips</li>
+</ul>
+
+<h2>Getting Started</h2>
+<p>Let's begin by understanding the basics...</p>
+
+<h2>Deep Dive</h2>
+<p>Now that you understand the fundamentals, let's explore advanced concepts...</p>
+
+<h2>Conclusion</h2>
+<p>You've successfully completed this lesson on ${formData.title}. Continue practicing to master these skills.</p>`,
+
+      `<h1>${formData.title} - Complete Guide</h1>
+
+<h2>Introduction</h2>
+<p>This comprehensive lesson will take you through everything you need to know about ${formData.title}.</p>
+
+<h2>Prerequisites</h2>
+<p>Before starting this lesson, make sure you have:</p>
+<ul>
+<li>Basic understanding of the previous concepts</li>
+<li>Required tools and setup completed</li>
+</ul>
+
+<h2>Main Content</h2>
+<h3>Section 1: Fundamentals</h3>
+<p>Learn the basic concepts and terminology...</p>
+
+<h3>Section 2: Implementation</h3>
+<p>Step-by-step guide to implement...</p>
+
+<h3>Section 3: Advanced Topics</h3>
+<p>Explore advanced features and techniques...</p>
+
+<h2>Practice Exercises</h2>
+<p>Try these exercises to reinforce your learning...</p>
+
+<h2>Next Steps</h2>
+<p>Continue to the next lesson to build upon these concepts.</p>`,
+    ];
+
+    const randomContent =
+      aiContents[Math.floor(Math.random() * aiContents.length)];
+    setFormData((prev) => ({ ...prev, content: randomContent }));
+  };
+
+  const setContent = (value: string) => {
+    setFormData((prev) => ({ ...prev, content: value }));
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="space-y-2">
+        <Label htmlFor="lesson-title">Lesson Title</Label>
+        <Input
+          id="lesson-title"
+          placeholder="e.g., Introduction to Components"
+          value={formData.title}
+          onChange={(e) =>
+            setFormData((prev) => ({ ...prev, title: e.target.value }))
+          }
+          required
+        />
+      </div>
+
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <Label htmlFor="lesson-content">Lesson Content</Label>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={generateLessonContent}
+            className="flex items-center gap-2 bg-transparent"
+          >
+            <Sparkles className="w-4 h-4 text-purple-600" />
+            Generate with AI
+          </Button>
+        </div>
+        <RichTextEditor
+          value={formData.content}
+          onChange={setContent}
+          placeholder="Write your lesson content here..."
+          className="min-h-[300px]"
+        />
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="space-y-2">
+          <Label>Upload Images</Label>
+          <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+            <Upload className="mx-auto h-8 w-8 text-gray-400" />
+            <div className="mt-2">
+              <Button variant="outline" size="sm">
+                Upload Images
+              </Button>
+              <p className="mt-1 text-xs text-gray-500">PNG, JPG up to 5MB</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label>Upload Videos</Label>
+          <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+            <Video className="mx-auto h-8 w-8 text-gray-400" />
+            <div className="mt-2">
+              <Button variant="outline" size="sm">
+                Upload Videos
+              </Button>
+              <p className="mt-1 text-xs text-gray-500">MP4, MOV up to 100MB</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label>Downloadable Files</Label>
+          <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+            <Download className="mx-auto h-8 w-8 text-gray-400" />
+            <div className="mt-2">
+              <Button variant="outline" size="sm">
+                Upload Files
+              </Button>
+              <p className="mt-1 text-xs text-gray-500">
+                Any format up to 50MB
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <DialogFooter>
+        <Button
+          type="submit"
+          className="bg-midnight-blue-800 hover:bg-midnight-blue-900"
+        >
+          Add Lesson
+        </Button>
+      </DialogFooter>
+    </form>
+  );
+}
+
+function QuizForm({
+  onSubmit,
+}: {
+  onSubmit: (data: Omit<Content, "id" | "order">) => void;
+}) {
+  const [formData, setFormData] = useState({
+    title: "",
+    questions: [] as QuizQuestion[],
+    settings: {
+      passingScore: 80,
+      timeLimit: 60,
+      attemptsAllowed: 3,
+      autoGrading: true,
+      showAnswers: true,
+    },
+  });
+
+  const [currentQuestion, setCurrentQuestion] = useState<Partial<QuizQuestion>>(
+    {
+      type: "multiple-choice",
+      question: "",
+      options: ["", "", "", ""],
+      correctAnswer: 0,
+      explanation: "",
+    }
+  );
+
+  const addQuestion = () => {
+    if (currentQuestion.question && currentQuestion.type) {
+      const newQuestion: QuizQuestion = {
+        id: Date.now().toString(),
+        type: currentQuestion.type,
+        question: currentQuestion.question,
+        options:
+          currentQuestion.type === "multiple-choice"
+            ? currentQuestion.options
+            : undefined,
+        correctAnswer: currentQuestion.correctAnswer || 0,
+        explanation: currentQuestion.explanation,
+      };
+
+      setFormData((prev) => ({
+        ...prev,
+        questions: [...prev.questions, newQuestion],
+      }));
+
+      setCurrentQuestion({
+        type: "multiple-choice",
+        question: "",
+        options: ["", "", "", ""],
+        correctAnswer: 0,
+        explanation: "",
+      });
+    }
+  };
+
+  const removeQuestion = (id: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      questions: prev.questions.filter((q) => q.id !== id),
+    }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit({
+      title: formData.title,
+      type: "quiz",
+      data: {
+        questions: formData.questions,
+      },
+      settings: formData.settings,
+    });
+    setFormData({
+      title: "",
+      questions: [],
+      settings: {
+        passingScore: 80,
+        timeLimit: 60,
+        attemptsAllowed: 3,
+        autoGrading: true,
+        showAnswers: true,
+      },
+    });
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="space-y-2">
+        <Label htmlFor="quiz-title">Quiz Title</Label>
+        <Input
+          id="quiz-title"
+          placeholder="e.g., React Fundamentals Quiz"
+          value={formData.title}
+          onChange={(e) =>
+            setFormData((prev) => ({ ...prev, title: e.target.value }))
+          }
+          required
+        />
+      </div>
+
+      {/* Quiz Settings */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Quiz Settings</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Passing Score (%)</Label>
+              <Input
+                type="number"
+                value={formData.settings.passingScore}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    settings: {
+                      ...prev.settings,
+                      passingScore: Number.parseInt(e.target.value),
+                    },
+                  }))
+                }
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Time Limit (minutes)</Label>
+              <Input
+                type="number"
+                value={formData.settings.timeLimit}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    settings: {
+                      ...prev.settings,
+                      timeLimit: Number.parseInt(e.target.value),
+                    },
+                  }))
+                }
+              />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label>Attempts Allowed</Label>
+            <Select
+              value={formData.settings.attemptsAllowed.toString()}
+              onValueChange={(value) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  settings: {
+                    ...prev.settings,
+                    attemptsAllowed: Number.parseInt(value),
+                  },
+                }))
+              }
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1">1 attempt</SelectItem>
+                <SelectItem value="2">2 attempts</SelectItem>
+                <SelectItem value="3">3 attempts</SelectItem>
+                <SelectItem value="-1">Unlimited</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-3">
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="auto-grading"
+                checked={formData.settings.autoGrading}
+                onCheckedChange={(checked) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    settings: { ...prev.settings, autoGrading: checked },
+                  }))
+                }
+              />
+              <Label htmlFor="auto-grading">Enable automatic grading</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="show-answers"
+                checked={formData.settings.showAnswers}
+                onCheckedChange={(checked) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    settings: { ...prev.settings, showAnswers: checked },
+                  }))
+                }
+              />
+              <Label htmlFor="show-answers">
+                Show correct answers after completion
+              </Label>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Add Questions */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Add Question</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label>Question Type</Label>
+            <RadioGroup
+              value={currentQuestion.type}
+              onValueChange={(value) =>
+                setCurrentQuestion((prev) => ({
+                  ...prev,
+                  type: value as "multiple-choice" | "true-false",
+                  options:
+                    value === "multiple-choice" ? ["", "", "", ""] : undefined,
+                  correctAnswer: 0,
+                }))
+              }
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="multiple-choice" id="multiple-choice" />
+                <Label htmlFor="multiple-choice">Multiple Choice</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="true-false" id="true-false" />
+                <Label htmlFor="true-false">True/False</Label>
+              </div>
+            </RadioGroup>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Question</Label>
+            <Textarea
+              placeholder="Enter your question here..."
+              value={currentQuestion.question}
+              onChange={(e) =>
+                setCurrentQuestion((prev) => ({
+                  ...prev,
+                  question: e.target.value,
+                }))
+              }
+            />
+          </div>
+
+          {currentQuestion.type === "multiple-choice" && (
+            <div className="space-y-2">
+              <Label>Answer Options</Label>
+              {currentQuestion.options?.map((option, index) => (
+                <div key={index} className="flex items-center gap-2">
+                  <Checkbox
+                    checked={currentQuestion.correctAnswer === index}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        setCurrentQuestion((prev) => ({
+                          ...prev,
+                          correctAnswer: index,
+                        }));
+                      }
+                    }}
+                  />
+                  <Input
+                    placeholder={`Option ${index + 1}`}
+                    value={option}
+                    onChange={(e) => {
+                      const newOptions = [...(currentQuestion.options || [])];
+                      newOptions[index] = e.target.value;
+                      setCurrentQuestion((prev) => ({
+                        ...prev,
+                        options: newOptions,
+                      }));
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+
+          {currentQuestion.type === "true-false" && (
+            <div className="space-y-2">
+              <Label>Correct Answer</Label>
+              <RadioGroup
+                value={currentQuestion.correctAnswer?.toString()}
+                onValueChange={(value) =>
+                  setCurrentQuestion((prev) => ({
+                    ...prev,
+                    correctAnswer: value === "true",
+                  }))
+                }
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="true" id="true" />
+                  <Label htmlFor="true">True</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="false" id="false" />
+                  <Label htmlFor="false">False</Label>
+                </div>
+              </RadioGroup>
+            </div>
+          )}
+
+          <div className="space-y-2">
+            <Label>Explanation (Optional)</Label>
+            <Textarea
+              placeholder="Explain why this is the correct answer..."
+              value={currentQuestion.explanation}
+              onChange={(e) =>
+                setCurrentQuestion((prev) => ({
+                  ...prev,
+                  explanation: e.target.value,
+                }))
+              }
+            />
+          </div>
+
+          <Button
+            type="button"
+            onClick={addQuestion}
+            variant="outline"
+            className="w-full bg-transparent"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add Question
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* Questions List */}
+      {formData.questions.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">
+              Questions ({formData.questions.length})
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {formData.questions.map((question, index) => (
+                <div
+                  key={question.id}
+                  className="flex items-start justify-between p-3 border rounded-lg"
+                >
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Badge variant="outline">{index + 1}</Badge>
+                      <Badge variant="secondary">{question.type}</Badge>
+                    </div>
+                    <p className="text-sm font-medium mb-1">
+                      {question.question}
+                    </p>
+                    {question.type === "multiple-choice" &&
+                      question.options && (
+                        <div className="text-xs text-muted-foreground">
+                          Correct:{" "}
+                          {question.options[question.correctAnswer as number]}
+                        </div>
+                      )}
+                    {question.type === "true-false" && (
+                      <div className="text-xs text-muted-foreground">
+                        Correct: {question.correctAnswer ? "True" : "False"}
+                      </div>
+                    )}
+                  </div>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="text-red-600 bg-transparent"
+                    onClick={() => removeQuestion(question.id)}
+                  >
+                    <Trash2 className="w-3 h-3" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      <DialogFooter>
+        <Button
+          type="submit"
+          className="bg-midnight-blue-800 hover:bg-midnight-blue-900"
+          disabled={formData.questions.length === 0}
+        >
+          Add Quiz
+        </Button>
+      </DialogFooter>
+    </form>
+  );
+}
+
+function CouponForm({
+  onSubmit,
+}: {
+  onSubmit: (data: Omit<Coupon, "id" | "used">) => void;
+}) {
+  const [formData, setFormData] = useState({
+    code: "",
+    discount: 0,
+    type: "percentage" as Coupon["type"],
+    validUntil: "",
+    usageLimit: 100,
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit(formData);
+    setFormData({
+      code: "",
+      discount: 0,
+      type: "percentage",
+      validUntil: "",
+      usageLimit: 100,
+    });
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="coupon-code">Coupon Code</Label>
+          <Input
+            id="coupon-code"
+            placeholder="e.g., SAVE20"
+            value={formData.code}
+            onChange={(e) =>
+              setFormData((prev) => ({
+                ...prev,
+                code: e.target.value.toUpperCase(),
+              }))
+            }
+            required
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="discount-type">Discount Type</Label>
+          <Select
+            value={formData.type}
+            onValueChange={(value) =>
+              setFormData((prev) => ({
+                ...prev,
+                type: value as Coupon["type"],
+              }))
+            }
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="percentage">Percentage</SelectItem>
+              <SelectItem value="fixed">Fixed Amount</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="discount-value">
+            Discount{" "}
+            {formData.type === "percentage" ? "Percentage" : "Amount (Rp)"}
+          </Label>
+          <Input
+            id="discount-value"
+            type="number"
+            placeholder={formData.type === "percentage" ? "20" : "10000"}
+            value={formData.discount}
+            onChange={(e) =>
+              setFormData((prev) => ({
+                ...prev,
+                discount: Number.parseFloat(e.target.value) || 0,
+              }))
+            }
+            required
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="usage-limit">Usage Limit</Label>
+          <Input
+            id="usage-limit"
+            type="number"
+            placeholder="100"
+            value={formData.usageLimit}
+            onChange={(e) =>
+              setFormData((prev) => ({
+                ...prev,
+                usageLimit: Number.parseInt(e.target.value) || 0,
+              }))
+            }
+            required
+          />
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="valid-until">Valid Until</Label>
+        <Input
+          id="valid-until"
+          type="date"
+          value={formData.validUntil}
+          onChange={(e) =>
+            setFormData((prev) => ({ ...prev, validUntil: e.target.value }))
+          }
+          required
+        />
+      </div>
+
+      <DialogFooter>
+        <Button
+          type="submit"
+          className="bg-midnight-blue-800 hover:bg-midnight-blue-900"
+        >
+          Create Coupon
+        </Button>
+      </DialogFooter>
+    </form>
+  );
+}
