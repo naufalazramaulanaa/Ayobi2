@@ -62,48 +62,51 @@ import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { fetchData } from "@/lib/api";
 import { toast } from "sonner";
+import { uploadChunk } from "@/utils/uploadChunk";
+import { getTokenFromCookie } from "@/lib/auth";
+// import LessonForm from "@/components/instructor/lesson-form";
 
 interface Module {
-	id: string;
-	title: string;
-	description: string;
-	order: number;
-	contents: Content[];
+  id: string;
+  title: string;
+  description: string;
+  order: number;
+  contents: Content[];
 }
 
 interface Content {
-	id: string;
-	title: string;
-	type: "lesson" | "quiz";
-	order: number;
-	data: any;
-	settings?: {
-		passingScore?: number;
-		timeLimit?: number;
-		attemptsAllowed?: boolean | number;
-		autoGrading?: boolean;
-		showAnswers?: boolean;
-	};
+  id: string;
+  title: string;
+  type: "lesson" | "quiz";
+  order: number;
+  data: any;
+  settings?: {
+    passingScore?: number;
+    timeLimit?: number;
+    attemptsAllowed?: boolean | number;
+    autoGrading?: boolean;
+    showAnswers?: boolean;
+  };
 }
 
 interface Course {
-	is_visible: any;
-	id: string;
-	title: string;
-	description: string;
-	categories: string[];
-	tags: string[];
-	level: string;
-	price: number;
-	thumbnail: string;
-	modules: Module[];
-	certificate: {
-		enabled: boolean;
-		template: string;
-		requirements: string[];
-	};
-	freePreview: boolean;
-	coupons: Coupon[];
+  is_visible: any;
+  id: string;
+  title: string;
+  description: string;
+  categories: string[];
+  tags: string[];
+  level: string;
+  price: number;
+  thumbnail: string;
+  modules: Module[];
+  certificate: {
+    enabled: boolean;
+    template: string;
+    requirements: string[];
+  };
+  freePreview: boolean;
+  coupons: Coupon[];
 }
 
 interface Coupon {
@@ -128,24 +131,24 @@ interface QuizQuestion {
 export function CourseCreator() {
 	const [currentStep, setCurrentStep] = useState(0);
 
-	const [course, setCourse] = useState<Course>({
-		id: "",
-		title: "",
-		description: "",
-		categories: [],
-		tags: [],
-		level: "",
-		price: 0,
-		thumbnail: "",
-		modules: [],
-		certificate: {
-			enabled: false,
-			template: "default",
-			requirements: ["Complete all modules", "Pass all quizzes with 80%"],
-		},
-		freePreview: false,
-		coupons: [],
-	});
+  const [course, setCourse] = useState<Course>({
+    id: "",
+    title: "",
+    description: "",
+    categories: [],
+    tags: [],
+    level: "",
+    price: 0,
+    thumbnail: "",
+    modules: [],
+    certificate: {
+      enabled: false,
+      template: "default",
+      requirements: ["Complete all modules", "Pass all quizzes with 80%"],
+    },
+    freePreview: false,
+    coupons: [],
+  });
 
 	const handleThumbnailUpload = async (
 		e: React.ChangeEvent<HTMLInputElement>
@@ -153,11 +156,11 @@ export function CourseCreator() {
 		const file = e.target.files?.[0];
 		if (!file) return;
 
-		setCourse((prev) => ({ ...prev, thumbnail: "" })); // clear preview dulu
-		autoSaveField("thumbnail", file);
-	};
+    setCourse((prev) => ({ ...prev, thumbnail: "" })); // clear preview dulu
+    autoSaveField("thumbnail", file);
+  };
 
-	const [courseId, setCourseId] = useState<string | null>(null);
+  const [courseId, setCourseId] = useState<string | null>(null);
 
 	const [isModuleDialogOpen, setIsModuleDialogOpen] = useState(false);
 	const [isLessonDialogOpen, setIsLessonDialogOpen] = useState(false);
@@ -222,44 +225,19 @@ export function CourseCreator() {
 			});
 			const newId = res.data?.id || res.id;
 
-			if (newId) {
-				setCourseId(newId);
-				setCourse((prev) => ({
-					...prev,
-					...res.data,
-					thumbnail: null,
-					video: res.data?.video || "",
-				}));
-			}
-		} catch (err) {
-			console.error("Auto-initiate gagal:", err);
-		}
-	};
-
-	const getModules = async () => {
-		try {
-			const res = await fetchData("/instructor/courses/modules", {
-				method: "POST",
-				body: {
-					course_id: courseId,
-				},
-			});
-
-			setCourse((prev) => ({
-				...prev,
-				modules: res.data.map((module: any) => ({
-					...module,
-					contents: [],
-				})), 
-			}));
-		} catch (err) {
-			console.error("Auto-initiate gagal:", err);
-		}
-	};
-
-	if (currentStep === 1) {
-		getModules();
-	}
+      if (newId) {
+        setCourseId(newId);
+        setCourse((prev) => ({
+          ...prev,
+          ...res.data,
+          thumbnail: null,
+          video: res.data?.video || "",
+        }));
+      }
+    } catch (err) {
+      console.error("Auto-initiate gagal:", err);
+    }
+  };
 
 	const autoSaveField = async (field: string, value: any) => {
 		const endpoint = courseId
@@ -316,9 +294,9 @@ export function CourseCreator() {
 		}, 3000);
 	};
 
-	useEffect(() => {
-		autoInitiate();
-	}, []);
+  useEffect(() => {
+    autoInitiate();
+  }, []);
 
 	const steps = [
 		"Basic Information",
@@ -327,30 +305,30 @@ export function CourseCreator() {
 		"Final Step",
 	];
 
-	const addModule = (moduleData: Omit<Module, "id" | "order" | "contents">) => {
-		const newModule: Module = {
-			...moduleData,
-			id: Date.now().toString(),
-			order: course.modules.length + 1,
-			contents: [],
-		};
+  const addModule = (moduleData: Omit<Module, "id" | "order" | "contents">) => {
+    const newModule: Module = {
+      ...moduleData,
+      id: Date.now().toString(),
+      order: course.modules.length + 1,
+      contents: [],
+    };
 
-		setCourse((prev) => {
-			const updatedModules = [...prev.modules, newModule];
-			const updatedCourse = { ...prev, modules: updatedModules };
+    setCourse((prev) => {
+      const updatedModules = [...prev.modules, newModule];
+      const updatedCourse = { ...prev, modules: updatedModules };
 
-			autoSaveField("modules", updatedModules)
-				.then(() => setModuleSaveStatus("✅ Modul berhasil disimpan"))
-				.catch(() => setModuleSaveStatus("❌ Gagal menyimpan modul"));
+      autoSaveField("modules", updatedModules)
+        .then(() => setModuleSaveStatus("✅ Modul berhasil disimpan"))
+        .catch(() => setModuleSaveStatus("❌ Gagal menyimpan modul"));
 
-			return updatedCourse;
-		});
+      return updatedCourse;
+    });
 
-		setIsModuleDialogOpen(false);
+    setIsModuleDialogOpen(false);
 
-		// Reset alert setelah 3 detik
-		setTimeout(() => setModuleSaveStatus(""), 3000);
-	};
+    // Reset alert setelah 3 detik
+    setTimeout(() => setModuleSaveStatus(""), 3000);
+  };
 
 	const updateModule = async (moduleId: string, updatedData: any) => {
 		updateModule[moduleIndex] = result.data;
@@ -615,46 +593,46 @@ export function CourseCreator() {
 		});
 	};
 
-	const addContent = (
-		moduleId: string,
-		contentData: Omit<Content, "id" | "order">
-	) => {
-		const newContent: Content = {
-			...contentData,
-			id: Date.now().toString(),
-			order: getModuleContents(moduleId).length + 1,
-		};
+  const addContent = (
+    moduleId: string,
+    contentData: Omit<Content, "id" | "order">
+  ) => {
+    const newContent: Content = {
+      ...contentData,
+      id: Date.now().toString(),
+      order: getModuleContents(moduleId).length + 1,
+    };
 
-		setCourse((prev) => {
-			const updatedModules = prev.modules.map((module) =>
-				module.id === moduleId
-					? {
-							...module,
-							contents: [...(module.contents || []), newContent],
-					  }
-					: module
-			);
+    setCourse((prev) => {
+      const updatedModules = prev.modules.map((module) =>
+        module.id === moduleId
+          ? {
+              ...module,
+              contents: [...(module.contents || []), newContent],
+            }
+          : module
+      );
 
-			const updatedCourse = { ...prev, modules: updatedModules };
+      const updatedCourse = { ...prev, modules: updatedModules };
 
-			autoSaveField("modules", updatedModules)
-				.then(() => setContentSaveStatus("✅ Konten berhasil disimpan"))
-				.catch(() => setContentSaveStatus("❌ Gagal menyimpan konten"));
+      autoSaveField("modules", updatedModules)
+        .then(() => setContentSaveStatus("✅ Konten berhasil disimpan"))
+        .catch(() => setContentSaveStatus("❌ Gagal menyimpan konten"));
 
-			return updatedCourse;
-		});
+      return updatedCourse;
+    });
 
-		setIsLessonDialogOpen(false);
-		setIsQuizDialogOpen(false);
+    setIsLessonDialogOpen(false);
+    setIsQuizDialogOpen(false);
 
-		// Reset alert setelah 3 detik
-		setTimeout(() => setContentSaveStatus(""), 3000);
-	};
-	const [editedLessonIndex, setEditedLessonIndex] = useState<{
-		moduleIndex: number;
-		lessonIndex: number;
-	} | null>(null);
-	const [lessonSaveStatus, setLessonSaveStatus] = useState("");
+    // Reset alert setelah 3 detik
+    setTimeout(() => setContentSaveStatus(""), 3000);
+  };
+  const [editedLessonIndex, setEditedLessonIndex] = useState<{
+    moduleIndex: number;
+    lessonIndex: number;
+  } | null>(null);
+  const [lessonSaveStatus, setLessonSaveStatus] = useState("");
 
 	useEffect(() => {
 		const timeout = setTimeout(() => {
@@ -719,9 +697,9 @@ export function CourseCreator() {
 		setIsCouponDialogOpen(false);
 	};
 
-	const getStepProgress = () => {
-		return ((currentStep + 1) / steps.length) * 100;
-	};
+  const getStepProgress = () => {
+    return ((currentStep + 1) / steps.length) * 100;
+  };
 
 	const getModuleContents = (moduleId: string) => {
 		const module = course.modules.find((m) => m.id === moduleId);
@@ -734,22 +712,22 @@ export function CourseCreator() {
 		const sourceIndex = result.source.index;
 		const destinationIndex = result.destination.index;
 
-		setCourse((prev) => ({
-			...prev,
-			modules: prev.modules.map((module) =>
-				module.id === moduleId
-					? {
-							...module,
-							contents: reorderContents(
-								module.contents || [],
-								sourceIndex,
-								destinationIndex
-							),
-					  }
-					: module
-			),
-		}));
-	};
+    setCourse((prev) => ({
+      ...prev,
+      modules: prev.modules.map((module) =>
+        module.id === moduleId
+          ? {
+              ...module,
+              contents: reorderContents(
+                module.contents || [],
+                sourceIndex,
+                destinationIndex
+              ),
+            }
+          : module
+      ),
+    }));
+  };
 
 	const reorderContents = (
 		contents: Content[],
@@ -760,12 +738,12 @@ export function CourseCreator() {
 		const [removed] = result.splice(sourceIndex, 1);
 		result.splice(destinationIndex, 0, removed);
 
-		// Update order numbers
-		return result.map((content, index) => ({
-			...content,
-			order: index + 1,
-		}));
-	};
+    // Update order numbers
+    return result.map((content, index) => ({
+      ...content,
+      order: index + 1,
+    }));
+  };
 
 	const addCategory = (category: string) => {
 		if (!course.categories.includes(category)) {
@@ -807,10 +785,10 @@ export function CourseCreator() {
 			`Comprehensive ${course.title} course designed for ${course.level} students. Gain practical experience and build portfolio-worthy projects.`,
 		];
 
-		const randomDescription =
-			aiDescriptions[Math.floor(Math.random() * aiDescriptions.length)];
-		setCourse((prev) => ({ ...prev, description: randomDescription }));
-	};
+    const randomDescription =
+      aiDescriptions[Math.floor(Math.random() * aiDescriptions.length)];
+    setCourse((prev) => ({ ...prev, description: randomDescription }));
+  };
 
 	const setDescription = (value: string) => {
 		setCourse((prev) => ({ ...prev, description: value }));
@@ -840,52 +818,52 @@ export function CourseCreator() {
 				</div>
 			</div>
 
-			{/* Progress Bar */}
-			<Card>
-				<CardContent className="p-6">
-					<div className="space-y-4">
-						<div className="flex justify-between items-center">
-							<span className="text-sm font-medium">
-								Course Creation Progress
-							</span>
-							<span className="text-sm text-muted-foreground">
-								{Math.round(getStepProgress())}% Complete
-							</span>
-						</div>
-						<Progress value={getStepProgress()} className="h-2" />
-						<div className="flex justify-between text-xs text-muted-foreground">
-							{steps.map((step, index) => (
-								<span
-									key={index}
-									className={`${
-										index <= currentStep
-											? "text-midnight-blue-800 font-medium"
-											: ""
-									}`}
-								>
-									{index + 1}. {step}
-								</span>
-							))}
-						</div>
-					</div>
-				</CardContent>
-			</Card>
+      {/* Progress Bar */}
+      <Card>
+        <CardContent className="p-6">
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <span className="text-sm font-medium">
+                Course Creation Progress
+              </span>
+              <span className="text-sm text-muted-foreground">
+                {Math.round(getStepProgress())}% Complete
+              </span>
+            </div>
+            <Progress value={getStepProgress()} className="h-2" />
+            <div className="flex justify-between text-xs text-muted-foreground">
+              {steps.map((step, index) => (
+                <span
+                  key={index}
+                  className={`${
+                    index <= currentStep
+                      ? "text-midnight-blue-800 font-medium"
+                      : ""
+                  }`}
+                >
+                  {index + 1}. {step}
+                </span>
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
-			<Tabs
-				value={currentStep.toString()}
-				onValueChange={(value) => setCurrentStep(Number.parseInt(value))}
-			>
-				<TabsList className="grid w-full grid-cols-4">
-					{steps.map((step, index) => (
-						<TabsTrigger
-							key={index}
-							value={index.toString()}
-							className="text-xs"
-						>
-							{index + 1}
-						</TabsTrigger>
-					))}
-				</TabsList>
+      <Tabs
+        value={currentStep.toString()}
+        onValueChange={(value) => setCurrentStep(Number.parseInt(value))}
+      >
+        <TabsList className="grid w-full grid-cols-4">
+          {steps.map((step, index) => (
+            <TabsTrigger
+              key={index}
+              value={index.toString()}
+              className="text-xs"
+            >
+              {index + 1}
+            </TabsTrigger>
+          ))}
+        </TabsList>
 
 				{/* Step 1: Basic Information */}
 				<TabsContent value="0" className="space-y-6">
@@ -944,119 +922,119 @@ export function CourseCreator() {
 								</div>
 							</div>
 
-							{/* Categories */}
-							<div className="space-y-3">
-								<Label>Categories</Label>
-								<div className="flex flex-wrap gap-2 mb-2">
-									{course.categories.map((category) => (
-										<Badge
-											key={category}
-											variant="secondary"
-											className="flex items-center gap-1"
-										>
-											{category}
-											<X
-												className="w-3 h-3 cursor-pointer"
-												onClick={() => removeCategory(category)}
-											/>
-										</Badge>
-									))}
-								</div>
-								<Select onValueChange={addCategory}>
-									<SelectTrigger>
-										<SelectValue placeholder="Add category" />
-									</SelectTrigger>
-									<SelectContent>
-										{availableCategories
-											.filter((cat) => !course.categories.includes(cat))
-											.map((category) => (
-												<SelectItem key={category} value={category}>
-													{category}
-												</SelectItem>
-											))}
-									</SelectContent>
-								</Select>
-								{/* Status Save */}
-								{saveStatus.categories && (
-									<p className="text-xs text-muted-foreground">
-										{saveStatus.categories}
-									</p>
-								)}
-								<div className="flex gap-2">
-									<Input placeholder="Add new category" id="new-category" />
-									<Button
-										variant="outline"
-										onClick={() => {
-											const input = document.getElementById(
-												"new-category"
-											) as HTMLInputElement;
-											if (input.value.trim()) {
-												addCategory(input.value.trim());
-												input.value = "";
-											}
-										}}
-									>
-										<Plus className="w-4 h-4" />
-									</Button>
-								</div>
-							</div>
+              {/* Categories */}
+              <div className="space-y-3">
+                <Label>Categories</Label>
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {course.categories.map((category) => (
+                    <Badge
+                      key={category}
+                      variant="secondary"
+                      className="flex items-center gap-1"
+                    >
+                      {category}
+                      <X
+                        className="w-3 h-3 cursor-pointer"
+                        onClick={() => removeCategory(category)}
+                      />
+                    </Badge>
+                  ))}
+                </div>
+                <Select onValueChange={addCategory}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Add category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableCategories
+                      .filter((cat) => !course.categories.includes(cat))
+                      .map((category) => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+                {/* Status Save */}
+                {saveStatus.categories && (
+                  <p className="text-xs text-muted-foreground">
+                    {saveStatus.categories}
+                  </p>
+                )}
+                <div className="flex gap-2">
+                  <Input placeholder="Add new category" id="new-category" />
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      const input = document.getElementById(
+                        "new-category"
+                      ) as HTMLInputElement;
+                      if (input.value.trim()) {
+                        addCategory(input.value.trim());
+                        input.value = "";
+                      }
+                    }}
+                  >
+                    <Plus className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
 
-							{/* Tags */}
-							<div className="space-y-3">
-								<Label>Tags</Label>
-								<div className="flex flex-wrap gap-2 mb-2">
-									{course.tags.map((tag) => (
-										<Badge
-											key={tag}
-											variant="outline"
-											className="flex items-center gap-1"
-										>
-											{tag}
-											<X
-												className="w-3 h-3 cursor-pointer"
-												onClick={() => removeTag(tag)}
-											/>
-										</Badge>
-									))}
-								</div>
-								<Select onValueChange={addTag}>
-									<SelectTrigger>
-										<SelectValue placeholder="Add tag" />
-									</SelectTrigger>
-									<SelectContent>
-										{availableTags
-											.filter((tag) => !course.tags.includes(tag))
-											.map((tag) => (
-												<SelectItem key={tag} value={tag}>
-													{tag}
-												</SelectItem>
-											))}
-									</SelectContent>
-								</Select>
-								{/* Status Save */}
-								{saveStatus.tags && (
-									<p className="text-xs text-muted-foreground">
-										{saveStatus.tags}
-									</p>
-								)}
-								<div className="flex gap-2">
-									<Input placeholder="Add new tag" id="new-tag" />
-									<Button
-										variant="outline"
-										onClick={() => {
-											const input = document.getElementById(
-												"new-tag"
-											) as HTMLInputElement;
-											if (input.value.trim()) {
-												addTag(input.value.trim());
-												input.value = "";
-											}
-										}}
-									>
-										<Plus className="w-4 h-4" />
-									</Button>
-								</div>
-							</div>
+              {/* Tags */}
+              <div className="space-y-3">
+                <Label>Tags</Label>
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {course.tags.map((tag) => (
+                    <Badge
+                      key={tag}
+                      variant="outline"
+                      className="flex items-center gap-1"
+                    >
+                      {tag}
+                      <X
+                        className="w-3 h-3 cursor-pointer"
+                        onClick={() => removeTag(tag)}
+                      />
+                    </Badge>
+                  ))}
+                </div>
+                <Select onValueChange={addTag}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Add tag" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableTags
+                      .filter((tag) => !course.tags.includes(tag))
+                      .map((tag) => (
+                        <SelectItem key={tag} value={tag}>
+                          {tag}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+                {/* Status Save */}
+                {saveStatus.tags && (
+                  <p className="text-xs text-muted-foreground">
+                    {saveStatus.tags}
+                  </p>
+                )}
+                <div className="flex gap-2">
+                  <Input placeholder="Add new tag" id="new-tag" />
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      const input = document.getElementById(
+                        "new-tag"
+                      ) as HTMLInputElement;
+                      if (input.value.trim()) {
+                        addTag(input.value.trim());
+                        input.value = "";
+                      }
+                    }}
+                  >
+                    <Plus className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
 
 							{/* Description with AI */}
 							<div className="space-y-2">
@@ -1197,97 +1175,97 @@ export function CourseCreator() {
 										</Button>
 									</DialogTrigger>
 
-									<DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-										<DialogHeader>
-											<DialogTitle>Add New Module</DialogTitle>
-											<DialogDescription>
-												Create a new module to organize your course content
-											</DialogDescription>
-										</DialogHeader>
-										<ModuleForm onSubmit={addModule} />
-									</DialogContent>
-								</Dialog>
-								<Dialog
-									open={isEditModuleOpen}
-									onOpenChange={setIsEditModuleOpen}
-								>
-									<DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-										<DialogHeader>
-											<DialogTitle>Edit Module</DialogTitle>
-											<DialogDescription>
-												Edit existing module
-											</DialogDescription>
-										</DialogHeader>
-										{editingModuleIndex !== null && (
-											<ModuleForm
-												module={course.modules[editingModuleIndex]}
-												onSubmit={(updatedData) => {
-													updateModule(
-														course.modules[editingModuleIndex].id,
-														updatedData
-													);
-													const updatedModules = [...course.modules];
-													updatedModules[editingModuleIndex] = {
-														...updatedModules[editingModuleIndex],
-														...updatedData,
-													};
-													setCourse((prev) => ({
-														...prev,
-														modules: updatedModules,
-													}));
-													setIsEditModuleOpen(false);
-												}}
-											/>
-										)}
-									</DialogContent>
-								</Dialog>
-							</CardTitle>
-							{moduleSaveStatus && (
-								<p className="text-sm text-muted-foreground pl-1">
-									{moduleSaveStatus}
-								</p>
-							)}
-							<CardDescription>
-								Organize your course into modules and add lessons or quizzes
-								directly
-							</CardDescription>
-						</CardHeader>
-						<CardContent>
-							{course.modules.length === 0 ? (
-								<div className="text-center py-8">
-									<BookOpen className="mx-auto h-12 w-12 text-gray-400" />
-									<h3 className="mt-4 text-lg font-medium">No modules yet</h3>
-									<p className="mt-2 text-gray-500">
-										Start by adding your first module
-									</p>
-								</div>
-							) : (
-								<Accordion type="single" collapsible className="space-y-4">
-									{course.modules.map((module, moduleIndex) => (
-										<AccordionItem key={module.id} value={module.id}>
-											<div className="flex items-start justify-between w-full">
-												<AccordionTrigger className="hover:no-underline w-full pr-4">
-													<div className="flex items-center gap-3">
-														<Badge variant="outline">{moduleIndex + 1}</Badge>
-														<div className="text-left">
-															<h4 className="font-medium">{module.title}</h4>
-															<p className="text-sm text-muted-foreground">
-																{module.contents.length} contents
-															</p>
-														</div>
-													</div>
-												</AccordionTrigger>
-												<div className="flex items-center gap-2">
-													<Button
-														variant="outline"
-														size="icon"
-														onClick={() => {
-															setEditingModuleIndex(moduleIndex);
-															setIsEditModuleOpen(true);
-														}}
-													>
-														<Edit className="w-4 h-4" />
-													</Button>
+                  <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle>Add New Module</DialogTitle>
+                      <DialogDescription>
+                        Create a new module to organize your course content
+                      </DialogDescription>
+                    </DialogHeader>
+                    <ModuleForm onSubmit={addModule} />
+                  </DialogContent>
+                </Dialog>
+                <Dialog
+                  open={isEditModuleOpen}
+                  onOpenChange={setIsEditModuleOpen}
+                >
+                  <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                    <DialogHeader>
+                      <DialogTitle>Edit Module</DialogTitle>
+                      <DialogDescription>
+                        Edit existing module
+                      </DialogDescription>
+                    </DialogHeader>
+                    {editingModuleIndex !== null && (
+                      <ModuleForm
+                        module={course.modules[editingModuleIndex]}
+                        onSubmit={(updatedData) => {
+                          updateModule(
+                            course.modules[editingModuleIndex].id,
+                            updatedData
+                          );
+                          const updatedModules = [...course.modules];
+                          updatedModules[editingModuleIndex] = {
+                            ...updatedModules[editingModuleIndex],
+                            ...updatedData,
+                          };
+                          setCourse((prev) => ({
+                            ...prev,
+                            modules: updatedModules,
+                          }));
+                          setIsEditModuleOpen(false);
+                        }}
+                      />
+                    )}
+                  </DialogContent>
+                </Dialog>
+              </CardTitle>
+              {moduleSaveStatus && (
+                <p className="text-sm text-muted-foreground pl-1">
+                  {moduleSaveStatus}
+                </p>
+              )}
+              <CardDescription>
+                Organize your course into modules and add lessons or quizzes
+                directly
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {course.modules.length === 0 ? (
+                <div className="text-center py-8">
+                  <BookOpen className="mx-auto h-12 w-12 text-gray-400" />
+                  <h3 className="mt-4 text-lg font-medium">No modules yet</h3>
+                  <p className="mt-2 text-gray-500">
+                    Start by adding your first module
+                  </p>
+                </div>
+              ) : (
+                <Accordion type="single" collapsible className="space-y-4">
+                  {course.modules.map((module, moduleIndex) => (
+                    <AccordionItem key={module.id} value={module.id}>
+                      <div className="flex items-start justify-between w-full">
+                        <AccordionTrigger className="hover:no-underline w-full pr-4">
+                          <div className="flex items-center gap-3">
+                            <Badge variant="outline">{moduleIndex + 1}</Badge>
+                            <div className="text-left">
+                              <h4 className="font-medium">{module.title}</h4>
+                              <p className="text-sm text-muted-foreground">
+                                {module.contents.length} contents
+                              </p>
+                            </div>
+                          </div>
+                        </AccordionTrigger>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={() => {
+                              setEditingModuleIndex(moduleIndex);
+                              setIsEditModuleOpen(true);
+                            }}
+                          >
+                            <Edit className="w-4 h-4" />
+                          </Button>
 
 													<Button
 														size="sm"
@@ -1308,51 +1286,51 @@ export function CourseCreator() {
 												</div>
 											</div>
 
-											<AccordionContent>
-												<div className="space-y-4 pt-4">
-													<div className="flex justify-between items-start">
-														<div
-															className="text-sm text-muted-foreground prose prose-sm max-w-none"
-															dangerouslySetInnerHTML={{
-																__html: module.description,
-															}}
-														/>
-														<div className="flex gap-2 ml-4">
-															<Dialog
-																open={
-																	isLessonDialogOpen &&
-																	selectedModuleIdForContent === module.id
-																}
-																onOpenChange={(open) => {
-																	setIsLessonDialogOpen(open);
-																	if (open) {
-																		setSelectedModuleIdForContent(module.id);
-																	}
-																}}
-															>
-																<DialogTrigger asChild>
-																	<Button size="sm" variant="outline">
-																		<BookOpen className="w-3 h-3 mr-1" />
-																		Add Lesson
-																	</Button>
-																</DialogTrigger>
-																<DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-																	<DialogHeader>
-																		<DialogTitle>
-																			Add Lesson to {module.title}
-																		</DialogTitle>
-																		<DialogDescription>
-																			Create lesson content with materials
-																		</DialogDescription>
-																	</DialogHeader>
-																	<LessonForm
-																		onSubmit={(data) =>
-																			addContent(module.id, data)
-																		}
-																	/>
-																</DialogContent>
-															</Dialog>
-															{/* {contentSaveStatus && (
+                      <AccordionContent>
+                        <div className="space-y-4 pt-4">
+                          <div className="flex justify-between items-start">
+                            <div
+                              className="text-sm text-muted-foreground prose prose-sm max-w-none"
+                              dangerouslySetInnerHTML={{
+                                __html: module.description,
+                              }}
+                            />
+                            <div className="flex gap-2 ml-4">
+                              <Dialog
+                                open={
+                                  isLessonDialogOpen &&
+                                  selectedModuleIdForContent === module.id
+                                }
+                                onOpenChange={(open) => {
+                                  setIsLessonDialogOpen(open);
+                                  if (open) {
+                                    setSelectedModuleIdForContent(module.id);
+                                  }
+                                }}
+                              >
+                                <DialogTrigger asChild>
+                                  <Button size="sm" variant="outline">
+                                    <BookOpen className="w-3 h-3 mr-1" />
+                                    Add Lesson
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                                  <DialogHeader>
+                                    <DialogTitle>
+                                      Add Lesson to {module.title}
+                                    </DialogTitle>
+                                    <DialogDescription>
+                                      Create lesson content with materials
+                                    </DialogDescription>
+                                  </DialogHeader>
+                                  <LessonForm
+                                    onSubmit={(data) =>
+                                      addContent(module.id, data)
+                                    }
+                                  />
+                                </DialogContent>
+                              </Dialog>
+                              {/* {contentSaveStatus && (
   <p className="text-sm text-muted-foreground pl-1">{contentSaveStatus}</p>
 )} */}
 															<Dialog
@@ -1544,79 +1522,79 @@ export function CourseCreator() {
 														</div>
 													</div>
 
-													{module.contents && module.contents.length === 0 ? (
-														<div className="text-center py-4 border-2 border-dashed border-gray-200 rounded-lg">
-															<p className="text-sm text-gray-500">
-																No contents in this module yet
-															</p>
-															<p className="text-xs text-gray-400 mt-1">
-																Click "Add Lesson" or "Add Quiz" to get started
-															</p>
-														</div>
-													) : (
-														<div className="space-y-2">
-															{/* Content List */}
-															{module.contents &&
-																module.contents.length > 0 && (
-																	<div className="space-y-2">
-																		<DragDropContext
-																			onDragEnd={(result) =>
-																				handleContentDragEnd(result, module.id)
-																			}
-																		>
-																			<Droppable
-																				droppableId={`module-${module.id}`}
-																			>
-																				{(provided) => (
-																					<div
-																						{...provided.droppableProps}
-																						ref={provided.innerRef}
-																						className="space-y-2"
-																					>
-																						{module.contents
-																							.sort((a, b) => a.order - b.order)
-																							.map((content, contentIndex) => (
-																								<Draggable
-																									key={content.id}
-																									draggableId={content.id}
-																									index={contentIndex}
-																								>
-																									{(provided, snapshot) => (
-																										<div
-																											ref={provided.innerRef}
-																											{...provided.draggableProps}
-																											{...provided.dragHandleProps}
-																											className={`flex items-center justify-between p-3 border rounded-lg bg-white ${
-																												snapshot.isDragging
-																													? "shadow-lg"
-																													: ""
-																											}`}
-																										>
-																											<div className="flex items-center gap-3">
-																												<Badge
-																													variant="outline"
-																													className="text-xs"
-																												>
-																													{contentIndex + 1}
-																												</Badge>
-																												{content.type ===
-																													"lesson" && (
-																													<Button
-																														variant="outline"
-																														size="icon"
-																														onClick={() => {
-																															setEditingLesson({
-																																moduleIndex,
-																																contentIndex,
-																															}); // ← Index konten Lesson
-																															setIsEditLessonOpen(
-																																true
-																															); // ← Buka dialog
-																														}}
-																													>
-																														<Edit className="w-4 h-4" />
-																													</Button>
-																												)}
+                          {module.contents && module.contents.length === 0 ? (
+                            <div className="text-center py-4 border-2 border-dashed border-gray-200 rounded-lg">
+                              <p className="text-sm text-gray-500">
+                                No contents in this module yet
+                              </p>
+                              <p className="text-xs text-gray-400 mt-1">
+                                Click "Add Lesson" or "Add Quiz" to get started
+                              </p>
+                            </div>
+                          ) : (
+                            <div className="space-y-2">
+                              {/* Content List */}
+                              {module.contents &&
+                                module.contents.length > 0 && (
+                                  <div className="space-y-2">
+                                    <DragDropContext
+                                      onDragEnd={(result) =>
+                                        handleContentDragEnd(result, module.id)
+                                      }
+                                    >
+                                      <Droppable
+                                        droppableId={`module-${module.id}`}
+                                      >
+                                        {(provided) => (
+                                          <div
+                                            {...provided.droppableProps}
+                                            ref={provided.innerRef}
+                                            className="space-y-2"
+                                          >
+                                            {module.contents
+                                              .sort((a, b) => a.order - b.order)
+                                              .map((content, contentIndex) => (
+                                                <Draggable
+                                                  key={content.id}
+                                                  draggableId={content.id}
+                                                  index={contentIndex}
+                                                >
+                                                  {(provided, snapshot) => (
+                                                    <div
+                                                      ref={provided.innerRef}
+                                                      {...provided.draggableProps}
+                                                      {...provided.dragHandleProps}
+                                                      className={`flex items-center justify-between p-3 border rounded-lg bg-white ${
+                                                        snapshot.isDragging
+                                                          ? "shadow-lg"
+                                                          : ""
+                                                      }`}
+                                                    >
+                                                      <div className="flex items-center gap-3">
+                                                        <Badge
+                                                          variant="outline"
+                                                          className="text-xs"
+                                                        >
+                                                          {contentIndex + 1}
+                                                        </Badge>
+                                                        {content.type ===
+                                                          "lesson" && (
+                                                          <Button
+                                                            variant="outline"
+                                                            size="icon"
+                                                            onClick={() => {
+                                                              setEditingLesson({
+                                                                moduleIndex,
+                                                                contentIndex,
+                                                              }); // ← Index konten Lesson
+                                                              setIsEditLessonOpen(
+                                                                true
+                                                              ); // ← Buka dialog
+                                                            }}
+                                                          >
+                                                            <Edit className="w-4 h-4" />
+                                                          </Button>
+                                                        )}
 
 																												{content.type ===
 																													"quiz" && (
@@ -1675,46 +1653,46 @@ export function CourseCreator() {
 																															content.type ===
 																															"quiz";
 
-																														if (isLesson) {
-																															deleteLesson(
-																																content.id,
-																																moduleIndex,
-																																contentIndex
-																															);
-																														} else if (isQuiz) {
-																															deleteQuiz(
-																																content.id,
-																																moduleIndex,
-																																contentIndex
-																															);
-																														}
-																													}}
-																												>
-																													<Trash2 className="w-3 h-3" />
-																												</Button>
-																											</div>
-																										</div>
-																									)}
-																								</Draggable>
-																							))}
-																						{provided.placeholder}
-																					</div>
-																				)}
-																			</Droppable>
-																		</DragDropContext>
-																	</div>
-																)}
-														</div>
-													)}
-												</div>
-											</AccordionContent>
-										</AccordionItem>
-									))}
-								</Accordion>
-							)}
-						</CardContent>
-					</Card>
-				</TabsContent>
+                                                            if (isLesson) {
+                                                              deleteLesson(
+                                                                content.id,
+                                                                moduleIndex,
+                                                                contentIndex
+                                                              );
+                                                            } else if (isQuiz) {
+                                                              deleteQuiz(
+                                                                content.id,
+                                                                moduleIndex,
+                                                                contentIndex
+                                                              );
+                                                            }
+                                                          }}
+                                                        >
+                                                          <Trash2 className="w-3 h-3" />
+                                                        </Button>
+                                                      </div>
+                                                    </div>
+                                                  )}
+                                                </Draggable>
+                                              ))}
+                                            {provided.placeholder}
+                                          </div>
+                                        )}
+                                      </Droppable>
+                                    </DragDropContext>
+                                  </div>
+                                )}
+                            </div>
+                          )}
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
 
 				{/* Step 3: Pricing & Coupons */}
 				<TabsContent value="2" className="space-y-6">
@@ -1785,203 +1763,203 @@ export function CourseCreator() {
 							</CardContent>
 						</Card>
 
-						<Card>
-							<CardHeader>
-								<CardTitle className="flex items-center justify-between">
-									Discount Coupons
-									<Dialog
-										open={isCouponDialogOpen}
-										onOpenChange={setIsCouponDialogOpen}
-									>
-										<DialogTrigger asChild>
-											<Button
-												size="sm"
-												className="bg-midnight-blue-800 hover:bg-midnight-blue-900"
-											>
-												<Plus className="w-4 h-4 mr-2" />
-												Create Coupon
-											</Button>
-										</DialogTrigger>
-										<DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-											<DialogHeader>
-												<DialogTitle>Create Discount Coupon</DialogTitle>
-												<DialogDescription>
-													Create promotional codes for your course
-												</DialogDescription>
-											</DialogHeader>
-											<CouponForm onSubmit={addCoupon} />
-										</DialogContent>
-									</Dialog>
-								</CardTitle>
-								<CardDescription>
-									Create promotional codes to boost sales
-								</CardDescription>
-							</CardHeader>
-							<CardContent>
-								{course.coupons.length === 0 ? (
-									<div className="text-center py-4">
-										<p className="text-sm text-gray-500">
-											No coupons created yet
-										</p>
-									</div>
-								) : (
-									<div className="space-y-3">
-										{course.coupons.map((coupon) => (
-											<div
-												key={coupon.id}
-												className="flex items-center justify-between p-3 border rounded-lg"
-											>
-												<div>
-													<div className="flex items-center gap-2">
-														<Badge variant="outline">{coupon.code}</Badge>
-														<span className="text-sm font-medium">
-															{coupon.type === "percentage"
-																? `${coupon.discount}% off`
-																: `Rp${coupon.discount} off`}
-														</span>
-													</div>
-													<p className="text-xs text-muted-foreground">
-														Valid until {coupon.validUntil} • {coupon.used}/
-														{coupon.usageLimit} used
-													</p>
-												</div>
-												<div className="flex gap-1">
-													<Button size="sm" variant="outline">
-														<Edit className="w-3 h-3" />
-													</Button>
-													<Button
-														size="sm"
-														variant="outline"
-														className="text-red-600 bg-transparent"
-													>
-														<Trash2 className="w-3 h-3" />
-													</Button>
-												</div>
-											</div>
-										))}
-									</div>
-								)}
-							</CardContent>
-						</Card>
-					</div>
-				</TabsContent>
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  Discount Coupons
+                  <Dialog
+                    open={isCouponDialogOpen}
+                    onOpenChange={setIsCouponDialogOpen}
+                  >
+                    <DialogTrigger asChild>
+                      <Button
+                        size="sm"
+                        className="bg-midnight-blue-800 hover:bg-midnight-blue-900"
+                      >
+                        <Plus className="w-4 h-4 mr-2" />
+                        Create Coupon
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                      <DialogHeader>
+                        <DialogTitle>Create Discount Coupon</DialogTitle>
+                        <DialogDescription>
+                          Create promotional codes for your course
+                        </DialogDescription>
+                      </DialogHeader>
+                      <CouponForm onSubmit={addCoupon} />
+                    </DialogContent>
+                  </Dialog>
+                </CardTitle>
+                <CardDescription>
+                  Create promotional codes to boost sales
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {course.coupons.length === 0 ? (
+                  <div className="text-center py-4">
+                    <p className="text-sm text-gray-500">
+                      No coupons created yet
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {course.coupons.map((coupon) => (
+                      <div
+                        key={coupon.id}
+                        className="flex items-center justify-between p-3 border rounded-lg"
+                      >
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline">{coupon.code}</Badge>
+                            <span className="text-sm font-medium">
+                              {coupon.type === "percentage"
+                                ? `${coupon.discount}% off`
+                                : `Rp${coupon.discount} off`}
+                            </span>
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            Valid until {coupon.validUntil} • {coupon.used}/
+                            {coupon.usageLimit} used
+                          </p>
+                        </div>
+                        <div className="flex gap-1">
+                          <Button size="sm" variant="outline">
+                            <Edit className="w-3 h-3" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="text-red-600 bg-transparent"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
 
-				{/* Step 4: Final Step */}
-				<TabsContent value="3" className="space-y-6">
-					<Card>
-						<CardHeader>
-							<CardTitle>Final Step</CardTitle>
-							<CardDescription>
-								Review your course and submit for approval
-							</CardDescription>
-						</CardHeader>
-						<CardContent className="space-y-6">
-							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-								<div className="space-y-4">
-									<h3 className="font-semibold">Course Summary</h3>
-									<div className="space-y-2 text-sm">
-										<div className="flex justify-between">
-											<span className="text-muted-foreground">Title:</span>
-											<span>{course.title || "Not set"}</span>
-										</div>
-										<div className="flex justify-between">
-											<span className="text-muted-foreground">Categories:</span>
-											<span>
-												{course.categories.length > 0
-													? course.categories.join(", ")
-													: "Not set"}
-											</span>
-										</div>
-										<div className="flex justify-between">
-											<span className="text-muted-foreground">Tags:</span>
-											<span>
-												{course.tags.length > 0
-													? course.tags.join(", ")
-													: "Not set"}
-											</span>
-										</div>
-										<div className="flex justify-between">
-											<span className="text-muted-foreground">Level:</span>
-											<span>{course.level || "Not set"}</span>
-										</div>
-										<div className="flex justify-between">
-											<span className="text-muted-foreground">Price:</span>
-											<span>Rp{course.price}</span>
-										</div>
-										<div className="flex justify-between">
-											<span className="text-muted-foreground">Modules:</span>
-											<span>{course.modules.length}</span>
-										</div>
-										<div className="flex justify-between">
-											<span className="text-muted-foreground">
-												Total Contents:
-											</span>
-											<span>
-												{course.modules.reduce(
-													(acc, module) => acc + module.contents.length,
-													0
-												)}
-											</span>
-										</div>
-										<div className="flex justify-between">
-											<span className="text-muted-foreground">
-												Free Preview:
-											</span>
-											<span>{course.freePreview ? "Enabled" : "Disabled"}</span>
-										</div>
-										<div className="flex justify-between">
-											<span className="text-muted-foreground">
-												Certificate:
-											</span>
-											<span>
-												{course.certificate.enabled ? "Enabled" : "Disabled"}
-											</span>
-										</div>
-										<div className="flex justify-between">
-											<span className="text-muted-foreground">Coupons:</span>
-											<span>{course.coupons.length}</span>
-										</div>
-									</div>
-								</div>
+        {/* Step 4: Final Step */}
+        <TabsContent value="3" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Final Step</CardTitle>
+              <CardDescription>
+                Review your course and submit for approval
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <h3 className="font-semibold">Course Summary</h3>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Title:</span>
+                      <span>{course.title || "Not set"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Categories:</span>
+                      <span>
+                        {course.categories.length > 0
+                          ? course.categories.join(", ")
+                          : "Not set"}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Tags:</span>
+                      <span>
+                        {course.tags.length > 0
+                          ? course.tags.join(", ")
+                          : "Not set"}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Level:</span>
+                      <span>{course.level || "Not set"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Price:</span>
+                      <span>Rp{course.price}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Modules:</span>
+                      <span>{course.modules.length}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">
+                        Total Contents:
+                      </span>
+                      <span>
+                        {course.modules.reduce(
+                          (acc, module) => acc + module.contents.length,
+                          0
+                        )}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">
+                        Free Preview:
+                      </span>
+                      <span>{course.freePreview ? "Enabled" : "Disabled"}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">
+                        Certificate:
+                      </span>
+                      <span>
+                        {course.certificate.enabled ? "Enabled" : "Disabled"}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Coupons:</span>
+                      <span>{course.coupons.length}</span>
+                    </div>
+                  </div>
+                </div>
 
-								<div className="space-y-4">
-									<h3 className="font-semibold">Course Status</h3>
-									<div className="space-y-3">
-										<div className="flex items-center gap-2">
-											{course.title ? (
-												<CheckCircle className="w-4 h-4 text-green-600" />
-											) : (
-												<AlertCircle className="w-4 h-4 text-red-600" />
-											)}
-											<span className="text-sm">Course title</span>
-										</div>
-										<div className="flex items-center gap-2">
-											{course.description ? (
-												<CheckCircle className="w-4 h-4 text-green-600" />
-											) : (
-												<AlertCircle className="w-4 h-4 text-red-600" />
-											)}
-											<span className="text-sm">Course description</span>
-										</div>
-										<div className="flex items-center gap-2">
-											{course.categories.length > 0 ? (
-												<CheckCircle className="w-4 h-4 text-green-600" />
-											) : (
-												<AlertCircle className="w-4 h-4 text-red-600" />
-											)}
-											<span className="text-sm">At least one category</span>
-										</div>
-										<div className="flex items-center gap-2">
-											{course.modules.length > 0 ? (
-												<CheckCircle className="w-4 h-4 text-green-600" />
-											) : (
-												<AlertCircle className="w-4 h-4 text-red-600" />
-											)}
-											<span className="text-sm">At least one module</span>
-										</div>
-									</div>
-								</div>
-							</div>
+                <div className="space-y-4">
+                  <h3 className="font-semibold">Course Status</h3>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      {course.title ? (
+                        <CheckCircle className="w-4 h-4 text-green-600" />
+                      ) : (
+                        <AlertCircle className="w-4 h-4 text-red-600" />
+                      )}
+                      <span className="text-sm">Course title</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {course.description ? (
+                        <CheckCircle className="w-4 h-4 text-green-600" />
+                      ) : (
+                        <AlertCircle className="w-4 h-4 text-red-600" />
+                      )}
+                      <span className="text-sm">Course description</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {course.categories.length > 0 ? (
+                        <CheckCircle className="w-4 h-4 text-green-600" />
+                      ) : (
+                        <AlertCircle className="w-4 h-4 text-red-600" />
+                      )}
+                      <span className="text-sm">At least one category</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {course.modules.length > 0 ? (
+                        <CheckCircle className="w-4 h-4 text-green-600" />
+                      ) : (
+                        <AlertCircle className="w-4 h-4 text-red-600" />
+                      )}
+                      <span className="text-sm">At least one module</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
 							<div className="flex gap-4">
 								<Button variant="outline" className="flex-1 bg-transparent">
@@ -1998,27 +1976,27 @@ export function CourseCreator() {
 				</TabsContent>
 			</Tabs>
 
-			{/* Navigation */}
-			<div className="flex justify-between">
-				<Button
-					variant="outline"
-					onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
-					disabled={currentStep === 0}
-				>
-					Previous
-				</Button>
-				<Button
-					onClick={() =>
-						setCurrentStep(Math.min(steps.length - 1, currentStep + 1))
-					}
-					disabled={currentStep === steps.length - 1}
-					className="bg-midnight-blue-800 hover:bg-midnight-blue-900"
-				>
-					Next
-				</Button>
-			</div>
-		</div>
-	);
+      {/* Navigation */}
+      <div className="flex justify-between">
+        <Button
+          variant="outline"
+          onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
+          disabled={currentStep === 0}
+        >
+          Previous
+        </Button>
+        <Button
+          onClick={() =>
+            setCurrentStep(Math.min(steps.length - 1, currentStep + 1))
+          }
+          disabled={currentStep === steps.length - 1}
+          className="bg-midnight-blue-800 hover:bg-midnight-blue-900"
+        >
+          Next
+        </Button>
+      </div>
+    </div>
+  );
 }
 
 // Form Components
@@ -2045,10 +2023,10 @@ function ModuleForm({
 			`Master ${formData.title} through interactive lessons, practical exercises, and industry best practices.`,
 		];
 
-		const randomDescription =
-			aiDescriptions[Math.floor(Math.random() * aiDescriptions.length)];
-		setFormData((prev) => ({ ...prev, description: randomDescription }));
-	};
+    const randomDescription =
+      aiDescriptions[Math.floor(Math.random() * aiDescriptions.length)];
+    setFormData((prev) => ({ ...prev, description: randomDescription }));
+  };
 
 	const setDescription = (value: string) => {
 		setFormData((prev) => ({ ...prev, description: value }));
@@ -2101,9 +2079,9 @@ function ModuleForm({
 }
 
 function LessonForm({
-	onSubmit,
+  onSubmit,
 }: {
-	onSubmit: (data: Omit<Content, "id" | "order">) => void;
+  onSubmit: (data: Omit<Content, "id" | "order">) => void;
 }) {
 	const [formData, setFormData] = useState({
 		title: "",
@@ -2113,24 +2091,24 @@ function LessonForm({
 		files: [] as File[],
 	});
 
-	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault();
-		onSubmit({
-			title: formData.title,
-			type: "lesson",
-			data: {
-				content: formData.content,
-				images: formData.images,
-				videos: formData.videos,
-				files: formData.files,
-			},
-		});
-		setFormData({ title: "", content: "", images: [], videos: [], files: [] });
-	};
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit({
+      title: formData.title,
+      type: "lesson",
+      data: {
+        content: formData.content,
+        images: formData.images,
+        videos: formData.videos,
+        files: formData.files,
+      },
+    });
+    setFormData({ title: "", content: "", images: [], videos: [], files: [] });
+  };
 
-	const generateLessonContent = () => {
-		const aiContents = [
-			`<h1>${formData.title}</h1>
+  const generateLessonContent = () => {
+    const aiContents = [
+      `<h1>${formData.title}</h1>
 
 <h2>Introduction</h2>
 <p>Welcome to this comprehensive lesson on ${formData.title}. In this lesson, you'll learn the fundamental concepts and practical applications.</p>
@@ -2152,7 +2130,7 @@ function LessonForm({
 <h2>Summary</h2>
 <p>In this lesson, we covered the important aspects of ${formData.title}. Practice these concepts to strengthen your understanding.</p>`,
 
-			`<h1>Understanding ${formData.title}</h1>
+      `<h1>Understanding ${formData.title}</h1>
 
 <h2>Overview</h2>
 <p>This lesson provides a comprehensive introduction to ${formData.title}, covering both theoretical foundations and practical implementations.</p>
@@ -2174,7 +2152,7 @@ function LessonForm({
 <h2>Conclusion</h2>
 <p>You've successfully completed this lesson on ${formData.title}. Continue practicing to master these skills.</p>`,
 
-			`<h1>${formData.title} - Complete Guide</h1>
+      `<h1>${formData.title} - Complete Guide</h1>
 
 <h2>Introduction</h2>
 <p>This comprehensive lesson will take you through everything you need to know about ${formData.title}.</p>
@@ -2201,107 +2179,107 @@ function LessonForm({
 
 <h2>Next Steps</h2>
 <p>Continue to the next lesson to build upon these concepts.</p>`,
-		];
+    ];
 
-		const randomContent =
-			aiContents[Math.floor(Math.random() * aiContents.length)];
-		setFormData((prev) => ({ ...prev, content: randomContent }));
-	};
+    const randomContent =
+      aiContents[Math.floor(Math.random() * aiContents.length)];
+    setFormData((prev) => ({ ...prev, content: randomContent }));
+  };
 
-	const setContent = (value: string) => {
-		setFormData((prev) => ({ ...prev, content: value }));
-	};
+  const setContent = (value: string) => {
+    setFormData((prev) => ({ ...prev, content: value }));
+  };
 
-	return (
-		<form onSubmit={handleSubmit} className="space-y-6">
-			<div className="space-y-2">
-				<Label htmlFor="lesson-title">Lesson Title</Label>
-				<Input
-					id="lesson-title"
-					placeholder="e.g., Introduction to Components"
-					value={formData.title}
-					onChange={(e) =>
-						setFormData((prev) => ({ ...prev, title: e.target.value }))
-					}
-					required
-				/>
-			</div>
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="space-y-2">
+        <Label htmlFor="lesson-title">Lesson Title</Label>
+        <Input
+          id="lesson-title"
+          placeholder="e.g., Introduction to Components"
+          value={formData.title}
+          onChange={(e) =>
+            setFormData((prev) => ({ ...prev, title: e.target.value }))
+          }
+          required
+        />
+      </div>
 
-			<div className="space-y-2">
-				<div className="flex items-center justify-between">
-					<Label htmlFor="lesson-content">Lesson Content</Label>
-					<Button
-						type="button"
-						variant="outline"
-						size="sm"
-						onClick={generateLessonContent}
-						className="flex items-center gap-2 bg-transparent"
-					>
-						<Sparkles className="w-4 h-4 text-purple-600" />
-						Generate with AI
-					</Button>
-				</div>
-				<RichTextEditor
-					value={formData.content}
-					onChange={setContent}
-					placeholder="Write your lesson content here..."
-					className="min-h-[300px]"
-				/>
-			</div>
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <Label htmlFor="lesson-content">Lesson Content</Label>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={generateLessonContent}
+            className="flex items-center gap-2 bg-transparent"
+          >
+            <Sparkles className="w-4 h-4 text-purple-600" />
+            Generate with AI
+          </Button>
+        </div>
+        <RichTextEditor
+          value={formData.content}
+          onChange={setContent}
+          placeholder="Write your lesson content here..."
+          className="min-h-[300px]"
+        />
+      </div>
 
-			<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-				<div className="space-y-2">
-					<Label>Upload Images</Label>
-					<div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
-						<Upload className="mx-auto h-8 w-8 text-gray-400" />
-						<div className="mt-2">
-							<Button variant="outline" size="sm">
-								Upload Images
-							</Button>
-							<p className="mt-1 text-xs text-gray-500">PNG, JPG up to 5MB</p>
-						</div>
-					</div>
-				</div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="space-y-2">
+          <Label>Upload Images</Label>
+          <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+            <Upload className="mx-auto h-8 w-8 text-gray-400" />
+            <div className="mt-2">
+              <Button variant="outline" size="sm">
+                Upload Images
+              </Button>
+              <p className="mt-1 text-xs text-gray-500">PNG, JPG up to 5MB</p>
+            </div>
+          </div>
+        </div>
 
-				<div className="space-y-2">
-					<Label>Upload Videos</Label>
-					<div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
-						<Video className="mx-auto h-8 w-8 text-gray-400" />
-						<div className="mt-2">
-							<Button variant="outline" size="sm">
-								Upload Videos
-							</Button>
-							<p className="mt-1 text-xs text-gray-500">MP4, MOV up to 100MB</p>
-						</div>
-					</div>
-				</div>
+        <div className="space-y-2">
+          <Label>Upload Videos</Label>
+          <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+            <Video className="mx-auto h-8 w-8 text-gray-400" />
+            <div className="mt-2">
+              <Button variant="outline" size="sm">
+                Upload Videos
+              </Button>
+              <p className="mt-1 text-xs text-gray-500">MP4, MOV up to 100MB</p>
+            </div>
+          </div>
+        </div>
 
-				<div className="space-y-2">
-					<Label>Downloadable Files</Label>
-					<div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
-						<Download className="mx-auto h-8 w-8 text-gray-400" />
-						<div className="mt-2">
-							<Button variant="outline" size="sm">
-								Upload Files
-							</Button>
-							<p className="mt-1 text-xs text-gray-500">
-								Any format up to 50MB
-							</p>
-						</div>
-					</div>
-				</div>
-			</div>
+        <div className="space-y-2">
+          <Label>Downloadable Files</Label>
+          <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+            <Download className="mx-auto h-8 w-8 text-gray-400" />
+            <div className="mt-2">
+              <Button variant="outline" size="sm">
+                Upload Files
+              </Button>
+              <p className="mt-1 text-xs text-gray-500">
+                Any format up to 50MB
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
 
-			<DialogFooter>
-				<Button
-					type="submit"
-					className="bg-midnight-blue-800 hover:bg-midnight-blue-900"
-				>
-					Add Lesson
-				</Button>
-			</DialogFooter>
-		</form>
-	);
+      <DialogFooter>
+        <Button
+          type="submit"
+          className="bg-midnight-blue-800 hover:bg-midnight-blue-900"
+        >
+          Add Lesson
+        </Button>
+      </DialogFooter>
+    </form>
+  );
 }
 
 function QuizForm({
@@ -2822,3 +2800,19 @@ function CouponForm({
 		</form>
 	);
 }
+function addQuiz(
+  moduleId: string,
+  arg1: {
+    title: string;
+    order: number;
+    passing_grade: number;
+    time_limit: number;
+    max_attempts: number;
+  }
+) {
+  throw new Error("Function not implemented.");
+}
+function mergeChunks(fileId: string, totalChunks: number, ext: string, courseId: string, moduleId: string): string | PromiseLike<string> {
+  throw new Error("Function not implemented.");
+}
+

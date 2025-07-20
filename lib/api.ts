@@ -41,7 +41,6 @@ export const fetchData = async (
   return res.json();
 };
 
-
 // const baseUrl = process.env.NEXT_PUBLIC_BASE_URL!;
 // const apiKey = process.env.NEXT_PUBLIC_API_KEY!;
 
