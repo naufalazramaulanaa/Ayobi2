@@ -4,11 +4,11 @@ import type React from "react";
 
 import { useEffect, useState } from "react";
 import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,46 +17,46 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Progress } from "@/components/ui/progress";
 import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogFooter,
-	DialogHeader,
-	DialogTitle,
-	DialogTrigger,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-	Accordion,
-	AccordionContent,
-	AccordionItem,
-	AccordionTrigger,
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
-	Plus,
-	Upload,
-	Video,
-	BookOpen,
-	Edit,
-	Trash2,
-	Download,
-	Eye,
-	Save,
-	X,
-	Sparkles,
-	HelpCircle,
-	CheckCircle,
-	AlertCircle,
+  Plus,
+  Upload,
+  Video,
+  BookOpen,
+  Edit,
+  Trash2,
+  Download,
+  Eye,
+  Save,
+  X,
+  Sparkles,
+  HelpCircle,
+  CheckCircle,
+  AlertCircle,
 } from "lucide-react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
@@ -66,20 +66,20 @@ import { uploadChunk } from "@/utils/uploadChunk";
 import { getTokenFromCookie } from "@/lib/auth";
 // import LessonForm from "@/components/instructor/lesson-form";
 
-interface Module {
+type Content = {
   id: string;
   title: string;
-  description: string;
   order: number;
-  contents: Content[];
-}
-
-interface Content {
-  id: string;
-  title: string;
   type: "lesson" | "quiz";
-  order: number;
-  data: any;
+  // Untuk lesson
+  description?: string;
+  content?: string;
+  // Untuk quiz
+  passing_grade?: number;
+  time_limit?: number;
+  max_attempts?: number;
+  // Tambahan opsional
+  data?: any;
   settings?: {
     passingScore?: number;
     timeLimit?: number;
@@ -87,10 +87,32 @@ interface Content {
     autoGrading?: boolean;
     showAnswers?: boolean;
   };
+};
+
+interface Module {
+  id: string;
+  title: string;
+  description?: string;
+  order?: number;
+  contents: Content[];
 }
 
+// interface Content {
+//   id: string;
+//   title: string;
+//   type: "lesson" | "quiz";
+//   order: number;
+//   data: any;
+//   settings?: {
+//     passingScore?: number;
+//     timeLimit?: number;
+//     attemptsAllowed?: boolean | number;
+//     autoGrading?: boolean;
+//     showAnswers?: boolean;
+//   };
+// }
+
 interface Course {
-  is_visible: any;
   id: string;
   title: string;
   description: string;
@@ -110,120 +132,128 @@ interface Course {
 }
 
 interface Coupon {
-	id: string;
-	code: string;
-	discount: number;
-	type: "percentage" | "fixed";
-	validUntil: string;
-	usageLimit: number;
-	used: number;
+  id: string;
+  code: string;
+  discount: number;
+  type: "percentage" | "fixed";
+  validUntil: string;
+  usageLimit: number;
+  used: number;
 }
 
 interface QuizQuestion {
-	id: string;
-	type: "multiple-choice" | "true-false";
-	question: string;
-	options?: string[];
-	correctAnswer: string | number;
-	explanation?: string;
+  id: string;
+  type: "multiple-choice" | "true-false";
+  question: string;
+  options?: string[];
+  correctAnswer: string | number;
+  explanation?: string;
 }
 
 export function CourseCreator() {
-	const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(0);
 
   const [course, setCourse] = useState<Course>({
     id: "",
     title: "",
     description: "",
-    categories: [],
-    tags: [],
+    categories: [] as string[],
+    tags: [] as string[],
     level: "",
     price: 0,
     thumbnail: "",
-    modules: [],
+    modules: [] as Module[],
     certificate: {
       enabled: false,
       template: "default",
       requirements: ["Complete all modules", "Pass all quizzes with 80%"],
     },
     freePreview: false,
-    coupons: [],
+    coupons: [] as Coupon[],
   });
 
-	const handleThumbnailUpload = async (
-		e: React.ChangeEvent<HTMLInputElement>
-	) => {
-		const file = e.target.files?.[0];
-		if (!file) return;
+  const handleThumbnailUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
     setCourse((prev) => ({ ...prev, thumbnail: "" })); // clear preview dulu
     autoSaveField("thumbnail", file);
   };
+  const stripHtmlTags = (html: string) =>
+  html.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+
 
   const [courseId, setCourseId] = useState<string | null>(null);
 
-	const [isModuleDialogOpen, setIsModuleDialogOpen] = useState(false);
-	const [isLessonDialogOpen, setIsLessonDialogOpen] = useState(false);
-	const [isQuizDialogOpen, setIsQuizDialogOpen] = useState(false);
-	const [isCouponDialogOpen, setIsCouponDialogOpen] = useState(false);
-	const [selectedModuleId, setSelectedModuleId] = useState<string>("");
-	const [moduleSaveStatus, setModuleSaveStatus] = useState<string>("");
-	const [contentSaveStatus, setContentSaveStatus] = useState<string>("");
 
-	// Untuk dialog & data edit Module
-	const [isEditModuleOpen, setIsEditModuleOpen] = useState(false);
-	const [editingModuleIndex, setEditingModuleIndex] = useState<number | null>(
-		null
-	);
+  const [isModuleDialogOpen, setIsModuleDialogOpen] = useState(false);
+  const [isLessonDialogOpen, setIsLessonDialogOpen] = useState(false);
+  const [isQuizDialogOpen, setIsQuizDialogOpen] = useState(false);
+  const [isCouponDialogOpen, setIsCouponDialogOpen] = useState(false);
+  const [selectedModuleId, setSelectedModuleId] = useState<string>("");
+  const [moduleSaveStatus, setModuleSaveStatus] = useState<string>("");
+  const [contentSaveStatus, setContentSaveStatus] = useState<string>("");
 
-	// Untuk dialog & data edit Lesson
-	const [isEditLessonOpen, setIsEditLessonOpen] = useState(false);
-	const [editingLesson, setEditingLesson] = useState<{
-		moduleIndex: number;
-		contentIndex: number;
-	} | null>(null);
+  // Untuk dialog & data edit Module
+  const [isEditModuleOpen, setIsEditModuleOpen] = useState(false);
+  const [editingModule, setEditingModule] = useState<Module>({
+    id: "",
+    title: "",
+    description: "",
+    order: 0,
+    contents: [],
+  });
 
-	// Untuk dialog & data edit Quiz
-	const [isEditQuizOpen, setIsEditQuizOpen] = useState(false);
-	const [editingQuiz, setEditingQuiz] = useState<{
-		moduleIndex: number;
-		contentIndex: number;
-	} | null>(null);
+  // Untuk dialog & data edit Lesson
+  const [isEditLessonOpen, setIsEditLessonOpen] = useState(false);
+  const [editingLesson, setEditingLesson] = useState<{
+    moduleIndex: number;
+    contentIndex: number;
+  } | null>(null);
 
-	const [selectedModuleIdForContent, setSelectedModuleIdForContent] =
-		useState<string>("");
+  // Untuk dialog & data edit Quiz
+  const [isEditQuizOpen, setIsEditQuizOpen] = useState(false);
+  const [editingQuiz, setEditingQuiz] = useState<{
+    moduleIndex: number;
+    contentIndex: number;
+  } | null>(null);
 
-	// Available categories and tags
-	const [availableCategories] = useState([
-		"Web Development",
-		"Mobile Development",
-		"UI/UX Design",
-		"Data Science",
-		"Machine Learning",
-		"DevOps",
-		"Cybersecurity",
-		"Game Development",
-	]);
+  const [selectedModuleIdForContent, setSelectedModuleIdForContent] =
+    useState<string>("");
 
-	const [availableTags] = useState([
-		"Beginner Friendly",
-		"Hands-on Projects",
-		"Certificate Included",
-		"Lifetime Access",
-		"Mobile Friendly",
-		"Interactive",
-		"Updated 2024",
-		"Best Seller",
-		"New Release",
-		"Popular",
-	]);
-	const [saveStatus, setSaveStatus] = useState<{ [key: string]: string }>({});
-	const autoInitiate = async () => {
-		try {
-			const res = await fetchData("/instructor/courses/initiate", {
-				method: "POST",
-			});
-			const newId = res.data?.id || res.id;
+  // Available categories and tags
+  const [availableCategories] = useState([
+    "Web Development",
+    "Mobile Development",
+    "UI/UX Design",
+    "Data Science",
+    "Machine Learning",
+    "DevOps",
+    "Cybersecurity",
+    "Game Development",
+  ]);
+
+  const [availableTags] = useState([
+    "Beginner Friendly",
+    "Hands-on Projects",
+    "Certificate Included",
+    "Lifetime Access",
+    "Mobile Friendly",
+    "Interactive",
+    "Updated 2024",
+    "Best Seller",
+    "New Release",
+    "Popular",
+  ]);
+  const [saveStatus, setSaveStatus] = useState<{ [key: string]: string }>({});
+  const autoInitiate = async () => {
+    try {
+      const res = await fetchData("/instructor/courses/initiate", {
+        method: "POST",
+      });
+      const newId = res.data?.id || res.id;
 
       if (newId) {
         setCourseId(newId);
@@ -239,482 +269,889 @@ export function CourseCreator() {
     }
   };
 
-	const autoSaveField = async (field: string, value: any) => {
-		const endpoint = courseId
-			? `/instructor/courses/${courseId}`
-			: `/instructor/courses/initiate`;
-		const method = "POST";
-		const isUpdate = Boolean(courseId);
+  const getModules = async () => {
+    try {
+      const res = await fetchData("/instructor/courses/modules", {
+        method: "POST",
+        body: {
+          course_id: courseId,
+        },
+      });
 
-		let body: FormData | any;
-		let isFormData = false;
+      setCourse((prev) => ({
+        ...prev,
+        modules: res.data.map((module: any) => {
+          const lessons = (module.lessons || []).map(lesson => ({
+            ...lesson,
+            type: 'lesson',
+          }));
 
-		if (field === "thumbnail") {
-			body = new FormData();
-			body.append("title", course.title);
-			body.append("description", course.description);
-			body.append("price", course.price?.toString() || "0");
-			body.append("approval_status", "draft");
-			body.append("is_visible", course.is_visible ? "true" : "false");
-			body.append("is_published", "true");
-			body.append("thumbnail", value);
-			if (isUpdate) body.append("_method", "PUT");
-			isFormData = true;
-		} else {
-			body = {
-				...course,
-				[field]: value,
-				is_visible: course.is_visible,
-				is_published: true,
-				approval_status: "draft",
-				thumbnail: course.thumbnail,
-				video: course.video || "",
-			};
-			if (isUpdate) body._method = "PUT";
-		}
+          const quizzes = (module.quiz || []).map(quiz => ({
+            ...quiz,
+            type: 'quiz',
+          }));
 
-		try {
-			const response = await fetchData(endpoint, {
-				method,
-				body,
-				headers: isFormData ? {} : undefined,
-			});
+          return {
+            ...module,
+            contents: [...lessons, ...quizzes],
+          };
+        }),
+      }));
+    } catch (err) {
+      console.error("Gagal ambil modul:", err);
+    }
+  };
+  // const getContentsForModules = async () => {
+  //   if (!courseId) return;
 
-			if (!courseId && (response.data?.id || response.id)) {
-				setCourseId(response.data?.id || response.id);
-			}
+  //   try {
+  //     // Ambil semua konten dari backend
+  //     const res = await fetchData("/instructor/courses/modules/contents", {
+  //       method: "PUT",
+  //       body: { course_id: courseId },
+  //     });
 
-			setSaveStatus((prev) => ({ ...prev, [field]: "✅ Disimpan" }));
-		} catch {
-			setSaveStatus((prev) => ({ ...prev, [field]: "❌ Gagal menyimpan" }));
-		}
+  //     const contentByModule: Record<string, Content[]> = {};
 
-		setTimeout(() => {
-			setSaveStatus((prev) => ({ ...prev, [field]: "" }));
-		}, 3000);
-	};
+  //     res.data.forEach((content: any) => {
+  //       const moduleId = content.module_id;
+  //       if (!contentByModule[moduleId]) {
+  //         contentByModule[moduleId] = [];
+  //       }
+
+  //       contentByModule[moduleId].push({
+  //         id: content.id,
+  //         title: content.title,
+  //         order: content.order || 0,
+  //         type: content.type,
+  //         data: content.data ?? {},
+  //         settings: content.settings ?? {},
+  //       });
+  //     });
+
+  //     // Update modul yang memang punya konten (dari backend saja)
+  //     setCourse((prev) => ({
+  //       ...prev,
+  //       modules: prev.modules.map((mod) =>
+  //         contentByModule[mod.id]
+  //           ? { ...mod, contents: contentByModule[mod.id] }
+  //           : mod // jika tidak ada konten, tidak diubah
+  //       ),
+  //     }));
+  //   } catch (err) {
+  //     console.error("❌ Gagal ambil konten modul:", err);
+  //   }
+  // };
+  const fetchModules = async () => {
+    if (!courseId) return;
+
+    try {
+      const res = await fetchData("/instructor/courses/modules", {
+        method: "POST",
+        body: { course_id: courseId },
+      });
+
+      const modules = res.data.map((mod: any) => ({
+        id: mod.id, // ✅ dari backend
+        title: mod.title,
+        description: mod.description,
+        order: mod.order,
+        contents: [],
+      }));
+
+      setCourse((prev) => ({
+        ...prev,
+        modules,
+      }));
+    } catch (err) {
+      console.error("❌ Gagal mengambil daftar modul:", err);
+    }
+  };
+
+  const autoSaveField = async (field: string, value: any) => {
+    const endpoint = courseId
+      ? `/instructor/courses/${courseId}`
+      : `/instructor/courses/initiate`;
+    const method = "POST";
+    const isUpdate = Boolean(courseId);
+
+    let body: FormData | any;
+    let isFormData = false;
+
+    if (field === "thumbnail") {
+      body = new FormData();
+      body.append("title", course.title);
+      body.append("description", course.description);
+      body.append("price", course.price?.toString() || "0");
+      body.append("approval_status", "draft");
+      body.append("is_visible", course.is_visible ? "true" : "false");
+      body.append("is_published", "true");
+      body.append("thumbnail", value);
+      if (isUpdate) body.append("_method", "PUT");
+      isFormData = true;
+    } else {
+      body = {
+        ...course,
+        [field]: value,
+        is_visible: course.is_visible,
+        is_published: true,
+        approval_status: "draft",
+        thumbnail: course.thumbnail,
+        video: course.video || "",
+      };
+      if (isUpdate) body._method = "PUT";
+    }
+
+    try {
+      const response = await fetchData(endpoint, {
+        method,
+        body,
+        headers: isFormData ? {} : undefined,
+      });
+
+      if (!courseId && (response.data?.id || response.id)) {
+        setCourseId(response.data?.id || response.id);
+      }
+
+      setSaveStatus((prev) => ({ ...prev, [field]: "✅ Disimpan" }));
+    } catch {
+      setSaveStatus((prev) => ({ ...prev, [field]: "❌ Gagal menyimpan" }));
+    }
+
+    setTimeout(() => {
+      setSaveStatus((prev) => ({ ...prev, [field]: "" }));
+    }, 3000);
+  };
 
   useEffect(() => {
     autoInitiate();
   }, []);
+  useEffect(() => {
+    if (currentStep === 1 && courseId) {
+      getModules();
+    }
+  }, [currentStep, courseId]);
 
-	const steps = [
-		"Basic Information",
-		"Course Structure",
-		"Pricing & Coupons",
-		"Final Step",
-	];
+  // useEffect(() => {
+  //   if (!courseId) return;
 
-  const addModule = (moduleData: Omit<Module, "id" | "order" | "contents">) => {
-    const newModule: Module = {
-      ...moduleData,
-      id: Date.now().toString(),
-      order: course.modules.length + 1,
-      contents: [],
-    };
+  //   const loadModulesAndContents = async () => {
+  //     try {
+  //       const modulesRes = await fetchData("/instructor/courses/modules", {
+  //         method: "POST",
+  //         body: { course_id: courseId },
+  //       });
 
-    setCourse((prev) => {
-      const updatedModules = [...prev.modules, newModule];
-      const updatedCourse = { ...prev, modules: updatedModules };
+  //       const modules = modulesRes.data.map((mod: any) => ({
+  //         id: mod.id,
+  //         title: mod.title,
+  //         description: mod.description,
+  //         order: mod.order,
+  //         contents: [],
+  //       }));
 
-      autoSaveField("modules", updatedModules)
-        .then(() => setModuleSaveStatus("✅ Modul berhasil disimpan"))
-        .catch(() => setModuleSaveStatus("❌ Gagal menyimpan modul"));
+  //       setCourse((prev) => ({ ...prev, modules }));
 
-      return updatedCourse;
-    });
+  //       // Setelah module di-set, baru lanjut ambil konten
+  //       const contentRes = await fetchData("/instructor/courses/modules/contents", {
+  //         method: "PUT",
+  //         body: { course_id: courseId },
+  //       });
+
+  //       const contentByModule: Record<string, Content[]> = {};
+  //       contentRes.data.forEach((content: any) => {
+  //         const moduleId = content.module_id;
+  //         if (!contentByModule[moduleId]) contentByModule[moduleId] = [];
+
+  //         contentByModule[moduleId].push({
+  //           id: content.id,
+  //           title: content.title,
+  //           order: content.order || 0,
+  //           type: content.type,
+  //           data: content.data ?? {},
+  //           settings: content.settings ?? {},
+  //         });
+  //       });
+
+  //       // update modul yang kontennya ada
+  //       setCourse((prev) => ({
+  //         ...prev,
+  //         modules: prev.modules.map((mod) =>
+  //           contentByModule[mod.id]
+  //             ? { ...mod, contents: contentByModule[mod.id] }
+  //             : mod
+  //         ),
+  //       }));
+  //     } catch (err) {
+  //       console.error("❌ Gagal load modul & konten:", err);
+  //     }
+  //   };
+
+  //   loadModulesAndContents();
+  // }, [courseId]);
+
+  const steps = [
+    "Basic Information",
+    "Course Structure",
+    "Pricing & Coupons",
+    "Final Step",
+  ];
+
+  const addModule = async (
+    moduleData: Omit<Module, "id" | "order" | "contents">
+  ) => {
+    if (!courseId) return;
+
+    const formData = new FormData();
+    formData.append("title", moduleData.title);
+    formData.append("description", moduleData.description);
+    formData.append("course_id", courseId);
+    formData.append("order", String(course.modules.length + 1));
+
+    try {
+      const res = await fetchData("/instructor/courses/modules/store", {
+        method: "POST",
+        body: formData,
+      });
+
+      const newModule: Module = {
+        ...res.data,
+        contents: [],
+      };
+
+      setCourse((prev) => ({
+        ...prev,
+        modules: [...prev.modules, newModule],
+      }));
+
+      setModuleSaveStatus("✅ Modul berhasil disimpan");
+    } catch (err) {
+      console.error("❌ Gagal menyimpan modul:", err);
+      setModuleSaveStatus("❌ Gagal menyimpan modul");
+    }
 
     setIsModuleDialogOpen(false);
-
-    // Reset alert setelah 3 detik
     setTimeout(() => setModuleSaveStatus(""), 3000);
   };
 
-	const updateModule = async (moduleId: string, updatedData: any) => {
-		updateModule[moduleIndex] = result.data;
-		setCourse((prev) => ({ ...prev, modules: updateModule }));
-		const formData = new FormData();
-		formData.append("_method", "PUT");
-		formData.append("title", updatedData.title);
-		formData.append("description", updatedData.description || "");
-		// formData.append("order", updatedData.order.toString());
-
-		try {
-			const token =
-				typeof window !== "undefined"
-					? localStorage.getItem("access_token")
-					: null;
-			const res = await fetch(
-				`${process.env.NEXT_PUBLIC_BASE_URL}/instructor/courses/modules/${moduleId}`,
-				{
-					method: "POST",
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-					body: formData,
-				}
-			);
-			const result = await res.json();
-			if (result.success) {
-				console.log("✅ Module updated:", result.data);
-				return result.data;
-			}
-		} catch (error) {
-			console.error("❌ Update module failed:", error);
-		}
-	};
-
-	const updateLesson = async (lessonId: string, updatedData: any) => {
-		const formData = new FormData();
-		formData.append("_method", "PUT");
-		formData.append("title", updatedData.title);
-		formData.append("description", updatedData.description || "");
-		formData.append("content", updatedData.content || "");
-		formData.append("module_id", updatedData.module_id);
-		// formData.append("order", updatedData.order.toString());
-
-		try {
-			const token =
-				typeof window !== "undefined"
-					? localStorage.getItem("access_token")
-					: null;
-			const res = await fetch(
-				`${process.env.NEXT_PUBLIC_BASE_URL}/instructor/courses/modules/lessons/${lessonId}`,
-				{
-					method: "POST",
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-					body: formData,
-				}
-			);
-			const result = await res.json();
-			if (result.success) {
-				console.log("✅ Lesson updated:", result.data);
-				return result.data;
-			}
-		} catch (error) {
-			console.error("❌ Update lesson failed:", error);
-		}
-	};
-
-	const updateQuiz = async (quizId: string, updatedData: any) => {
-		const settings = {
-			passing_grade: updatedData.passing_grade?.toString() ?? "0",
-			time_limit: updatedData.time_limit?.toString() ?? "0",
-			max_attempts: updatedData.max_attempts?.toString() ?? "1",
-			show_correct_answers: updatedData.show_correct_answers?.toString() ?? "0",
-			automatically_graded: updatedData.automatically_graded?.toString() ?? "0",
-		};
-		const formData = new FormData();
-		formData.append("_method", "PUT");
-		formData.append("title", updatedData.title);
-		formData.append("description", updatedData.description || "");
-		// formData.append("order", updatedData.order.toString());
-		formData.append("module_id", updatedData.module_id);
-		formData.append("settings", JSON.stringify(settings));
-		// formData.append(
-		//   "show_correct_answers",
-		//   updatedData.show_correct_answers ? "1" : "0"
-		// );
-		// formData.append(
-		//   "automatically_graded",
-		//   updatedData.automatically_graded ? "1" : "0"
-		// );
-
-		try {
-			const token =
-				typeof window !== "undefined"
-					? localStorage.getItem("access_token")
-					: null;
-			const res = await fetch(
-				`${process.env.NEXT_PUBLIC_BASE_URL}/instructor/courses/quizzes/${quizId}`,
-				{
-					method: "POST",
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-					body: formData,
-				}
-			);
-			const result = await res.json();
-			if (result.success) {
-				console.log("✅ Quiz updated:", result.data);
-				return result.data;
-			}
-		} catch (error) {
-			console.error("❌ Update quiz failed:", error);
-		}
-	};
-
-	const [editedModuleIndex, setEditedModuleIndex] = useState<number | null>(
-		null
-	);
-
-	useEffect(() => {
-		const timeout = setTimeout(() => {
-			if (editedModuleIndex !== null && course.modules[editedModuleIndex]) {
-				const mod = course.modules[editedModuleIndex];
-				updateModule(mod.id, {
-					title: mod.title,
-					description: mod.description,
-				})
-					.then(() => setModuleSaveStatus("✅ Modul berhasil disimpan"))
-					.catch(() => setModuleSaveStatus("❌ Gagal menyimpan modul"));
-			}
-		}, 5000);
-
-		return () => clearTimeout(timeout);
-	}, [course.modules, editedModuleIndex]);
-
-	// Fungsi hapus modul
-	const deleteModule = async (moduleId: string) => {
-		try {
-			const res = await fetch(
-				`${process.env.NEXT_PUBLIC_BASE_URL}/instructor/courses/modules/${moduleId}`,
-				{
-					method: "DELETE",
-					headers: {
-						Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-						"x-api-key": process.env.NEXT_PUBLIC_API_KEY!,
-						Accept: "application/json",
-					},
-				}
-			);
-
-			const result = await res.json();
-			if (!res.ok) {
-				const fallbackMsg =
-					result?.message || result?.error || "Gagal menghapus modul";
-				throw new Error(fallbackMsg);
-			}
-
-			// Hapus dari state
-			const updatedModules = course.modules.filter(
-				(mod) => mod.id !== moduleId
-			);
-			setCourse((prev) => ({ ...prev, modules: updatedModules }));
-			toast.success("✅ Modul berhasil dihapus");
-		} catch (error: any) {
-			console.error("❌ Gagal hapus modul:", error);
-			toast.error(`❌ ${error.message || "Gagal menghapus modul"}`);
-		}
-	};
-
-	// Fungsi hapus lesson
-	const deleteQuiz = async (
-		quizId: string,
-		moduleIndex: number,
-		contentIndex: number
-	) => {
-		try {
-			const res = await fetch(
-				`${process.env.NEXT_PUBLIC_BASE_URL}/instructor/courses/quizzes/${quizId}`,
-				{
-					method: "DELETE",
-					headers: {
-						Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-						"x-api-key": process.env.NEXT_PUBLIC_API_KEY!,
-						Accept: "application/json",
-					},
-				}
-			);
-
-			const result = await res.json();
-			if (!res.ok) throw new Error(result.message || "Failed to delete quiz");
-
-			const updatedModules = [...course.modules];
-			updatedModules[moduleIndex].contents.splice(contentIndex, 1);
-			setCourse((prev) => ({ ...prev, modules: updatedModules }));
-			toast.success("✅ Quiz berhasil dihapus");
-		} catch (error) {
-			console.error("❌ Gagal hapus quiz:", error);
-			toast.error("❌ Gagal menghapus quiz");
-		}
-	};
-
-	// ✅ Tambahkan atau update module ke state
-	const updateModuleInState = (moduleData: any) => {
-		setCourse((prev) => {
-			const modules = [...prev.modules];
-			const moduleIndex = modules.findIndex((m) => m.id === moduleData.id);
-			if (moduleIndex !== -1) {
-				modules[moduleIndex] = { ...modules[moduleIndex], ...moduleData };
-			} else {
-				modules.push({ ...moduleData, contents: [] });
-			}
-			return { ...prev, modules };
-		});
-	};
-
-	// ✅ Tambahkan atau update lesson ke state
-	const updateLessonInState = (lessonData: any) => {
-		setCourse((prev) => {
-			const modules = [...prev.modules];
-			const targetModule = modules.find(
-				(mod) => mod.id === lessonData.module_id
-			);
-			if (targetModule) {
-				const contentIndex = targetModule.contents.findIndex(
-					(c) => c.id === lessonData.id
-				);
-				if (contentIndex !== -1) {
-					targetModule.contents[contentIndex] = {
-						...targetModule.contents[contentIndex],
-						...lessonData,
-					};
-				} else {
-					targetModule.contents.push({ ...lessonData, type: "lesson" });
-				}
-			}
-			return { ...prev, modules };
-		});
-	};
-
-	// ✅ Tambahkan atau update quiz ke state
-	const updateQuizInState = (quizData: any) => {
-		setCourse((prev) => {
-			const modules = [...prev.modules];
-			const targetModule = modules.find((mod) => mod.id === quizData.module_id);
-			if (targetModule) {
-				const contentIndex = targetModule.contents.findIndex(
-					(c) => c.id === quizData.id
-				);
-				if (contentIndex !== -1) {
-					targetModule.contents[contentIndex] = {
-						...targetModule.contents[contentIndex],
-						...quizData,
-					};
-				} else {
-					targetModule.contents.push({ ...quizData, type: "quiz" });
-				}
-			}
-			return { ...prev, modules };
-		});
-	};
-
-  const addContent = (
+  const addLesson = async (
     moduleId: string,
-    contentData: Omit<Content, "id" | "order">
+    {
+      title,
+      description,
+      content,
+      order,
+      videoFile,
+    }: {
+      title: string;
+      description: string;
+      content: string;
+      order: number;
+      videoFile?: File;
+    }
   ) => {
+    if (!courseId || !moduleId) {
+      throw new Error("Course ID atau Module ID tidak valid.");
+    }
+
+    let videoPath = "";
+
+    if (videoFile) {
+      const chunkSize = 1024 * 1024; // 1MB
+      const totalChunks = Math.ceil(videoFile.size / chunkSize);
+      const fileId = Date.now().toString(); // ID unik file
+      const ext = videoFile.name.split(".").pop() || "mp4";
+
+      // Upload chunk satu per satu
+      for (let i = 0; i < totalChunks; i++) {
+        const start = i * chunkSize;
+        const end = Math.min(start + chunkSize, videoFile.size);
+        const chunk = videoFile.slice(start, end);
+
+        await uploadChunk(chunk, i, fileId, courseId, moduleId);
+      }
+
+      // Gabungkan semua chunk
+      videoPath = await mergeChunks(
+        fileId,
+        totalChunks,
+        ext,
+        courseId,
+        moduleId
+      );
+    }
+
+    // Gabungkan konten dengan videoPath jika ada
+    const fullContent = `${content}${
+      videoPath ? `\nVideo: ${videoPath}` : ""
+    }`.trim();
+
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("order", String(order));
+    formData.append("content", fullContent);
+    formData.append("module_id", moduleId);
+
+    await fetchData("/instructor/courses/modules/lessons/store", {
+      method: "POST",
+      body: formData,
+    });
+  };
+
+  const getLessonsByModuleId = async (moduleId: string, courseId: string) => {
+    try {
+      const formData = new FormData();
+      formData.append("course_id", courseId);
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/instructor/courses/modules/lessons/${moduleId}`,
+        {
+          method: "GET", // ← work around karena GET tidak mendukung body
+          headers: {
+            Authorization: `Bearer ${getTokenFromCookie()}`, // sesuaikan jika pakai cookie/token
+          },
+          body: formData,
+        }
+      );
+
+      if (!res.ok) {
+        const errText = await res.text();
+        throw new Error(`Gagal fetch lesson: ${errText}`);
+      }
+
+      const result = await res.json();
+
+      const lessons = result.data.map((lesson: any) => ({
+        id: lesson.id,
+        title: lesson.title,
+        type: "lesson",
+        order: lesson.order || 0,
+        data: {
+          content: lesson.content,
+          video: lesson.video_url ?? null,
+          image: lesson.image_url ?? null,
+        },
+      }));
+
+      setCourse((prev) => ({
+        ...prev,
+        modules: prev.modules.map((mod) =>
+          mod.id === moduleId ? { ...mod, contents: lessons } : mod
+        ),
+      }));
+    } catch (error) {
+      console.error("❌ Error getLessonsByModuleId:", error);
+    }
+  };
+
+  // Upload satu per satu potongan file
+  const uploadChunk = async (
+    file: File,
+    chunkSize: number,
+    courseId: string,
+    moduleId: string,
+    onProgress?: (percent: number) => void
+  ) => {
+    // ...split file jadi chunks
+
+    for (let i = 0; i < chunks.length; i++) {
+      const chunk = chunks[i];
+
+      const formData = new FormData();
+      formData.append("file", chunk);
+      formData.append("index", String(i));
+      formData.append("totalChunks", String(chunks.length));
+      formData.append("fileName", file.name);
+
+      // ✅ WAJIB TAMBAHKAN INI:
+      formData.append("course_id", courseId);
+      formData.append("module_id", moduleId);
+
+      await fetchData("/chunk/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (onProgress) {
+        onProgress(Math.round(((i + 1) / chunks.length) * 100));
+      }
+    }
+
+    // setelah upload selesai
+    const mergeFormData = new FormData();
+    mergeFormData.append("fileName", file.name);
+    mergeFormData.append("totalChunks", String(chunks.length));
+    mergeFormData.append("course_id", courseId);
+    mergeFormData.append("module_id", moduleId);
+
+    const res = await fetchData("/chunk/merge", {
+      method: "POST",
+      body: mergeFormData,
+    });
+
+    return res?.path || "";
+  };
+
+  const updateModule = async (moduleId: string, updatedData: any) => {
+    const formData = new FormData();
+    formData.append("_method", "PUT");
+    formData.append("title", updatedData.title);
+    formData.append("description", updatedData.description || "");
+    formData.append("order", updatedData.order || 0);
+
+    try {
+      const res = await fetchData(`/instructor/courses/modules/${moduleId}`, {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await res;
+
+      if (result.success) {
+        const updatedModules = [...course.modules];
+        console.log("updatedModules", updatedModules);
+        const moduleIndex = updatedModules.findIndex((m) => m.id === moduleId);
+
+        if (moduleIndex !== -1) {
+          updatedModules[moduleIndex] = result.data;
+          
+          setCourse((prev) => ({ 
+            ...prev, 
+            modules: updatedModules.data.map((module: any) => {
+              const lessons = (module.lessons || []).map(lesson => ({
+                ...lesson,
+                type: 'lesson',
+              }));
+
+              const quizzes = (module.quiz || []).map(quiz => ({
+                ...quiz,
+                type: 'quiz',
+              }));
+
+              return {
+                ...module,
+                contents: [...lessons, ...quizzes],
+              };
+            }),
+          }));
+        }
+
+        return result.data;
+      }
+    } catch (error) {
+      console.error("❌ Update module failed:", error);
+    }
+  };
+
+
+  const updateLesson = async (lessonId: string, updatedData: any) => {
+    const formData = new FormData();
+    formData.append("_method", "PUT");
+    formData.append("title", updatedData.title);
+    formData.append("description", updatedData.description || "");
+    formData.append("content", updatedData.content || "");
+    formData.append("module_id", updatedData.module_id);
+    // formData.append("order", updatedData.order.toString());
+
+    try {
+      const token =
+        typeof window !== "undefined"
+          ? localStorage.getItem("access_token")
+          : null;
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/instructor/courses/modules/lessons/${lessonId}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        }
+      );
+      const result = await res.json();
+      if (result.success) {
+        console.log("✅ Lesson updated:", result.data);
+        return result.data;
+      }
+    } catch (error) {
+      console.error("❌ Update lesson failed:", error);
+    }
+  };
+
+  const updateQuiz = async (quizId: string, updatedData: any) => {
+    const settings = {
+      passing_grade: updatedData.passing_grade?.toString() ?? "0",
+      time_limit: updatedData.time_limit?.toString() ?? "0",
+      max_attempts: updatedData.max_attempts?.toString() ?? "1",
+      show_correct_answers: updatedData.show_correct_answers?.toString() ?? "0",
+      automatically_graded: updatedData.automatically_graded?.toString() ?? "0",
+    };
+    const formData = new FormData();
+    formData.append("_method", "PUT");
+    formData.append("title", updatedData.title);
+    formData.append("description", updatedData.description || "");
+    // formData.append("order", updatedData.order.toString());
+    formData.append("module_id", updatedData.module_id);
+    formData.append("settings", JSON.stringify(settings));
+    // formData.append(
+    //   "show_correct_answers",
+    //   updatedData.show_correct_answers ? "1" : "0"
+    // );
+    // formData.append(
+    //   "automatically_graded",
+    //   updatedData.automatically_graded ? "1" : "0"
+    // );
+
+    try {
+      const token =
+        typeof window !== "undefined"
+          ? localStorage.getItem("access_token")
+          : null;
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/instructor/courses/quizzes/${quizId}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        }
+      );
+      const result = await res.json();
+      if (result.success) {
+        console.log("✅ Quiz updated:", result.data);
+        return result.data;
+      }
+    } catch (error) {
+      console.error("❌ Update quiz failed:", error);
+    }
+  };
+
+  const [editedModuleIndex, setEditedModuleIndex] = useState<number | null>(
+    null
+  );
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (editedModuleIndex !== null && course.modules[editedModuleIndex]) {
+        const mod = course.modules[editedModuleIndex];
+        updateModule(mod.id, {
+          title: mod.title,
+          description: mod.description,
+        })
+          .then(() => setModuleSaveStatus("✅ Modul berhasil disimpan"))
+          .catch(() => setModuleSaveStatus("❌ Gagal menyimpan modul"));
+      }
+    }, 5000);
+
+    return () => clearTimeout(timeout);
+  }, [course.modules, editedModuleIndex]);
+
+  // Fungsi hapus modul
+  const deleteModule = async (moduleId: string) => {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/instructor/courses/modules/${moduleId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            "x-api-key": process.env.NEXT_PUBLIC_API_KEY!,
+            Accept: "application/json",
+          },
+        }
+      );
+
+      const result = await res.json();
+      if (!res.ok) {
+        const fallbackMsg =
+          result?.message || result?.error || "Gagal menghapus modul";
+        throw new Error(fallbackMsg);
+      }
+
+      // Hapus dari state
+      const updatedModules = course.modules.filter(
+        (mod) => mod.id !== moduleId
+      );
+      setCourse((prev) => ({ ...prev, modules: updatedModules }));
+      toast.success("✅ Modul berhasil dihapus");
+    } catch (error: any) {
+      console.error("❌ Gagal hapus modul:", error);
+      toast.error(`❌ ${error.message || "Gagal menghapus modul"}`);
+    }
+  };
+
+  // Fungsi hapus lesson
+  const deleteQuiz = async (
+    quizId: string,
+    moduleIndex: number,
+    contentIndex: number
+  ) => {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/instructor/courses/quizzes/${quizId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            "x-api-key": process.env.NEXT_PUBLIC_API_KEY!,
+            Accept: "application/json",
+          },
+        }
+      );
+
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.message || "Failed to delete quiz");
+
+      const updatedModules = [...course.modules];
+      updatedModules[moduleIndex].contents.splice(contentIndex, 1);
+      setCourse((prev) => ({ ...prev, modules: updatedModules }));
+      toast.success("✅ Quiz berhasil dihapus");
+    } catch (error) {
+      console.error("❌ Gagal hapus quiz:", error);
+      toast.error("❌ Gagal menghapus quiz");
+    }
+  };
+
+  // ✅ Tambahkan atau update module ke state
+  const updateModuleInState = (moduleData: any) => {
+    setCourse((prev) => {
+      const modules = [...prev.modules];
+      const moduleIndex = modules.findIndex((m) => m.id === moduleData.id);
+      if (moduleIndex !== -1) {
+        modules[moduleIndex] = { ...modules[moduleIndex], ...moduleData };
+      } else {
+        modules.push({ ...moduleData, contents: [] });
+      }
+      return { ...prev, modules };
+    });
+  };
+
+  // ✅ Tambahkan atau update lesson ke state
+  const updateLessonInState = (lessonData: any) => {
+    setCourse((prev) => {
+      const modules = [...prev.modules];
+      const targetModule = modules.find(
+        (mod) => mod.id === lessonData.module_id
+      );
+      if (targetModule) {
+        const contentIndex = targetModule.contents.findIndex(
+          (c) => c.id === lessonData.id
+        );
+        if (contentIndex !== -1) {
+          targetModule.contents[contentIndex] = {
+            ...targetModule.contents[contentIndex],
+            ...lessonData,
+          };
+        } else {
+          targetModule.contents.push({ ...lessonData, type: "lesson" });
+        }
+      }
+      return { ...prev, modules };
+    });
+  };
+
+  // ✅ Tambahkan atau update quiz ke state
+  const updateQuizInState = (quizData: any) => {
+    setCourse((prev) => {
+      const modules = [...prev.modules];
+      const targetModule = modules.find((mod) => mod.id === quizData.module_id);
+      if (targetModule) {
+        const contentIndex = targetModule.contents.findIndex(
+          (c) => c.id === quizData.id
+        );
+        if (contentIndex !== -1) {
+          targetModule.contents[contentIndex] = {
+            ...targetModule.contents[contentIndex],
+            ...quizData,
+          };
+        } else {
+          targetModule.contents.push({ ...quizData, type: "quiz" });
+        }
+      }
+      return { ...prev, modules };
+    });
+  };
+
+  const addContent = async (
+    moduleId: string,
+    contentData: Omit<Content, "id"> & { type: "lesson" | "quiz" }
+  ) => {
+    if (!moduleId || moduleId.length < 10) {
+      console.error("❌ Module ID tidak valid:", moduleId);
+      alert("Module ID tidak valid. Harap refresh halaman.");
+      return;
+    }
+
     const newContent: Content = {
       ...contentData,
       id: Date.now().toString(),
       order: getModuleContents(moduleId).length + 1,
     };
 
+    // Tambahkan ke UI secara sementara (optimistic update)
     setCourse((prev) => {
-      const updatedModules = prev.modules.map((module) =>
-        module.id === moduleId
-          ? {
-              ...module,
-              contents: [...(module.contents || []), newContent],
-            }
-          : module
-      );
+      const updatedModules = prev.modules.map((module) => {
+        if (module.id === moduleId) {
+          return {
+            ...module,
+            contents: [...module.contents, newContent],
+          };
+        }
+        return module;
+      });
 
-      const updatedCourse = { ...prev, modules: updatedModules };
-
-      autoSaveField("modules", updatedModules)
-        .then(() => setContentSaveStatus("✅ Konten berhasil disimpan"))
-        .catch(() => setContentSaveStatus("❌ Gagal menyimpan konten"));
-
-      return updatedCourse;
+      return { ...prev, modules: updatedModules };
     });
 
-    setIsLessonDialogOpen(false);
-    setIsQuizDialogOpen(false);
+    try {
+      console.log("📤 Kirim ke backend:", { moduleId, contentData });
 
-    // Reset alert setelah 3 detik
-    setTimeout(() => setContentSaveStatus(""), 3000);
+      if (contentData.type === "lesson") {
+        await addLesson(moduleId, {
+          title: contentData.title,
+          description: contentData.description || "",
+          content: contentData.content,
+          order: newContent.order,
+        });
+      } else if (contentData.type === "quiz") {
+        await addQuiz(moduleId, {
+          title: contentData.title,
+          order: newContent.order,
+          passing_grade: contentData.passing_grade || 80,
+          time_limit: contentData.time_limit || 60,
+          max_attempts: contentData.max_attempts || 3,
+        });
+      }
+
+      console.log("✅ Konten berhasil disimpan");
+
+      // Ambil ulang isi module dari backend agar sinkron
+      const updatedLessons = await getLessonsByModuleId(moduleId);
+
+      setCourse((prev) => {
+        const updatedModules = prev.modules.map((module) => {
+          if (module.id === moduleId) {
+            return {
+              ...module,
+              contents: updatedLessons, // replace dengan hasil get
+            };
+          }
+          return module;
+        });
+
+        return { ...prev, modules: updatedModules };
+      });
+    } catch (error: any) {
+      console.error("❌ Gagal menyimpan konten:", error);
+
+      // Rollback optimistic update
+      setCourse((prev) => {
+        const updatedModules = prev.modules.map((module) => {
+          if (module.id === moduleId) {
+            return {
+              ...module,
+              contents: module.contents.filter((c) => c.id !== newContent.id),
+            };
+          }
+          return module;
+        });
+
+        return { ...prev, modules: updatedModules };
+      });
+
+      alert("❌ Gagal menyimpan konten. Periksa module ID atau jaringan.");
+    }
   };
+
   const [editedLessonIndex, setEditedLessonIndex] = useState<{
     moduleIndex: number;
     lessonIndex: number;
   } | null>(null);
   const [lessonSaveStatus, setLessonSaveStatus] = useState("");
 
-	useEffect(() => {
-		const timeout = setTimeout(() => {
-			if (editedLessonIndex !== null) {
-				const { moduleIndex, lessonIndex } = editedLessonIndex;
-				const module = course.modules[moduleIndex];
-				const lesson = module.contents[lessonIndex];
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (editedLessonIndex !== null) {
+        const { moduleIndex, lessonIndex } = editedLessonIndex;
+        const module = course.modules[moduleIndex];
+        const lesson = module.contents[lessonIndex];
 
-				if (lesson && lesson.type === "lesson") {
-					updateLesson(lesson.id, {
-						title: lesson.title,
-						content: lesson.data,
-					})
-						.then(() => setLessonSaveStatus("✅ Lesson berhasil disimpan"))
-						.catch(() => setLessonSaveStatus("❌ Gagal menyimpan lesson"));
-				}
-			}
-		}, 5000);
+        if (lesson && lesson.type === "lesson") {
+          updateLesson(lesson.id, {
+            title: lesson.title,
+            content: lesson.data,
+          })
+            .then(() => setLessonSaveStatus("✅ Lesson berhasil disimpan"))
+            .catch(() => setLessonSaveStatus("❌ Gagal menyimpan lesson"));
+        }
+      }
+    }, 5000);
 
-		return () => clearTimeout(timeout);
-	}, [course.modules, editedLessonIndex]);
+    return () => clearTimeout(timeout);
+  }, [course.modules, editedLessonIndex]);
 
-	const [editedQuizIndex, setEditedQuizIndex] = useState<{
-		moduleIndex: number;
-		quizIndex: number;
-	} | null>(null);
-	const [quizSaveStatus, setQuizSaveStatus] = useState("");
+  const [editedQuizIndex, setEditedQuizIndex] = useState<{
+    moduleIndex: number;
+    quizIndex: number;
+  } | null>(null);
+  const [quizSaveStatus, setQuizSaveStatus] = useState("");
 
-	useEffect(() => {
-		const timeout = setTimeout(() => {
-			if (editedQuizIndex !== null) {
-				const { moduleIndex, quizIndex } = editedQuizIndex;
-				const module = course.modules[moduleIndex];
-				const quiz = module.contents[quizIndex];
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (editedQuizIndex !== null) {
+        const { moduleIndex, quizIndex } = editedQuizIndex;
+        const module = course.modules[moduleIndex];
+        const quiz = module.contents[quizIndex];
 
-				if (quiz && quiz.type === "quiz") {
-					updateQuiz(quiz.id, {
-						title: quiz.title,
-						description: quiz.data?.description || "",
-						time_limit: quiz.settings?.timeLimit,
-						passing_score: quiz.settings?.passingScore,
-					})
-						.then(() => setQuizSaveStatus("✅ Quiz berhasil disimpan"))
-						.catch(() => setQuizSaveStatus("❌ Gagal menyimpan quiz"));
-				}
-			}
-		}, 5000);
+        if (quiz && quiz.type === "quiz") {
+          updateQuiz(quiz.id, {
+            title: quiz.title,
+            description: quiz.data?.description || "",
+            time_limit: quiz.settings?.timeLimit,
+            passing_score: quiz.settings?.passingScore,
+          })
+            .then(() => setQuizSaveStatus("✅ Quiz berhasil disimpan"))
+            .catch(() => setQuizSaveStatus("❌ Gagal menyimpan quiz"));
+        }
+      }
+    }, 5000);
 
-		return () => clearTimeout(timeout);
-	}, [course.modules, editedQuizIndex]);
+    return () => clearTimeout(timeout);
+  }, [course.modules, editedQuizIndex]);
 
-	const addCoupon = (couponData: Omit<Coupon, "id" | "used">) => {
-		const newCoupon: Coupon = {
-			...couponData,
-			id: Date.now().toString(),
-			used: 0,
-		};
-		setCourse((prev) => ({
-			...prev,
-			coupons: [...prev.coupons, newCoupon],
-		}));
-		setIsCouponDialogOpen(false);
-	};
-
-  const getStepProgress = () => {
-    return ((currentStep + 1) / steps.length) * 100;
+  const addCoupon = (couponData: Omit<Coupon, "id" | "used">) => {
+    const newCoupon: Coupon = {
+      ...couponData,
+      id: Date.now().toString(),
+      used: 0,
+    };
+    setCourse((prev) => ({
+      ...prev,
+      coupons: [...prev.coupons, newCoupon],
+    }));
+    setIsCouponDialogOpen(false);
   };
 
-	const getModuleContents = (moduleId: string) => {
-		const module = course.modules.find((m) => m.id === moduleId);
-		return module?.contents || [];
-	};
+  const getStepProgress = () => {
+    return ((currentStep + 1) / (steps ?? []).length) * 100;
+  };
 
-	const handleContentDragEnd = (result: any, moduleId: string) => {
-		if (!result.destination) return;
+  const getModuleContents = (moduleId: string) => {
+    const module = course.modules.find((m) => m.id === moduleId);
+    return module?.contents || [];
+  };
 
-		const sourceIndex = result.source.index;
-		const destinationIndex = result.destination.index;
+  const handleContentDragEnd = (result: any, moduleId: string) => {
+    if (!result.destination) return;
+
+    const sourceIndex = result.source.index;
+    const destinationIndex = result.destination.index;
 
     setCourse((prev) => ({
       ...prev,
-      modules: prev.modules.map((module) =>
+      modules: (prev.modules ?? []).map((module) =>
         module.id === moduleId
           ? {
               ...module,
@@ -729,94 +1166,94 @@ export function CourseCreator() {
     }));
   };
 
-	const reorderContents = (
-		contents: Content[],
-		sourceIndex: number,
-		destinationIndex: number
-	) => {
-		const result = Array.from(contents);
-		const [removed] = result.splice(sourceIndex, 1);
-		result.splice(destinationIndex, 0, removed);
+  const reorderContents = (
+    contents: Content[],
+    sourceIndex: number,
+    destinationIndex: number
+  ) => {
+    const result = Array.from(contents);
+    const [removed] = result.splice(sourceIndex, 1);
+    result.splice(destinationIndex, 0, removed);
 
     // Update order numbers
-    return result.map((content, index) => ({
+    return (result ?? []).map((content, index) => ({
       ...content,
       order: index + 1,
     }));
   };
 
-	const addCategory = (category: string) => {
-		if (!course.categories.includes(category)) {
-			const updated = [...course.categories, category];
-			setCourse((prev) => ({ ...prev, categories: updated }));
-			autoSaveField("categories", updated);
-		}
-	};
+  const addCategory = (category: string) => {
+    if (!course.categories.includes(category)) {
+      const updated = [...course.categories, category];
+      setCourse((prev) => ({ ...prev, categories: updated }));
+      autoSaveField("categories", updated);
+    }
+  };
 
-	const removeCategory = (category: string) => {
-		const updated = course.categories.filter((c) => c !== category);
-		setCourse((prev) => ({ ...prev, categories: updated }));
-		autoSaveField("categories", updated);
-	};
+  const removeCategory = (category: string) => {
+    const updated = course.categories.filter((c) => c !== category);
+    setCourse((prev) => ({ ...prev, categories: updated }));
+    autoSaveField("categories", updated);
+  };
 
-	const addTag = (tag: string) => {
-		if (!course.tags.includes(tag)) {
-			const updated = [...course.tags, tag];
-			setCourse((prev) => ({ ...prev, tags: updated }));
-			autoSaveField("tags", updated);
-		}
-	};
+  const addTag = (tag: string) => {
+    if (!course.tags.includes(tag)) {
+      const updated = [...course.tags, tag];
+      setCourse((prev) => ({ ...prev, tags: updated }));
+      autoSaveField("tags", updated);
+    }
+  };
 
-	const removeTag = (tag: string) => {
-		setCourse((prev) => ({
-			...prev,
-			tags: prev.tags.filter((t) => t !== tag),
-		}));
-		const updated = course.tags.filter((t) => t !== tag);
-		setCourse((prev) => ({ ...prev, tags: updated }));
-		autoSaveField("tags", updated);
-	};
+  const removeTag = (tag: string) => {
+    setCourse((prev) => ({
+      ...prev,
+      tags: prev.tags.filter((t) => t !== tag),
+    }));
+    const updated = course.tags.filter((t) => t !== tag);
+    setCourse((prev) => ({ ...prev, tags: updated }));
+    autoSaveField("tags", updated);
+  };
 
-	const generateDescription = async () => {
-		// Simulate AI description generation
-		const aiDescriptions = [
-			`Master ${course.title} with hands-on projects and real-world examples. This comprehensive course covers everything from basics to advanced concepts, perfect for ${course.level} learners.`,
-			`Learn ${course.title} through practical exercises and industry best practices. Build your skills with step-by-step guidance and expert instruction.`,
-			`Comprehensive ${course.title} course designed for ${course.level} students. Gain practical experience and build portfolio-worthy projects.`,
-		];
+  const generateDescription = async () => {
+    // Simulate AI description generation
+    const aiDescriptions = [
+      `Master ${course.title} with hands-on projects and real-world examples. This comprehensive course covers everything from basics to advanced concepts, perfect for ${course.level} learners.`,
+      `Learn ${course.title} through practical exercises and industry best practices. Build your skills with step-by-step guidance and expert instruction.`,
+      `Comprehensive ${course.title} course designed for ${course.level} students. Gain practical experience and build portfolio-worthy projects.`,
+    ];
 
     const randomDescription =
-      aiDescriptions[Math.floor(Math.random() * aiDescriptions.length)];
+      aiDescriptions[Math.floor(Math.random() * (aiDescriptions ?? []).length)];
     setCourse((prev) => ({ ...prev, description: randomDescription }));
   };
 
-	const setDescription = (value: string) => {
-		setCourse((prev) => ({ ...prev, description: value }));
-		autoSaveField("description", value);
-	};
+  const setDescription = (value: string) => {
+    setCourse((prev) => ({ ...prev, description: value }));
+    autoSaveField("description", value);
+  };
 
-	return (
-		<div className="p-6 space-y-6">
-			<div className="flex justify-between items-center">
-				<div>
-					<h1 className="text-2xl font-bold text-midnight-blue-800">
-						Create New Course
-					</h1>
-					<p className="text-muted-foreground">
-						Build and publish your course step by step
-					</p>
-				</div>
-				<div className="flex gap-2">
-					<Button variant="outline">
-						<Save className="w-4 h-4 mr-2" />
-						Save Draft
-					</Button>
-					<Button className="bg-midnight-blue-800 hover:bg-midnight-blue-900">
-						<Eye className="w-4 h-4 mr-2" />
-						Preview Course
-					</Button>
-				</div>
-			</div>
+  return (
+    <div className="p-6 space-y-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-bold text-midnight-blue-800">
+            Create New Course
+          </h1>
+          <p className="text-muted-foreground">
+            Build and publish your course step by step
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="outline">
+            <Save className="w-4 h-4 mr-2" />
+            Save Draft
+          </Button>
+          <Button className="bg-midnight-blue-800 hover:bg-midnight-blue-900">
+            <Eye className="w-4 h-4 mr-2" />
+            Preview Course
+          </Button>
+        </div>
+      </div>
 
       {/* Progress Bar */}
       <Card>
@@ -832,7 +1269,7 @@ export function CourseCreator() {
             </div>
             <Progress value={getStepProgress()} className="h-2" />
             <div className="flex justify-between text-xs text-muted-foreground">
-              {steps.map((step, index) => (
+              {(steps ?? []).map((step, index) => (
                 <span
                   key={index}
                   className={`${
@@ -854,7 +1291,7 @@ export function CourseCreator() {
         onValueChange={(value) => setCurrentStep(Number.parseInt(value))}
       >
         <TabsList className="grid w-full grid-cols-4">
-          {steps.map((step, index) => (
+          {(steps ?? []).map((step, index) => (
             <TabsTrigger
               key={index}
               value={index.toString()}
@@ -865,68 +1302,68 @@ export function CourseCreator() {
           ))}
         </TabsList>
 
-				{/* Step 1: Basic Information */}
-				<TabsContent value="0" className="space-y-6">
-					<Card>
-						<CardHeader>
-							<CardTitle>Basic Course Information</CardTitle>
-							<CardDescription>
-								Set up the fundamental details of your course
-							</CardDescription>
-						</CardHeader>
-						<CardContent className="space-y-6">
-							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-								<div className="space-y-2">
-									<Label htmlFor="title">Course Title</Label>
-									<Input
-										id="title"
-										placeholder="e.g., Complete React Developer Course"
-										value={course.title}
-										onChange={(e) => {
-											const val = e.target.value;
-											setCourse((prev) => ({ ...prev, title: val }));
-											autoSaveField("title", val);
-										}}
-									/>
-									{saveStatus.title && (
-										<p className="text-xs text-muted-foreground">
-											{saveStatus.title}
-										</p>
-									)}
-								</div>
-								<div className="space-y-2">
-									<Label htmlFor="level">Difficulty Level</Label>
-									<Select
-										value={course.level}
-										onValueChange={(value) => {
-											setCourse((prev) => ({ ...prev, level: value }));
-											autoSaveField("level", value);
-										}}
-									>
-										<SelectTrigger>
-											<SelectValue placeholder="Select level" />
-										</SelectTrigger>
-										<SelectContent>
-											<SelectItem value="beginner">Beginner</SelectItem>
-											<SelectItem value="intermediate">Intermediate</SelectItem>
-											<SelectItem value="advanced">Advanced</SelectItem>
-											<SelectItem value="expert">Expert</SelectItem>
-										</SelectContent>
-									</Select>
-									{/* Letakkan di sini, setelah Select */}
-									{saveStatus.level && (
-										<p className="text-xs text-muted-foreground">
-											{saveStatus.level}
-										</p>
-									)}
-								</div>
-							</div>
+        {/* Step 1: Basic Information */}
+        <TabsContent value="0" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Basic Course Information</CardTitle>
+              <CardDescription>
+                Set up the fundamental details of your course
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="title">Course Title</Label>
+                  <Input
+                    id="title"
+                    placeholder="e.g., Complete React Developer Course"
+                    value={course.title}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setCourse((prev) => ({ ...prev, title: val }));
+                      autoSaveField("title", val);
+                    }}
+                  />
+                  {saveStatus.title && (
+                    <p className="text-xs text-muted-foreground">
+                      {saveStatus.title}
+                    </p>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="level">Difficulty Level</Label>
+                  <Select
+                    value={course.level}
+                    onValueChange={(value) => {
+                      setCourse((prev) => ({ ...prev, level: value }));
+                      autoSaveField("level", value);
+                    }}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select level" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="beginner">Beginner</SelectItem>
+                      <SelectItem value="intermediate">Intermediate</SelectItem>
+                      <SelectItem value="advanced">Advanced</SelectItem>
+                      <SelectItem value="expert">Expert</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {/* Letakkan di sini, setelah Select */}
+                  {saveStatus.level && (
+                    <p className="text-xs text-muted-foreground">
+                      {saveStatus.level}
+                    </p>
+                  )}
+                </div>
+              </div>
 
               {/* Categories */}
               <div className="space-y-3">
                 <Label>Categories</Label>
                 <div className="flex flex-wrap gap-2 mb-2">
-                  {course.categories.map((category) => (
+                  {(course.categories ?? []).map((category) => (
                     <Badge
                       key={category}
                       variant="secondary"
@@ -983,7 +1420,7 @@ export function CourseCreator() {
               <div className="space-y-3">
                 <Label>Tags</Label>
                 <div className="flex flex-wrap gap-2 mb-2">
-                  {course.tags.map((tag) => (
+                  {(course.tags ?? []).map((tag) => (
                     <Badge
                       key={tag}
                       variant="outline"
@@ -1036,144 +1473,144 @@ export function CourseCreator() {
                 </div>
               </div>
 
-							{/* Description with AI */}
-							<div className="space-y-2">
-								<div className="flex items-center justify-between">
-									<Label htmlFor="description">Course Description</Label>
-									<Button
-										variant="outline"
-										size="sm"
-										onClick={generateDescription}
-										className="flex items-center gap-2 bg-transparent"
-									>
-										<Sparkles className="w-4 h-4 text-purple-600" />
-										Generate with AI
-									</Button>
-								</div>
-								<RichTextEditor
-									value={course.description}
-									onChange={setDescription}
-									placeholder="Describe what students will learn in this course..."
-								/>
-								{saveStatus.description && (
-									<p className="text-xs text-muted-foreground">
-										{saveStatus.description}
-									</p>
-								)}
-							</div>
+              {/* Description with AI */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="description">Course Description</Label>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={generateDescription}
+                    className="flex items-center gap-2 bg-transparent"
+                  >
+                    <Sparkles className="w-4 h-4 text-purple-600" />
+                    Generate with AI
+                  </Button>
+                </div>
+                <RichTextEditor
+                  value={course.description}
+                  onChange={setDescription}
+                  placeholder="Describe what students will learn in this course..."
+                />
+                {saveStatus.description && (
+                  <p className="text-xs text-muted-foreground">
+                    {saveStatus.description}
+                  </p>
+                )}
+              </div>
 
-							{/* Course Settings */}
-							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-								<div className="flex items-center space-x-2">
-									<Switch
-										id="free-preview"
-										checked={course.freePreview}
-										onCheckedChange={(checked) => {
-											setCourse((prev) => ({ ...prev, freePreview: checked }));
-											autoSaveField("freePreview", checked);
-										}}
-									/>
-									{saveStatus.freePreview && (
-										<p className="text-xs text-muted-foreground">
-											{saveStatus.freePreview}
-										</p>
-									)}
+              {/* Course Settings */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="free-preview"
+                    checked={course.freePreview}
+                    onCheckedChange={(checked) => {
+                      setCourse((prev) => ({ ...prev, freePreview: checked }));
+                      autoSaveField("freePreview", checked);
+                    }}
+                  />
+                  {saveStatus.freePreview && (
+                    <p className="text-xs text-muted-foreground">
+                      {saveStatus.freePreview}
+                    </p>
+                  )}
 
-									<Label htmlFor="free-preview">Enable free preview</Label>
-								</div>
-								<div className="flex items-center gap-2">
-									<Switch
-										checked={course.is_visible}
-										onCheckedChange={(val) => {
-											setCourse((prev) => ({ ...prev, is_visible: val }));
-											autoSaveField("is_visible", val);
-										}}
-									/>
-									<Label>Public Course Visibility</Label>
-								</div>
-								<div className="flex items-center space-x-2">
-									<Switch
-										id="enable-certificate"
-										checked={course.certificate.enabled}
-										onCheckedChange={(checked) => {
-											const newCert = {
-												...course.certificate,
-												enabled: checked,
-											};
-											setCourse((prev) => ({ ...prev, certificate: newCert }));
-											autoSaveField("certificate", newCert);
-										}}
-									/>
-									{saveStatus.certificate && (
-										<p className="text-xs text-muted-foreground">
-											{saveStatus.certificate}
-										</p>
-									)}
+                  <Label htmlFor="free-preview">Enable free preview</Label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Switch
+                    checked={course.is_visible}
+                    onCheckedChange={(val) => {
+                      setCourse((prev) => ({ ...prev, is_visible: val }));
+                      autoSaveField("is_visible", val);
+                    }}
+                  />
+                  <Label>Public Course Visibility</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="enable-certificate"
+                    checked={course.certificate.enabled}
+                    onCheckedChange={(checked) => {
+                      const newCert = {
+                        ...course.certificate,
+                        enabled: checked,
+                      };
+                      setCourse((prev) => ({ ...prev, certificate: newCert }));
+                      autoSaveField("certificate", newCert);
+                    }}
+                  />
+                  {saveStatus.certificate && (
+                    <p className="text-xs text-muted-foreground">
+                      {saveStatus.certificate}
+                    </p>
+                  )}
 
-									<Label htmlFor="enable-certificate">
-										Enable certificate generation
-									</Label>
-								</div>
-							</div>
+                  <Label htmlFor="enable-certificate">
+                    Enable certificate generation
+                  </Label>
+                </div>
+              </div>
 
-							{/* Thumbnail Upload */}
-							<div className="space-y-2">
-								<Label htmlFor="thumbnail">Course Thumbnail</Label>
-								<div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-									{course.thumbnail ? (
-										<img
-											src={course.thumbnail}
-											alt="Thumbnail"
-											className="mx-auto mb-4 max-h-40 rounded-md"
-										/>
-									) : (
-										<>
-											<Upload className="mx-auto h-12 w-12 text-gray-400" />
-											<p className="text-sm text-gray-500">
-												No thumbnail uploaded
-											</p>
-										</>
-									)}
+              {/* Thumbnail Upload */}
+              <div className="space-y-2">
+                <Label htmlFor="thumbnail">Course Thumbnail</Label>
+                <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                  {course.thumbnail ? (
+                    <img
+                      src={course.thumbnail}
+                      alt="Thumbnail"
+                      className="mx-auto mb-4 max-h-40 rounded-md"
+                    />
+                  ) : (
+                    <>
+                      <Upload className="mx-auto h-12 w-12 text-gray-400" />
+                      <p className="text-sm text-gray-500">
+                        No thumbnail uploaded
+                      </p>
+                    </>
+                  )}
 
-									<div className="mt-4 flex justify-center">
-										<Input
-											type="file"
-											accept="image/*"
-											onChange={handleThumbnailUpload}
-											className="w-auto cursor-pointer"
-										/>
-									</div>
+                  <div className="mt-4 flex justify-center">
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleThumbnailUpload}
+                      className="w-auto cursor-pointer"
+                    />
+                  </div>
 
-									<p className="mt-2 text-sm text-gray-500">
-										PNG, JPG up to 2MB (1280x720 recommended)
-									</p>
-									{saveStatus.thumbnail && (
-										<p className="text-xs text-muted-foreground">
-											{saveStatus.thumbnail}
-										</p>
-									)}
-								</div>
-							</div>
-						</CardContent>
-					</Card>
-				</TabsContent>
+                  <p className="mt-2 text-sm text-gray-500">
+                    PNG, JPG up to 2MB (1280x720 recommended)
+                  </p>
+                  {saveStatus.thumbnail && (
+                    <p className="text-xs text-muted-foreground">
+                      {saveStatus.thumbnail}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-				{/* Step 2: Course Structure */}
-				<TabsContent value="1" className="space-y-6">
-					<Card>
-						<CardHeader>
-							<CardTitle className="flex items-center justify-between">
-								Course Structure
-								<Dialog
-									open={isModuleDialogOpen}
-									onOpenChange={setIsModuleDialogOpen}
-								>
-									<DialogTrigger asChild>
-										<Button className="bg-midnight-blue-800 hover:bg-midnight-blue-900 flex items-center gap-2">
-											<Plus className="w-4 h-4 mr-2" />
-											Add Module
-										</Button>
-									</DialogTrigger>
+        {/* Step 2: Course Structure */}
+        <TabsContent value="1" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                Course Structure
+                <Dialog
+                  open={isModuleDialogOpen}
+                  onOpenChange={setIsModuleDialogOpen}
+                >
+                  <DialogTrigger asChild>
+                    <Button className="bg-midnight-blue-800 hover:bg-midnight-blue-900 flex items-center gap-2">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add Module
+                    </Button>
+                  </DialogTrigger>
 
                   <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                     <DialogHeader>
@@ -1191,28 +1628,13 @@ export function CourseCreator() {
                 >
                   <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                     <DialogHeader>
-                      <DialogTitle>Edit Module</DialogTitle>
-                      <DialogDescription>
-                        Edit existing module
-                      </DialogDescription>
+                      <DialogTitle>Edit Module {editingModule.title}</DialogTitle>
                     </DialogHeader>
-                    {editingModuleIndex !== null && (
+                    {editingModule !== null && (
                       <ModuleForm
-                        module={course.modules[editingModuleIndex]}
-                        onSubmit={(updatedData) => {
-                          updateModule(
-                            course.modules[editingModuleIndex].id,
-                            updatedData
-                          );
-                          const updatedModules = [...course.modules];
-                          updatedModules[editingModuleIndex] = {
-                            ...updatedModules[editingModuleIndex],
-                            ...updatedData,
-                          };
-                          setCourse((prev) => ({
-                            ...prev,
-                            modules: updatedModules,
-                          }));
+                        module={editingModule}
+                        onSubmit={async (updatedData) => {
+                          await updateModule(editingModule.id, updatedData);
                           setIsEditModuleOpen(false);
                         }}
                       />
@@ -1230,8 +1652,9 @@ export function CourseCreator() {
                 directly
               </CardDescription>
             </CardHeader>
+						
             <CardContent>
-              {course.modules.length === 0 ? (
+              {(course.modules ?? []).length === 0 ? (
                 <div className="text-center py-8">
                   <BookOpen className="mx-auto h-12 w-12 text-gray-400" />
                   <h3 className="mt-4 text-lg font-medium">No modules yet</h3>
@@ -1241,7 +1664,7 @@ export function CourseCreator() {
                 </div>
               ) : (
                 <Accordion type="single" collapsible className="space-y-4">
-                  {course.modules.map((module, moduleIndex) => (
+                  {(course.modules ?? []).map((module, moduleIndex) => (
                     <AccordionItem key={module.id} value={module.id}>
                       <div className="flex items-start justify-between w-full">
                         <AccordionTrigger className="hover:no-underline w-full pr-4">
@@ -1250,7 +1673,7 @@ export function CourseCreator() {
                             <div className="text-left">
                               <h4 className="font-medium">{module.title}</h4>
                               <p className="text-sm text-muted-foreground">
-                                {module.contents.length} contents
+                                {(module.contents ?? []).length} contents
                               </p>
                             </div>
                           </div>
@@ -1260,31 +1683,31 @@ export function CourseCreator() {
                             variant="outline"
                             size="icon"
                             onClick={() => {
-                              setEditingModuleIndex(moduleIndex);
+                              setEditingModule(module);
                               setIsEditModuleOpen(true);
                             }}
                           >
                             <Edit className="w-4 h-4" />
                           </Button>
 
-													<Button
-														size="sm"
-														variant="outline"
-														className="text-red-600 bg-transparent"
-														onClick={() => {
-															if (
-																!window.confirm(
-																	"Hapus modul ini beserta isinya?"
-																)
-															)
-																return;
-															deleteModule(module.id);
-														}}
-													>
-														<Trash2 className="w-3 h-3" />
-													</Button>
-												</div>
-											</div>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="text-red-600 bg-transparent"
+                            onClick={() => {
+                              if (
+                                !window.confirm(
+                                  "Hapus modul ini beserta isinya?"
+                                )
+                              )
+                                return;
+                              deleteModule(module.id);
+                            }}
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </Button>
+                        </div>
+                      </div>
 
                       <AccordionContent>
                         <div className="space-y-4 pt-4">
@@ -1321,208 +1744,210 @@ export function CourseCreator() {
                                     </DialogTitle>
                                     <DialogDescription>
                                       Create lesson content with materials
+                                      including video uploads
                                     </DialogDescription>
                                   </DialogHeader>
                                   <LessonForm
+                                    courseId={course.id}
+                                    moduleId={module.id}
+                                    onSubmit={(data) =>
+                                      addContent(module.id, data)
+                                    }
+                                    onClose={() => setIsLessonDialogOpen(false)}
+                                  />
+                                </DialogContent>
+                              </Dialog>
+                              <Dialog
+                                open={
+                                  isQuizDialogOpen &&
+                                  selectedModuleIdForContent === module.id
+                                }
+                                onOpenChange={(open) => {
+                                  setIsQuizDialogOpen(open);
+                                  if (open) {
+                                    setSelectedModuleIdForContent(module.id);
+                                  }
+                                }}
+                              >
+                                <DialogTrigger asChild>
+                                  <Button size="sm" variant="outline">
+                                    <HelpCircle className="w-3 h-3 mr-1" />
+                                    Add Quiz
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                                  <DialogHeader>
+                                    <DialogTitle>
+                                      Add Quiz to {module.title}
+                                    </DialogTitle>
+                                    <DialogDescription>
+                                      Create quiz with questions and settings
+                                    </DialogDescription>
+                                  </DialogHeader>
+                                  <QuizForm
                                     onSubmit={(data) =>
                                       addContent(module.id, data)
                                     }
                                   />
                                 </DialogContent>
                               </Dialog>
-                              {/* {contentSaveStatus && (
-  <p className="text-sm text-muted-foreground pl-1">{contentSaveStatus}</p>
-)} */}
-															<Dialog
-																open={
-																	isQuizDialogOpen &&
-																	selectedModuleIdForContent === module.id
-																}
-																onOpenChange={(open) => {
-																	setIsQuizDialogOpen(open);
-																	if (open) {
-																		setSelectedModuleIdForContent(module.id);
-																	}
-																}}
-															>
-																<DialogTrigger asChild>
-																	<Button size="sm" variant="outline">
-																		<HelpCircle className="w-3 h-3 mr-1" />
-																		Add Quiz
-																	</Button>
-																</DialogTrigger>
-																<DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-																	<DialogHeader>
-																		<DialogTitle>
-																			Add Quiz to {module.title}
-																		</DialogTitle>
-																		<DialogDescription>
-																			Create quiz with questions and settings
-																		</DialogDescription>
-																	</DialogHeader>
-																	<QuizForm
-																		onSubmit={(data) =>
-																			addContent(module.id, data)
-																		}
-																	/>
-																</DialogContent>
-															</Dialog>
 
-															<Dialog
-																open={isEditLessonOpen}
-																onOpenChange={setIsEditLessonOpen}
-															>
-																<DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-																	<DialogHeader>
-																		<DialogTitle>
-																			Edit Lesson:{" "}
-																			{
-																				course.modules[
-																					editingLesson?.moduleIndex
-																				]?.title
-																			}
-																		</DialogTitle>
-																		<DialogDescription>
-																			Update lesson content and materials
-																		</DialogDescription>
-																	</DialogHeader>
+                              <Dialog
+                                open={isEditLessonOpen}
+                                onOpenChange={setIsEditLessonOpen}
+                              >
+                                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                                  <DialogHeader>
+                                    <DialogTitle>
+                                      Edit Lesson:{" "}
+                                      {
+                                        course.modules[
+                                          editingLesson?.moduleIndex
+                                        ]?.title
+                                      }
+                                    </DialogTitle>
+                                    <DialogDescription>
+                                      Update lesson content and materials
+                                    </DialogDescription>
+                                  </DialogHeader>
 
-																	{editingLesson && (
-																		<LessonForm
-																			lesson={{
-																				title:
-																					course.modules[
-																						editingLesson.moduleIndex
-																					].contents[editingLesson.contentIndex]
-																						.title,
-																				content:
-																					course.modules[
-																						editingLesson.moduleIndex
-																					].contents[editingLesson.contentIndex]
-																						.data,
-																			}}
-																			onSubmit={(updatedData) => {
-																				const lessonId =
-																					course.modules[
-																						editingLesson.moduleIndex
-																					].contents[editingLesson.contentIndex]
-																						.id;
+                                  {editingLesson && (
+                                    <LessonForm
+                                      lesson={{
+                                        title:
+                                          course.modules[
+                                            editingLesson.moduleIndex
+                                          ].contents[editingLesson.contentIndex]
+                                            .title,
+                                        content:
+                                          course.modules[
+                                            editingLesson.moduleIndex
+                                          ].contents[editingLesson.contentIndex]
+                                            .data,
+                                      }}
+                                      onSubmit={(updatedData) => {
+                                        const lessonId =
+                                          course.modules[
+                                            editingLesson.moduleIndex
+                                          ].contents[editingLesson.contentIndex]
+                                            .id;
 
-																				updateLesson(lessonId, {
-																					...updatedData,
-																					module_id:
-																						course.modules[
-																							editingLesson.moduleIndex
-																						].id,
-																					order: editingLesson.contentIndex + 1,
-																				});
+                                        updateLesson(lessonId, {
+                                          ...updatedData,
+                                          module_id:
+                                            course.modules[
+                                              editingLesson.moduleIndex
+                                            ].id,
+                                          order: editingLesson.contentIndex + 1,
+                                        });
 
-																				const updatedModules = [
-																					...course.modules,
-																				];
-																				updatedModules[
-																					editingLesson.moduleIndex
-																				].contents[editingLesson.contentIndex] =
-																					{
-																						...updatedModules[
-																							editingLesson.moduleIndex
-																						].contents[
-																							editingLesson.contentIndex
-																						],
-																						...updatedData,
-																					};
+                                        const updatedModules = [
+                                          ...course.modules,
+                                        ];
+                                        updatedModules[
+                                          editingLesson.moduleIndex
+                                        ].contents[editingLesson.contentIndex] =
+                                          {
+                                            ...updatedModules[
+                                              editingLesson.moduleIndex
+                                            ].contents[
+                                              editingLesson.contentIndex
+                                            ],
+                                            ...updatedData,
+                                          };
 
-																				setCourse((prev) => ({
-																					...prev,
-																					modules: updatedModules,
-																				}));
-																				setIsEditLessonOpen(false);
-																			}}
-																		/>
-																	)}
-																</DialogContent>
-															</Dialog>
+                                        setCourse((prev) => ({
+                                          ...prev,
+                                          modules: updatedModules,
+                                        }));
+                                        setIsEditLessonOpen(false);
+                                      }}
+                                    />
+                                  )}
+                                </DialogContent>
+                              </Dialog>
 
-															<Dialog
-																open={isEditQuizOpen}
-																onOpenChange={setIsEditQuizOpen}
-															>
-																<DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-																	<DialogHeader>
-																		<DialogTitle>
-																			Edit Quiz:{" "}
-																			{
-																				course.modules[editingQuiz?.moduleIndex]
-																					?.title
-																			}
-																		</DialogTitle>
-																		<DialogDescription>
-																			Update quiz settings and description
-																		</DialogDescription>
-																	</DialogHeader>
+                              <Dialog
+                                open={isEditQuizOpen}
+                                onOpenChange={setIsEditQuizOpen}
+                              >
+                                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+                                  <DialogHeader>
+                                    <DialogTitle>
+                                      Edit Quiz:{" "}
+                                      {
+                                        course.modules[editingQuiz?.moduleIndex]
+                                          ?.title
+                                      }
+                                    </DialogTitle>
+                                    <DialogDescription>
+                                      Update quiz settings and description
+                                    </DialogDescription>
+                                  </DialogHeader>
 
-																	{editingQuiz && (
-																		<QuizForm
-																			quiz={{
-																				title:
-																					course.modules[
-																						editingQuiz.moduleIndex
-																					].contents[editingQuiz.contentIndex]
-																						.title,
-																				description:
-																					course.modules[
-																						editingQuiz.moduleIndex
-																					].contents[editingQuiz.contentIndex]
-																						?.data?.description || "",
-																			}}
-																			onSubmit={(updatedData) => {
-																				const quizId =
-																					course.modules[
-																						editingQuiz.moduleIndex
-																					].contents[editingQuiz.contentIndex]
-																						.id;
+                                  {editingQuiz && (
+                                    <QuizForm
+                                      quiz={{
+                                        title:
+                                          course.modules[
+                                            editingQuiz.moduleIndex
+                                          ].contents[editingQuiz.contentIndex]
+                                            .title,
+                                        description:
+                                          course.modules[
+                                            editingQuiz.moduleIndex
+                                          ].contents[editingQuiz.contentIndex]
+                                            ?.data?.description || "",
+                                      }}
+                                      onSubmit={(updatedData) => {
+                                        const quizId =
+                                          course.modules[
+                                            editingQuiz.moduleIndex
+                                          ].contents[editingQuiz.contentIndex]
+                                            .id;
 
-																				updateQuiz(quizId, {
-																					...updatedData,
-																					module_id:
-																						course.modules[
-																							editingQuiz.moduleIndex
-																						].id,
-																					order: editingQuiz.contentIndex + 1,
-																				});
+                                        updateQuiz(quizId, {
+                                          ...updatedData,
+                                          module_id:
+                                            course.modules[
+                                              editingQuiz.moduleIndex
+                                            ].id,
+                                          order: editingQuiz.contentIndex + 1,
+                                        });
 
-																				const updatedModules = [
-																					...course.modules,
-																				];
-																				updatedModules[
-																					editingQuiz.moduleIndex
-																				].contents[editingQuiz.contentIndex] = {
-																					...updatedModules[
-																						editingQuiz.moduleIndex
-																					].contents[editingQuiz.contentIndex],
-																					...updatedData,
-																				};
+                                        const updatedModules = [
+                                          ...course.modules,
+                                        ];
+                                        updatedModules[
+                                          editingQuiz.moduleIndex
+                                        ].contents[editingQuiz.contentIndex] = {
+                                          ...updatedModules[
+                                            editingQuiz.moduleIndex
+                                          ].contents[editingQuiz.contentIndex],
+                                          ...updatedData,
+                                        };
 
-																				setCourse((prev) => ({
-																					...prev,
-																					modules: updatedModules,
-																				}));
-																				setIsEditQuizOpen(false);
-																			}}
-																		/>
-																	)}
-																</DialogContent>
-															</Dialog>
+                                        setCourse((prev) => ({
+                                          ...prev,
+                                          modules: updatedModules,
+                                        }));
+                                        setIsEditQuizOpen(false);
+                                      }}
+                                    />
+                                  )}
+                                </DialogContent>
+                              </Dialog>
 
-															{contentSaveStatus && (
-																<p className="text-sm text-muted-foreground pl-1">
-																	{contentSaveStatus}
-																</p>
-															)}
-														</div>
-													</div>
+                              {contentSaveStatus && (
+                                <p className="text-sm text-muted-foreground pl-1">
+                                  {contentSaveStatus}
+                                </p>
+                              )}
+                            </div>
+                          </div>
 
-                          {module.contents && module.contents.length === 0 ? (
+                          {module.contents &&
+                          (module.contents ?? []).length === 0 ? (
                             <div className="text-center py-4 border-2 border-dashed border-gray-200 rounded-lg">
                               <p className="text-sm text-gray-500">
                                 No contents in this module yet
@@ -1535,7 +1960,7 @@ export function CourseCreator() {
                             <div className="space-y-2">
                               {/* Content List */}
                               {module.contents &&
-                                module.contents.length > 0 && (
+                                (module.contents ?? []).length > 0 && (
                                   <div className="space-y-2">
                                     <DragDropContext
                                       onDragEnd={(result) =>
@@ -1596,62 +2021,62 @@ export function CourseCreator() {
                                                           </Button>
                                                         )}
 
-																												{content.type ===
-																													"quiz" && (
-																													<Button
-																														variant="outline"
-																														size="icon"
-																														onClick={() => {
-																															setEditingQuiz({
-																																moduleIndex,
-																																contentIndex,
-																															}); // ← Index konten Quiz
-																															setIsEditQuizOpen(
-																																true
-																															); // ← Buka dialog
-																														}}
-																													>
-																														<Edit className="w-4 h-4" />
-																													</Button>
-																												)}
+                                                        {content.type ===
+                                                          "quiz" && (
+                                                          <Button
+                                                            variant="outline"
+                                                            size="icon"
+                                                            onClick={() => {
+                                                              setEditingQuiz({
+                                                                moduleIndex,
+                                                                contentIndex,
+                                                              }); // ← Index konten Quiz
+                                                              setIsEditQuizOpen(
+                                                                true
+                                                              ); // ← Buka dialog
+                                                            }}
+                                                          >
+                                                            <Edit className="w-4 h-4" />
+                                                          </Button>
+                                                        )}
 
-																												<div>
-																													<span className="text-sm font-medium">
-																														{content.title}
-																													</span>
-																													<Badge
-																														variant="secondary"
-																														className="text-xs ml-2"
-																													>
-																														{content.type}
-																													</Badge>
-																												</div>
-																											</div>
-																											<div className="flex items-center gap-1">
-																												{/* <Button
+                                                        <div>
+                                                          <span className="text-sm font-medium">
+                                                            {content.title}
+                                                          </span>
+                                                          <Badge
+                                                            variant="secondary"
+                                                            className="text-xs ml-2"
+                                                          >
+                                                            {content.type}
+                                                          </Badge>
+                                                        </div>
+                                                      </div>
+                                                      <div className="flex items-center gap-1">
+                                                        {/* <Button
                                                           size="sm"
                                                           variant="outline"
                                                         >
                                                           <Edit className="w-3 h-3" />
                                                         </Button> */}
-																												<Button
-																													size="sm"
-																													variant="outline"
-																													className="text-red-600 bg-transparent"
-																													onClick={() => {
-																														if (
-																															!window.confirm(
-																																"Yakin ingin menghapus?"
-																															)
-																														)
-																															return;
+                                                        <Button
+                                                          size="sm"
+                                                          variant="outline"
+                                                          className="text-red-600 bg-transparent"
+                                                          onClick={() => {
+                                                            if (
+                                                              !window.confirm(
+                                                                "Yakin ingin menghapus?"
+                                                              )
+                                                            )
+                                                              return;
 
-																														const isLesson =
-																															content.type ===
-																															"lesson";
-																														const isQuiz =
-																															content.type ===
-																															"quiz";
+                                                            const isLesson =
+                                                              content.type ===
+                                                              "lesson";
+                                                            const isQuiz =
+                                                              content.type ===
+                                                              "quiz";
 
                                                             if (isLesson) {
                                                               deleteLesson(
@@ -1694,74 +2119,74 @@ export function CourseCreator() {
           </Card>
         </TabsContent>
 
-				{/* Step 3: Pricing & Coupons */}
-				<TabsContent value="2" className="space-y-6">
-					<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-						<Card>
-							<CardHeader>
-								<CardTitle>Pricing Strategy</CardTitle>
-								<CardDescription>
-									Set your course pricing and payment options
-								</CardDescription>
-							</CardHeader>
-							<CardContent className="space-y-4">
-								<div className="space-y-2">
-									<Label>Course Price</Label>
-									<div className="relative">
-										<span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
-											Rp
-										</span>
-										<Input
-											type="number"
-											placeholder="0"
-											className="pl-8"
-											value={course.price}
-											onChange={(e) => {
-												const val = Number.parseFloat(e.target.value) || 0;
-												setCourse((prev) => ({ ...prev, price: val }));
-												autoSaveField("price", val);
-											}}
-										/>
-										{saveStatus.price && (
-											<p className="text-xs text-muted-foreground">
-												{saveStatus.price}
-											</p>
-										)}
-									</div>
-								</div>
+        {/* Step 3: Pricing & Coupons */}
+        <TabsContent value="2" className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Pricing Strategy</CardTitle>
+                <CardDescription>
+                  Set your course pricing and payment options
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Course Price</Label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                      Rp
+                    </span>
+                    <Input
+                      type="number"
+                      placeholder="0"
+                      className="pl-8"
+                      value={course.price}
+                      onChange={(e) => {
+                        const val = Number.parseFloat(e.target.value) || 0;
+                        setCourse((prev) => ({ ...prev, price: val }));
+                        autoSaveField("price", val);
+                      }}
+                    />
+                    {saveStatus.price && (
+                      <p className="text-xs text-muted-foreground">
+                        {saveStatus.price}
+                      </p>
+                    )}
+                  </div>
+                </div>
 
-								<div className="space-y-2">
-									<Label>Pricing Type</Label>
-									<Select
-										value={course.price === 0 ? "free" : "one-time"}
-										disabled={course.price === 0}
-									>
-										<SelectTrigger>
-											<SelectValue placeholder="Select pricing type" />
-										</SelectTrigger>
-										<SelectContent>
-											{course.price === 0 ? (
-												<SelectItem value="free">Free Course</SelectItem>
-											) : (
-												<>
-													<SelectItem value="one-time">
-														One-time Payment
-													</SelectItem>
-													<SelectItem value="subscription">
-														Monthly Subscription
-													</SelectItem>
-												</>
-											)}
-										</SelectContent>
-									</Select>
-									{course.price === 0 && (
-										<p className="text-sm text-muted-foreground">
-											Free courses automatically use "Free Course" pricing type
-										</p>
-									)}
-								</div>
-							</CardContent>
-						</Card>
+                <div className="space-y-2">
+                  <Label>Pricing Type</Label>
+                  <Select
+                    value={course.price === 0 ? "free" : "one-time"}
+                    disabled={course.price === 0}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select pricing type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {course.price === 0 ? (
+                        <SelectItem value="free">Free Course</SelectItem>
+                      ) : (
+                        <>
+                          <SelectItem value="one-time">
+                            One-time Payment
+                          </SelectItem>
+                          <SelectItem value="subscription">
+                            Monthly Subscription
+                          </SelectItem>
+                        </>
+                      )}
+                    </SelectContent>
+                  </Select>
+                  {course.price === 0 && (
+                    <p className="text-sm text-muted-foreground">
+                      Free courses automatically use "Free Course" pricing type
+                    </p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
 
             <Card>
               <CardHeader>
@@ -1796,7 +2221,7 @@ export function CourseCreator() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                {course.coupons.length === 0 ? (
+                {(course.coupons ?? []).length === 0 ? (
                   <div className="text-center py-4">
                     <p className="text-sm text-gray-500">
                       No coupons created yet
@@ -1804,7 +2229,7 @@ export function CourseCreator() {
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    {course.coupons.map((coupon) => (
+                    {(course.coupons ?? []).map((coupon) => (
                       <div
                         key={coupon.id}
                         className="flex items-center justify-between p-3 border rounded-lg"
@@ -1865,7 +2290,7 @@ export function CourseCreator() {
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Categories:</span>
                       <span>
-                        {course.categories.length > 0
+                        {(course.categories ?? []).length > 0
                           ? course.categories.join(", ")
                           : "Not set"}
                       </span>
@@ -1873,7 +2298,7 @@ export function CourseCreator() {
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Tags:</span>
                       <span>
-                        {course.tags.length > 0
+                        {(course.tags ?? []).length > 0
                           ? course.tags.join(", ")
                           : "Not set"}
                       </span>
@@ -1888,7 +2313,7 @@ export function CourseCreator() {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Modules:</span>
-                      <span>{course.modules.length}</span>
+                      <span>{(course.modules ?? []).length}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">
@@ -1896,7 +2321,7 @@ export function CourseCreator() {
                       </span>
                       <span>
                         {course.modules.reduce(
-                          (acc, module) => acc + module.contents.length,
+                          (acc, module) => acc + (module.contents ?? []).length,
                           0
                         )}
                       </span>
@@ -1917,7 +2342,7 @@ export function CourseCreator() {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Coupons:</span>
-                      <span>{course.coupons.length}</span>
+                      <span>{(course.coupons ?? []).length}</span>
                     </div>
                   </div>
                 </div>
@@ -1942,7 +2367,7 @@ export function CourseCreator() {
                       <span className="text-sm">Course description</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      {course.categories.length > 0 ? (
+                      {(course.categories ?? []).length > 0 ? (
                         <CheckCircle className="w-4 h-4 text-green-600" />
                       ) : (
                         <AlertCircle className="w-4 h-4 text-red-600" />
@@ -1950,7 +2375,7 @@ export function CourseCreator() {
                       <span className="text-sm">At least one category</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      {course.modules.length > 0 ? (
+                      {(course.modules ?? []).length > 0 ? (
                         <CheckCircle className="w-4 h-4 text-green-600" />
                       ) : (
                         <AlertCircle className="w-4 h-4 text-red-600" />
@@ -1961,20 +2386,20 @@ export function CourseCreator() {
                 </div>
               </div>
 
-							<div className="flex gap-4">
-								<Button variant="outline" className="flex-1 bg-transparent">
-									<Eye className="w-4 h-4 mr-2" />
-									Preview Course
-								</Button>
-								<Button className="flex-1 bg-green-600 hover:bg-green-700">
-									<Upload className="w-4 h-4 mr-2" />
-									Submit for Review
-								</Button>
-							</div>
-						</CardContent>
-					</Card>
-				</TabsContent>
-			</Tabs>
+              <div className="flex gap-4">
+                <Button variant="outline" className="flex-1 bg-transparent">
+                  <Eye className="w-4 h-4 mr-2" />
+                  Preview Course
+                </Button>
+                <Button className="flex-1 bg-green-600 hover:bg-green-700">
+                  <Upload className="w-4 h-4 mr-2" />
+                  Submit for Review
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
 
       {/* Navigation */}
       <div className="flex justify-between">
@@ -1987,9 +2412,9 @@ export function CourseCreator() {
         </Button>
         <Button
           onClick={() =>
-            setCurrentStep(Math.min(steps.length - 1, currentStep + 1))
+            setCurrentStep(Math.min((steps ?? []).length - 1, currentStep + 1))
           }
-          disabled={currentStep === steps.length - 1}
+          disabled={currentStep === (steps ?? []).length - 1}
           className="bg-midnight-blue-800 hover:bg-midnight-blue-900"
         >
           Next
@@ -2001,193 +2426,154 @@ export function CourseCreator() {
 
 // Form Components
 function ModuleForm({
-	onSubmit,
-}: {
-	onSubmit: (data: Omit<Module, "id" | "order" | "contents">) => void;
-}) {
-	const [formData, setFormData] = useState({
-		title: "",
-		description: "",
-	});
-
-	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault();
-		onSubmit(formData);
-		setFormData({ title: "", description: "" });
-	};
-
-	const generateModuleDescription = () => {
-		const aiDescriptions = [
-			`This module covers the fundamental concepts and practical applications of ${formData.title}. Students will learn through hands-on exercises and real-world examples.`,
-			`Comprehensive introduction to ${formData.title} with step-by-step guidance and practical projects to build your skills.`,
-			`Master ${formData.title} through interactive lessons, practical exercises, and industry best practices.`,
-		];
-
-    const randomDescription =
-      aiDescriptions[Math.floor(Math.random() * aiDescriptions.length)];
-    setFormData((prev) => ({ ...prev, description: randomDescription }));
-  };
-
-	const setDescription = (value: string) => {
-		setFormData((prev) => ({ ...prev, description: value }));
-	};
-
-	return (
-		<form onSubmit={handleSubmit} className="space-y-4">
-			<div className="space-y-2">
-				<Label htmlFor="module-title">Module Title</Label>
-				<Input
-					id="module-title"
-					placeholder="e.g., Introduction to React"
-					value={formData.title}
-					onChange={(e) =>
-						setFormData((prev) => ({ ...prev, title: e.target.value }))
-					}
-					required
-				/>
-			</div>
-			<div className="space-y-2">
-				<div className="flex items-center justify-between">
-					<Label htmlFor="module-description">Description</Label>
-					<Button
-						type="button"
-						variant="outline"
-						size="sm"
-						onClick={generateModuleDescription}
-						className="flex items-center gap-2 bg-transparent"
-					>
-						<Sparkles className="w-4 h-4 text-purple-600" />
-						Generate with AI
-					</Button>
-				</div>
-				<RichTextEditor
-					value={formData.description}
-					onChange={setDescription}
-					placeholder="Describe what this module covers..."
-				/>
-			</div>
-			<DialogFooter>
-				<Button
-					type="submit"
-					className="bg-midnight-blue-800 hover:bg-midnight-blue-900"
-				>
-					Add Module
-				</Button>
-			</DialogFooter>
-		</form>
-	);
-}
-
-function LessonForm({
   onSubmit,
+  module,
 }: {
-  onSubmit: (data: Omit<Content, "id" | "order">) => void;
+  onSubmit: (data: Omit<Module, "id" | "order" | "contents">) => void;
+  module?: Module;
 }) {
-	const [formData, setFormData] = useState({
-		title: "",
-		content: "",
-		images: [] as File[],
-		videos: [] as File[],
-		files: [] as File[],
-	});
+  const [formData, setFormData] = useState({
+    title: module?.title ?? "",
+    description: module?.description ?? "",
+
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({
-      title: formData.title,
-      type: "lesson",
-      data: {
-        content: formData.content,
-        images: formData.images,
-        videos: formData.videos,
-        files: formData.files,
-      },
-    });
-    setFormData({ title: "", content: "", images: [], videos: [], files: [] });
+    onSubmit(formData);
+    setFormData({ title: "", description: "" });
   };
 
-  const generateLessonContent = () => {
-    const aiContents = [
-      `<h1>${formData.title}</h1>
-
-<h2>Introduction</h2>
-<p>Welcome to this comprehensive lesson on ${formData.title}. In this lesson, you'll learn the fundamental concepts and practical applications.</p>
-
-<h2>Learning Objectives</h2>
-<p>By the end of this lesson, you will be able to:</p>
-<ul>
-<li>Understand the core concepts of ${formData.title}</li>
-<li>Apply the knowledge in real-world scenarios</li>
-<li>Implement best practices and industry standards</li>
-</ul>
-
-<h2>Key Concepts</h2>
-<p>Let's dive into the essential concepts you need to master...</p>
-
-<h2>Practical Examples</h2>
-<p>Here are some hands-on examples to help you understand better...</p>
-
-<h2>Summary</h2>
-<p>In this lesson, we covered the important aspects of ${formData.title}. Practice these concepts to strengthen your understanding.</p>`,
-
-      `<h1>Understanding ${formData.title}</h1>
-
-<h2>Overview</h2>
-<p>This lesson provides a comprehensive introduction to ${formData.title}, covering both theoretical foundations and practical implementations.</p>
-
-<h2>What You'll Learn</h2>
-<ul>
-<li>Core principles and concepts</li>
-<li>Step-by-step implementation guide</li>
-<li>Common challenges and solutions</li>
-<li>Best practices and tips</li>
-</ul>
-
-<h2>Getting Started</h2>
-<p>Let's begin by understanding the basics...</p>
-
-<h2>Deep Dive</h2>
-<p>Now that you understand the fundamentals, let's explore advanced concepts...</p>
-
-<h2>Conclusion</h2>
-<p>You've successfully completed this lesson on ${formData.title}. Continue practicing to master these skills.</p>`,
-
-      `<h1>${formData.title} - Complete Guide</h1>
-
-<h2>Introduction</h2>
-<p>This comprehensive lesson will take you through everything you need to know about ${formData.title}.</p>
-
-<h2>Prerequisites</h2>
-<p>Before starting this lesson, make sure you have:</p>
-<ul>
-<li>Basic understanding of the previous concepts</li>
-<li>Required tools and setup completed</li>
-</ul>
-
-<h2>Main Content</h2>
-<h3>Section 1: Fundamentals</h3>
-<p>Learn the basic concepts and terminology...</p>
-
-<h3>Section 2: Implementation</h3>
-<p>Step-by-step guide to implement...</p>
-
-<h3>Section 3: Advanced Topics</h3>
-<p>Explore advanced features and techniques...</p>
-
-<h2>Practice Exercises</h2>
-<p>Try these exercises to reinforce your learning...</p>
-
-<h2>Next Steps</h2>
-<p>Continue to the next lesson to build upon these concepts.</p>`,
+  const generateModuleDescription = () => {
+    const aiDescriptions = [
+      `This module covers the fundamental concepts and practical applications of ${formData.title}. Students will learn through hands-on exercises and real-world examples.`,
+      `Comprehensive introduction to ${formData.title} with step-by-step guidance and practical projects to build your skills.`,
+      `Master ${formData.title} through interactive lessons, practical exercises, and industry best practices.`,
     ];
 
-    const randomContent =
-      aiContents[Math.floor(Math.random() * aiContents.length)];
-    setFormData((prev) => ({ ...prev, content: randomContent }));
+    const randomDescription =
+      aiDescriptions[Math.floor(Math.random() * (aiDescriptions ?? []).length)];
+    setFormData((prev) => ({ ...prev, description: randomDescription }));
   };
 
-  const setContent = (value: string) => {
-    setFormData((prev) => ({ ...prev, content: value }));
+  const setDescription = (value: string) => {
+    setFormData((prev) => ({ ...prev, description: value }));
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="module-title">Module Title</Label>
+        <Input
+          id="module-title"
+          placeholder="e.g., Introduction to React"
+          value={formData.title}
+          onChange={(e) =>
+            setFormData((prev) => ({ ...prev, title: e.target.value }))
+          }
+          required
+        />
+      </div>
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <Label htmlFor="module-description">Description</Label>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={generateModuleDescription}
+            className="flex items-center gap-2 bg-transparent"
+          >
+            <Sparkles className="w-4 h-4 text-purple-600" />
+            Generate with AI
+          </Button>
+        </div>
+        <RichTextEditor
+          value={formData.description}
+          onChange={setDescription}
+          placeholder="Describe what this module covers..."
+        />
+      </div>
+      <DialogFooter>
+        <Button
+          type="submit"
+          className="bg-midnight-blue-800 hover:bg-midnight-blue-900"
+        >
+          {module ? "Update Module" : "Create Module"}
+        </Button>
+      </DialogFooter>
+    </form>
+  );
+}
+
+function LessonForm({
+  courseId,
+  moduleId,
+  onSubmit,
+  onClose,
+}: {
+  courseId: string;
+  moduleId: string;
+  onSubmit: (data: Omit<Content, "id" | "order"> & { type: "lesson" }) => void;
+  onClose: () => void;
+}) {
+  const [formData, setFormData] = useState({
+    title: "",
+    content: "",
+    images: [] as File[],
+    videos: [] as File[],
+    files: [] as File[],
+  });
+
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadDone, setUploadDone] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsUploading(true);
+    setUploadDone(false);
+
+    let videoPath = "";
+    if (formData.videos.length > 0) {
+      try {
+        videoPath = await uploadChunk(
+          formData.videos[0],
+          1024 * 1024, // 1 MB chunk
+          courseId,
+          moduleId,
+          (percent) => setUploadProgress(percent)
+        );
+      } catch (error) {
+        alert("❌ Gagal upload video.");
+        setIsUploading(false);
+        return;
+      }
+    }
+
+    const fullContent = `${formData.content}${
+      videoPath ? `<br><p>Video: ${videoPath}</p>` : ""
+    }`.trim();
+
+    const lessonData = {
+      title: formData.title,
+      type: "lesson",
+      content: fullContent,
+      images: formData.images,
+      videos: videoPath ? [videoPath] : [],
+      files: formData.files,
+    };
+
+    await onSubmit(lessonData);
+    setIsUploading(false);
+    setUploadDone(true);
+    setFormData({ title: "", content: "", images: [], videos: [], files: [] });
+    setUploadProgress(0);
+    onClose(); // ❗ Tutup dialog otomatis
+  };
+
+  const setContent = (val: string) => {
+    setFormData((prev) => ({ ...prev, content: val }));
   };
 
   return (
@@ -2196,7 +2582,6 @@ function LessonForm({
         <Label htmlFor="lesson-title">Lesson Title</Label>
         <Input
           id="lesson-title"
-          placeholder="e.g., Introduction to Components"
           value={formData.title}
           onChange={(e) =>
             setFormData((prev) => ({ ...prev, title: e.target.value }))
@@ -2205,77 +2590,53 @@ function LessonForm({
         />
       </div>
 
+     <div className="space-y-2">
+  <div className="flex items-center justify-between">
+    <Label htmlFor="lesson-content">Lesson Content</Label>
+    {/* <Button
+      type="button"
+      variant="outline"
+      size="sm"
+      onClick={generateLessonContent}
+      className="flex items-center gap-2 bg-transparent"
+    >
+      <Sparkles className="w-4 h-4 text-purple-600" />
+      Generate with AI
+    </Button> */}
+  </div>
+  <RichTextEditor
+    value={formData.content}
+    onChange={(value) => setFormData((prev) => ({ ...prev, content: value }))}
+    placeholder="Tulis isi materi pelajaran di sini..."
+    className="min-h-[300px]"
+  />
+</div>
+
       <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <Label htmlFor="lesson-content">Lesson Content</Label>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={generateLessonContent}
-            className="flex items-center gap-2 bg-transparent"
-          >
-            <Sparkles className="w-4 h-4 text-purple-600" />
-            Generate with AI
-          </Button>
-        </div>
-        <RichTextEditor
-          value={formData.content}
-          onChange={setContent}
-          placeholder="Write your lesson content here..."
-          className="min-h-[300px]"
+        <Label>Upload Video</Label>
+        <Input
+          type="file"
+          accept="video/*"
+          onChange={(e) =>
+            setFormData((prev) => ({
+              ...prev,
+              videos: e.target.files ? [e.target.files[0]] : [],
+            }))
+          }
         />
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="space-y-2">
-          <Label>Upload Images</Label>
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
-            <Upload className="mx-auto h-8 w-8 text-gray-400" />
-            <div className="mt-2">
-              <Button variant="outline" size="sm">
-                Upload Images
-              </Button>
-              <p className="mt-1 text-xs text-gray-500">PNG, JPG up to 5MB</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <Label>Upload Videos</Label>
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
-            <Video className="mx-auto h-8 w-8 text-gray-400" />
-            <div className="mt-2">
-              <Button variant="outline" size="sm">
-                Upload Videos
-              </Button>
-              <p className="mt-1 text-xs text-gray-500">MP4, MOV up to 100MB</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <Label>Downloadable Files</Label>
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
-            <Download className="mx-auto h-8 w-8 text-gray-400" />
-            <div className="mt-2">
-              <Button variant="outline" size="sm">
-                Upload Files
-              </Button>
-              <p className="mt-1 text-xs text-gray-500">
-                Any format up to 50MB
-              </p>
-            </div>
-          </div>
-        </div>
+        {isUploading && <Progress value={uploadProgress} />}
+        {uploadDone && (
+          <p className="text-sm text-green-600">✅ Video uploaded</p>
+        )}
       </div>
 
       <DialogFooter>
         <Button
           type="submit"
+          disabled={isUploading}
           className="bg-midnight-blue-800 hover:bg-midnight-blue-900"
         >
-          Add Lesson
+          {isUploading ? "Uploading..." : "Add Lesson"}
         </Button>
       </DialogFooter>
     </form>
@@ -2283,522 +2644,522 @@ function LessonForm({
 }
 
 function QuizForm({
-	onSubmit,
+  onSubmit,
 }: {
-	onSubmit: (data: Omit<Content, "id" | "order">) => void;
+  onSubmit: (data: Omit<Content, "id" | "order">) => void;
 }) {
-	const [formData, setFormData] = useState({
-		title: "",
-		questions: [] as QuizQuestion[],
-		settings: {
-			passingScore: 80,
-			timeLimit: 60,
-			attemptsAllowed: 3,
-			autoGrading: true,
-			showAnswers: true,
-		},
-	});
+  const [formData, setFormData] = useState({
+    title: "",
+    questions: [] as QuizQuestion[],
+    settings: {
+      passingScore: 80,
+      timeLimit: 60,
+      attemptsAllowed: 3,
+      autoGrading: true,
+      showAnswers: true,
+    },
+  });
 
-	const [currentQuestion, setCurrentQuestion] = useState<Partial<QuizQuestion>>(
-		{
-			type: "multiple-choice",
-			question: "",
-			options: ["", "", "", ""],
-			correctAnswer: 0,
-			explanation: "",
-		}
-	);
+  const [currentQuestion, setCurrentQuestion] = useState<Partial<QuizQuestion>>(
+    {
+      type: "multiple-choice",
+      question: "",
+      options: ["", "", "", ""],
+      correctAnswer: 0,
+      explanation: "",
+    }
+  );
 
-	const addQuestion = () => {
-		if (currentQuestion.question && currentQuestion.type) {
-			const newQuestion: QuizQuestion = {
-				id: Date.now().toString(),
-				type: currentQuestion.type,
-				question: currentQuestion.question,
-				options:
-					currentQuestion.type === "multiple-choice"
-						? currentQuestion.options
-						: undefined,
-				correctAnswer: currentQuestion.correctAnswer || 0,
-				explanation: currentQuestion.explanation,
-			};
+  const addQuestion = () => {
+    if (currentQuestion.question && currentQuestion.type) {
+      const newQuestion: QuizQuestion = {
+        id: Date.now().toString(),
+        type: currentQuestion.type,
+        question: currentQuestion.question,
+        options:
+          currentQuestion.type === "multiple-choice"
+            ? currentQuestion.options
+            : undefined,
+        correctAnswer: currentQuestion.correctAnswer || 0,
+        explanation: currentQuestion.explanation,
+      };
 
-			setFormData((prev) => ({
-				...prev,
-				questions: [...prev.questions, newQuestion],
-			}));
+      setFormData((prev) => ({
+        ...prev,
+        questions: [...prev.questions, newQuestion],
+      }));
 
-			setCurrentQuestion({
-				type: "multiple-choice",
-				question: "",
-				options: ["", "", "", ""],
-				correctAnswer: 0,
-				explanation: "",
-			});
-		}
-	};
+      setCurrentQuestion({
+        type: "multiple-choice",
+        question: "",
+        options: ["", "", "", ""],
+        correctAnswer: 0,
+        explanation: "",
+      });
+    }
+  };
 
-	const removeQuestion = (id: string) => {
-		setFormData((prev) => ({
-			...prev,
-			questions: prev.questions.filter((q) => q.id !== id),
-		}));
-	};
+  const removeQuestion = (id: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      questions: prev.questions.filter((q) => q.id !== id),
+    }));
+  };
 
-	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault();
-		onSubmit({
-			title: formData.title,
-			type: "quiz",
-			data: {
-				questions: formData.questions,
-			},
-			settings: formData.settings,
-		});
-		setFormData({
-			title: "",
-			questions: [],
-			settings: {
-				passingScore: 80,
-				timeLimit: 60,
-				attemptsAllowed: 3,
-				autoGrading: true,
-				showAnswers: true,
-			},
-		});
-	};
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit({
+      title: formData.title,
+      type: "quiz",
+      data: {
+        questions: formData.questions,
+      },
+      settings: formData.settings,
+    });
+    setFormData({
+      title: "",
+      questions: [],
+      settings: {
+        passingScore: 80,
+        timeLimit: 60,
+        attemptsAllowed: 3,
+        autoGrading: true,
+        showAnswers: true,
+      },
+    });
+  };
 
-	return (
-		<form onSubmit={handleSubmit} className="space-y-6">
-			<div className="space-y-2">
-				<Label htmlFor="quiz-title">Quiz Title</Label>
-				<Input
-					id="quiz-title"
-					placeholder="e.g., React Fundamentals Quiz"
-					value={formData.title}
-					onChange={(e) =>
-						setFormData((prev) => ({ ...prev, title: e.target.value }))
-					}
-					required
-				/>
-			</div>
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="space-y-2">
+        <Label htmlFor="quiz-title">Quiz Title</Label>
+        <Input
+          id="quiz-title"
+          placeholder="e.g., React Fundamentals Quiz"
+          value={formData.title}
+          onChange={(e) =>
+            setFormData((prev) => ({ ...prev, title: e.target.value }))
+          }
+          required
+        />
+      </div>
 
-			{/* Quiz Settings */}
-			<Card>
-				<CardHeader>
-					<CardTitle className="text-lg">Quiz Settings</CardTitle>
-				</CardHeader>
-				<CardContent className="space-y-4">
-					<div className="grid grid-cols-2 gap-4">
-						<div className="space-y-2">
-							<Label>Passing Score (%)</Label>
-							<Input
-								type="number"
-								value={formData.settings.passingScore}
-								onChange={(e) =>
-									setFormData((prev) => ({
-										...prev,
-										settings: {
-											...prev.settings,
-											passingScore: Number.parseInt(e.target.value),
-										},
-									}))
-								}
-							/>
-						</div>
-						<div className="space-y-2">
-							<Label>Time Limit (minutes)</Label>
-							<Input
-								type="number"
-								value={formData.settings.timeLimit}
-								onChange={(e) =>
-									setFormData((prev) => ({
-										...prev,
-										settings: {
-											...prev.settings,
-											timeLimit: Number.parseInt(e.target.value),
-										},
-									}))
-								}
-							/>
-						</div>
-					</div>
-					<div className="space-y-2">
-						<Label>Attempts Allowed</Label>
-						<Select
-							value={formData.settings.attemptsAllowed.toString()}
-							onValueChange={(value) =>
-								setFormData((prev) => ({
-									...prev,
-									settings: {
-										...prev.settings,
-										attemptsAllowed: Number.parseInt(value),
-									},
-								}))
-							}
-						>
-							<SelectTrigger>
-								<SelectValue />
-							</SelectTrigger>
-							<SelectContent>
-								<SelectItem value="1">1 attempt</SelectItem>
-								<SelectItem value="2">2 attempts</SelectItem>
-								<SelectItem value="3">3 attempts</SelectItem>
-								<SelectItem value="-1">Unlimited</SelectItem>
-							</SelectContent>
-						</Select>
-					</div>
-					<div className="space-y-3">
-						<div className="flex items-center space-x-2">
-							<Switch
-								id="auto-grading"
-								checked={formData.settings.autoGrading}
-								onCheckedChange={(checked) =>
-									setFormData((prev) => ({
-										...prev,
-										settings: { ...prev.settings, autoGrading: checked },
-									}))
-								}
-							/>
-							<Label htmlFor="auto-grading">Enable automatic grading</Label>
-						</div>
-						<div className="flex items-center space-x-2">
-							<Switch
-								id="show-answers"
-								checked={formData.settings.showAnswers}
-								onCheckedChange={(checked) =>
-									setFormData((prev) => ({
-										...prev,
-										settings: { ...prev.settings, showAnswers: checked },
-									}))
-								}
-							/>
-							<Label htmlFor="show-answers">
-								Show correct answers after completion
-							</Label>
-						</div>
-					</div>
-				</CardContent>
-			</Card>
+      {/* Quiz Settings */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Quiz Settings</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Passing Score (%)</Label>
+              <Input
+                type="number"
+                value={formData.settings.passingScore}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    settings: {
+                      ...prev.settings,
+                      passingScore: Number.parseInt(e.target.value),
+                    },
+                  }))
+                }
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Time Limit (minutes)</Label>
+              <Input
+                type="number"
+                value={formData.settings.timeLimit}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    settings: {
+                      ...prev.settings,
+                      timeLimit: Number.parseInt(e.target.value),
+                    },
+                  }))
+                }
+              />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label>Attempts Allowed</Label>
+            <Select
+              value={formData.settings.attemptsAllowed.toString()}
+              onValueChange={(value) =>
+                setFormData((prev) => ({
+                  ...prev,
+                  settings: {
+                    ...prev.settings,
+                    attemptsAllowed: Number.parseInt(value),
+                  },
+                }))
+              }
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1">1 attempt</SelectItem>
+                <SelectItem value="2">2 attempts</SelectItem>
+                <SelectItem value="3">3 attempts</SelectItem>
+                <SelectItem value="-1">Unlimited</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-3">
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="auto-grading"
+                checked={formData.settings.autoGrading}
+                onCheckedChange={(checked) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    settings: { ...prev.settings, autoGrading: checked },
+                  }))
+                }
+              />
+              <Label htmlFor="auto-grading">Enable automatic grading</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="show-answers"
+                checked={formData.settings.showAnswers}
+                onCheckedChange={(checked) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    settings: { ...prev.settings, showAnswers: checked },
+                  }))
+                }
+              />
+              <Label htmlFor="show-answers">
+                Show correct answers after completion
+              </Label>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
-			{/* Add Questions */}
-			<Card>
-				<CardHeader>
-					<CardTitle className="text-lg">Add Question</CardTitle>
-				</CardHeader>
-				<CardContent className="space-y-4">
-					<div className="space-y-2">
-						<Label>Question Type</Label>
-						<RadioGroup
-							value={currentQuestion.type}
-							onValueChange={(value) =>
-								setCurrentQuestion((prev) => ({
-									...prev,
-									type: value as "multiple-choice" | "true-false",
-									options:
-										value === "multiple-choice" ? ["", "", "", ""] : undefined,
-									correctAnswer: 0,
-								}))
-							}
-						>
-							<div className="flex items-center space-x-2">
-								<RadioGroupItem value="multiple-choice" id="multiple-choice" />
-								<Label htmlFor="multiple-choice">Multiple Choice</Label>
-							</div>
-							<div className="flex items-center space-x-2">
-								<RadioGroupItem value="true-false" id="true-false" />
-								<Label htmlFor="true-false">True/False</Label>
-							</div>
-						</RadioGroup>
-					</div>
+      {/* Add Questions */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg">Add Question</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label>Question Type</Label>
+            <RadioGroup
+              value={currentQuestion.type}
+              onValueChange={(value) =>
+                setCurrentQuestion((prev) => ({
+                  ...prev,
+                  type: value as "multiple-choice" | "true-false",
+                  options:
+                    value === "multiple-choice" ? ["", "", "", ""] : undefined,
+                  correctAnswer: 0,
+                }))
+              }
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="multiple-choice" id="multiple-choice" />
+                <Label htmlFor="multiple-choice">Multiple Choice</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="true-false" id="true-false" />
+                <Label htmlFor="true-false">True/False</Label>
+              </div>
+            </RadioGroup>
+          </div>
 
-					<div className="space-y-2">
-						<Label>Question</Label>
-						<Textarea
-							placeholder="Enter your question here..."
-							value={currentQuestion.question}
-							onChange={(e) =>
-								setCurrentQuestion((prev) => ({
-									...prev,
-									question: e.target.value,
-								}))
-							}
-						/>
-					</div>
+          <div className="space-y-2">
+            <Label>Question</Label>
+            <Textarea
+              placeholder="Enter your question here..."
+              value={currentQuestion.question}
+              onChange={(e) =>
+                setCurrentQuestion((prev) => ({
+                  ...prev,
+                  question: e.target.value,
+                }))
+              }
+            />
+          </div>
 
-					{currentQuestion.type === "multiple-choice" && (
-						<div className="space-y-2">
-							<Label>Answer Options</Label>
-							{currentQuestion.options?.map((option, index) => (
-								<div key={index} className="flex items-center gap-2">
-									<Checkbox
-										checked={currentQuestion.correctAnswer === index}
-										onCheckedChange={(checked) => {
-											if (checked) {
-												setCurrentQuestion((prev) => ({
-													...prev,
-													correctAnswer: index,
-												}));
-											}
-										}}
-									/>
-									<Input
-										placeholder={`Option ${index + 1}`}
-										value={option}
-										onChange={(e) => {
-											const newOptions = [...(currentQuestion.options || [])];
-											newOptions[index] = e.target.value;
-											setCurrentQuestion((prev) => ({
-												...prev,
-												options: newOptions,
-											}));
-										}}
-									/>
-								</div>
-							))}
-						</div>
-					)}
+          {currentQuestion.type === "multiple-choice" && (
+            <div className="space-y-2">
+              <Label>Answer Options</Label>
+              {currentQuestion.options?.map((option, index) => (
+                <div key={index} className="flex items-center gap-2">
+                  <Checkbox
+                    checked={currentQuestion.correctAnswer === index}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        setCurrentQuestion((prev) => ({
+                          ...prev,
+                          correctAnswer: index,
+                        }));
+                      }
+                    }}
+                  />
+                  <Input
+                    placeholder={`Option ${index + 1}`}
+                    value={option}
+                    onChange={(e) => {
+                      const newOptions = [...(currentQuestion.options || [])];
+                      newOptions[index] = e.target.value;
+                      setCurrentQuestion((prev) => ({
+                        ...prev,
+                        options: newOptions,
+                      }));
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
 
-					{currentQuestion.type === "true-false" && (
-						<div className="space-y-2">
-							<Label>Correct Answer</Label>
-							<RadioGroup
-								value={currentQuestion.correctAnswer?.toString()}
-								onValueChange={(value) =>
-									setCurrentQuestion((prev) => ({
-										...prev,
-										correctAnswer: value === "true",
-									}))
-								}
-							>
-								<div className="flex items-center space-x-2">
-									<RadioGroupItem value="true" id="true" />
-									<Label htmlFor="true">True</Label>
-								</div>
-								<div className="flex items-center space-x-2">
-									<RadioGroupItem value="false" id="false" />
-									<Label htmlFor="false">False</Label>
-								</div>
-							</RadioGroup>
-						</div>
-					)}
+          {currentQuestion.type === "true-false" && (
+            <div className="space-y-2">
+              <Label>Correct Answer</Label>
+              <RadioGroup
+                value={currentQuestion.correctAnswer?.toString()}
+                onValueChange={(value) =>
+                  setCurrentQuestion((prev) => ({
+                    ...prev,
+                    correctAnswer: value === "true",
+                  }))
+                }
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="true" id="true" />
+                  <Label htmlFor="true">True</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="false" id="false" />
+                  <Label htmlFor="false">False</Label>
+                </div>
+              </RadioGroup>
+            </div>
+          )}
 
-					<div className="space-y-2">
-						<Label>Explanation (Optional)</Label>
-						<Textarea
-							placeholder="Explain why this is the correct answer..."
-							value={currentQuestion.explanation}
-							onChange={(e) =>
-								setCurrentQuestion((prev) => ({
-									...prev,
-									explanation: e.target.value,
-								}))
-							}
-						/>
-					</div>
+          <div className="space-y-2">
+            <Label>Explanation (Optional)</Label>
+            <Textarea
+              placeholder="Explain why this is the correct answer..."
+              value={currentQuestion.explanation}
+              onChange={(e) =>
+                setCurrentQuestion((prev) => ({
+                  ...prev,
+                  explanation: e.target.value,
+                }))
+              }
+            />
+          </div>
 
-					<Button
-						type="button"
-						onClick={addQuestion}
-						variant="outline"
-						className="w-full bg-transparent"
-					>
-						<Plus className="w-4 h-4 mr-2" />
-						Add Question
-					</Button>
-				</CardContent>
-			</Card>
+          <Button
+            type="button"
+            onClick={addQuestion}
+            variant="outline"
+            className="w-full bg-transparent"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Add Question
+          </Button>
+        </CardContent>
+      </Card>
 
-			{/* Questions List */}
-			{formData.questions.length > 0 && (
-				<Card>
-					<CardHeader>
-						<CardTitle className="text-lg">
-							Questions ({formData.questions.length})
-						</CardTitle>
-					</CardHeader>
-					<CardContent>
-						<div className="space-y-3">
-							{formData.questions.map((question, index) => (
-								<div
-									key={question.id}
-									className="flex items-start justify-between p-3 border rounded-lg"
-								>
-									<div className="flex-1">
-										<div className="flex items-center gap-2 mb-2">
-											<Badge variant="outline">{index + 1}</Badge>
-											<Badge variant="secondary">{question.type}</Badge>
-										</div>
-										<p className="text-sm font-medium mb-1">
-											{question.question}
-										</p>
-										{question.type === "multiple-choice" &&
-											question.options && (
-												<div className="text-xs text-muted-foreground">
-													Correct:{" "}
-													{question.options[question.correctAnswer as number]}
-												</div>
-											)}
-										{question.type === "true-false" && (
-											<div className="text-xs text-muted-foreground">
-												Correct: {question.correctAnswer ? "True" : "False"}
-											</div>
-										)}
-									</div>
-									<Button
-										size="sm"
-										variant="outline"
-										className="text-red-600 bg-transparent"
-										onClick={() => removeQuestion(question.id)}
-									>
-										<Trash2 className="w-3 h-3" />
-									</Button>
-								</div>
-							))}
-						</div>
-					</CardContent>
-				</Card>
-			)}
+      {/* Questions List */}
+      {formData.questions.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg">
+              Questions ({formData.questions.length})
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {formData.questions.map((question, index) => (
+                <div
+                  key={question.id}
+                  className="flex items-start justify-between p-3 border rounded-lg"
+                >
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Badge variant="outline">{index + 1}</Badge>
+                      <Badge variant="secondary">{question.type}</Badge>
+                    </div>
+                    <p className="text-sm font-medium mb-1">
+                      {question.question}
+                    </p>
+                    {question.type === "multiple-choice" &&
+                      question.options && (
+                        <div className="text-xs text-muted-foreground">
+                          Correct:{" "}
+                          {question.options[question.correctAnswer as number]}
+                        </div>
+                      )}
+                    {question.type === "true-false" && (
+                      <div className="text-xs text-muted-foreground">
+                        Correct: {question.correctAnswer ? "True" : "False"}
+                      </div>
+                    )}
+                  </div>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="text-red-600 bg-transparent"
+                    onClick={() => removeQuestion(question.id)}
+                  >
+                    <Trash2 className="w-3 h-3" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
-			<DialogFooter>
-				<Button
-					type="submit"
-					className="bg-midnight-blue-800 hover:bg-midnight-blue-900"
-					disabled={formData.questions.length === 0}
-				>
-					Add Quiz
-				</Button>
-			</DialogFooter>
-		</form>
-	);
+      <DialogFooter>
+        <Button
+          type="submit"
+          className="bg-midnight-blue-800 hover:bg-midnight-blue-900"
+          disabled={formData.questions.length === 0}
+        >
+          Add Quiz
+        </Button>
+      </DialogFooter>
+    </form>
+  );
 }
 
 function CouponForm({
-	onSubmit,
+  onSubmit,
 }: {
-	onSubmit: (data: Omit<Coupon, "id" | "used">) => void;
+  onSubmit: (data: Omit<Coupon, "id" | "used">) => void;
 }) {
-	const [formData, setFormData] = useState({
-		code: "",
-		discount: 0,
-		type: "percentage" as Coupon["type"],
-		validUntil: "",
-		usageLimit: 100,
-	});
+  const [formData, setFormData] = useState({
+    code: "",
+    discount: 0,
+    type: "percentage" as Coupon["type"],
+    validUntil: "",
+    usageLimit: 100,
+  });
 
-	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault();
-		onSubmit(formData);
-		setFormData({
-			code: "",
-			discount: 0,
-			type: "percentage",
-			validUntil: "",
-			usageLimit: 100,
-		});
-	};
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit(formData);
+    setFormData({
+      code: "",
+      discount: 0,
+      type: "percentage",
+      validUntil: "",
+      usageLimit: 100,
+    });
+  };
 
-	return (
-		<form onSubmit={handleSubmit} className="space-y-4">
-			<div className="grid grid-cols-2 gap-4">
-				<div className="space-y-2">
-					<Label htmlFor="coupon-code">Coupon Code</Label>
-					<Input
-						id="coupon-code"
-						placeholder="e.g., SAVE20"
-						value={formData.code}
-						onChange={(e) =>
-							setFormData((prev) => ({
-								...prev,
-								code: e.target.value.toUpperCase(),
-							}))
-						}
-						required
-					/>
-				</div>
-				<div className="space-y-2">
-					<Label htmlFor="discount-type">Discount Type</Label>
-					<Select
-						value={formData.type}
-						onValueChange={(value) =>
-							setFormData((prev) => ({
-								...prev,
-								type: value as Coupon["type"],
-							}))
-						}
-					>
-						<SelectTrigger>
-							<SelectValue />
-						</SelectTrigger>
-						<SelectContent>
-							<SelectItem value="percentage">Percentage</SelectItem>
-							<SelectItem value="fixed">Fixed Amount</SelectItem>
-						</SelectContent>
-					</Select>
-				</div>
-			</div>
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="coupon-code">Coupon Code</Label>
+          <Input
+            id="coupon-code"
+            placeholder="e.g., SAVE20"
+            value={formData.code}
+            onChange={(e) =>
+              setFormData((prev) => ({
+                ...prev,
+                code: e.target.value.toUpperCase(),
+              }))
+            }
+            required
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="discount-type">Discount Type</Label>
+          <Select
+            value={formData.type}
+            onValueChange={(value) =>
+              setFormData((prev) => ({
+                ...prev,
+                type: value as Coupon["type"],
+              }))
+            }
+          >
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="percentage">Percentage</SelectItem>
+              <SelectItem value="fixed">Fixed Amount</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
 
-			<div className="grid grid-cols-2 gap-4">
-				<div className="space-y-2">
-					<Label htmlFor="discount-value">
-						Discount{" "}
-						{formData.type === "percentage" ? "Percentage" : "Amount (Rp)"}
-					</Label>
-					<Input
-						id="discount-value"
-						type="number"
-						placeholder={formData.type === "percentage" ? "20" : "10000"}
-						value={formData.discount}
-						onChange={(e) =>
-							setFormData((prev) => ({
-								...prev,
-								discount: Number.parseFloat(e.target.value) || 0,
-							}))
-						}
-						required
-					/>
-				</div>
-				<div className="space-y-2">
-					<Label htmlFor="usage-limit">Usage Limit</Label>
-					<Input
-						id="usage-limit"
-						type="number"
-						placeholder="100"
-						value={formData.usageLimit}
-						onChange={(e) =>
-							setFormData((prev) => ({
-								...prev,
-								usageLimit: Number.parseInt(e.target.value) || 0,
-							}))
-						}
-						required
-					/>
-				</div>
-			</div>
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="discount-value">
+            Discount{" "}
+            {formData.type === "percentage" ? "Percentage" : "Amount (Rp)"}
+          </Label>
+          <Input
+            id="discount-value"
+            type="number"
+            placeholder={formData.type === "percentage" ? "20" : "10000"}
+            value={formData.discount}
+            onChange={(e) =>
+              setFormData((prev) => ({
+                ...prev,
+                discount: Number.parseFloat(e.target.value) || 0,
+              }))
+            }
+            required
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="usage-limit">Usage Limit</Label>
+          <Input
+            id="usage-limit"
+            type="number"
+            placeholder="100"
+            value={formData.usageLimit}
+            onChange={(e) =>
+              setFormData((prev) => ({
+                ...prev,
+                usageLimit: Number.parseInt(e.target.value) || 0,
+              }))
+            }
+            required
+          />
+        </div>
+      </div>
 
-			<div className="space-y-2">
-				<Label htmlFor="valid-until">Valid Until</Label>
-				<Input
-					id="valid-until"
-					type="date"
-					value={formData.validUntil}
-					onChange={(e) =>
-						setFormData((prev) => ({ ...prev, validUntil: e.target.value }))
-					}
-					required
-				/>
-			</div>
+      <div className="space-y-2">
+        <Label htmlFor="valid-until">Valid Until</Label>
+        <Input
+          id="valid-until"
+          type="date"
+          value={formData.validUntil}
+          onChange={(e) =>
+            setFormData((prev) => ({ ...prev, validUntil: e.target.value }))
+          }
+          required
+        />
+      </div>
 
-			<DialogFooter>
-				<Button
-					type="submit"
-					className="bg-midnight-blue-800 hover:bg-midnight-blue-900"
-				>
-					Create Coupon
-				</Button>
-			</DialogFooter>
-		</form>
-	);
+      <DialogFooter>
+        <Button
+          type="submit"
+          className="bg-midnight-blue-800 hover:bg-midnight-blue-900"
+        >
+          Create Coupon
+        </Button>
+      </DialogFooter>
+    </form>
+  );
 }
 function addQuiz(
   moduleId: string,
