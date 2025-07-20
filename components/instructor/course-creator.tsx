@@ -427,7 +427,7 @@ export function CourseCreator() {
     autoInitiate();
   }, []);
   useEffect(() => {
-    if (currentStep === 1 && courseId) {
+    if (currentStep === 1 && courseId && !course.modules.length) {
       getModules();
     }
   }, [currentStep, courseId]);
@@ -718,22 +718,7 @@ export function CourseCreator() {
           
           setCourse((prev) => ({ 
             ...prev, 
-            modules: updatedModules.data.map((module: any) => {
-              const lessons = (module.lessons || []).map(lesson => ({
-                ...lesson,
-                type: 'lesson',
-              }));
-
-              const quizzes = (module.quiz || []).map(quiz => ({
-                ...quiz,
-                type: 'quiz',
-              }));
-
-              return {
-                ...module,
-                contents: [...lessons, ...quizzes],
-              };
-            }),
+            modules: updatedModules
           }));
         }
 
