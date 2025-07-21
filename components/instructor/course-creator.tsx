@@ -249,10 +249,6 @@ const handleCouponSubmit = async () => {
   setLoading(false);
 };
 
-
-
-
-
 	const [isModuleDialogOpen, setIsModuleDialogOpen] = useState(false);
 	const [isLessonDialogOpen, setIsLessonDialogOpen] = useState(false);
 	const [isQuizDialogOpen, setIsQuizDialogOpen] = useState(false);
@@ -338,7 +334,7 @@ const handleCouponSubmit = async () => {
 		const endpoint = courseId
 			? `/instructor/courses/${courseId}`
 			: `/instructor/courses/initiate`;
-		const method = "POST";
+
 		const isUpdate = Boolean(courseId);
 
     let body: FormData | any;
@@ -357,7 +353,6 @@ const handleCouponSubmit = async () => {
       isFormData = true;
     } else {
       body = {
-        ...course,
         [field]: value,
         is_visible: course.is_visible,
         is_published: true,
@@ -368,12 +363,15 @@ const handleCouponSubmit = async () => {
       if (isUpdate) body._method = "PUT";
     }
 
+    console.log("body", body);
+
     try {
       const response = await fetchData(endpoint, {
-        method,
-        body,
-        headers: isFormData ? {} : undefined,
+        method: "POST",
+        body: body,
       });
+
+      console.log("response", response);
 
       if (!courseId && (response.data?.id || response.id)) {
         setCourseId(response.data?.id || response.id);

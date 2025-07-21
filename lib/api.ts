@@ -41,6 +41,11 @@ export const fetchData = async (
     body: isFormData ? options.body : JSON.stringify(options.body),
   });
 
+  if (res.status === 403) {
+    handleUnauthorized();
+    throw new Error("Forbidden");
+  }
+
   if (res.status === 401) {
     if (!options.silent401) {
       handleUnauthorized();
