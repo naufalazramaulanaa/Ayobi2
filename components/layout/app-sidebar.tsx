@@ -125,20 +125,32 @@ export function AppSidebar({
     })
 
     if (result.isConfirmed) {
-      await Swal.fire({
-        title: "Logged Out!",
-        text: "You have been successfully logged out",
-        icon: "success",
-        timer: 1500,
-        showConfirmButton: false,
-        customClass: {
-          popup: "rounded-lg",
-          title: "text-lg font-semibold",
-          content: "text-sm text-gray-600",
-        },
-      })
-      onLogout()
-    }
+  // Show logout notification
+  await Swal.fire({
+    title: "Logged Out!",
+    text: "You have been successfully logged out",
+    icon: "success",
+    timer: 1500,
+    showConfirmButton: false,
+    customClass: {
+      popup: "rounded-lg",
+      title: "text-lg font-semibold",
+      content: "text-sm text-gray-600",
+    },
+  });
+
+  // ✅ Hapus token dari localStorage dan cookie
+  localStorage.removeItem("access_token");
+  document.cookie = "access_token=; Max-Age=0; path=/;";
+
+  // Optional: hapus user info
+  localStorage.removeItem("userEmail");
+  localStorage.removeItem("userRole");
+
+  // Redirect ke halaman login
+  router.push("/login");
+}
+
   }
 
   const handleSearch = (e: React.FormEvent) => {
