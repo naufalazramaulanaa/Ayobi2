@@ -17,7 +17,7 @@ export function Footer() {
       toast({
         title: "Subscribed!",
         description: "Thank you for subscribing to our newsletter.",
-      })
+      })  
       setEmail("")
     }
   }

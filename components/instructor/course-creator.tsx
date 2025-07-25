@@ -65,6 +65,7 @@ import { toast } from "sonner";
 import { uploadChunk } from "@/utils/uploadChunk";
 import { getTokenFromCookie } from "@/lib/auth";
 // import LessonForm from "@/components/instructor/lesson-form";
+import { v4 as uuidv4 } from "uuid";
 
 type Content = {
   id: string;
@@ -132,14 +133,15 @@ interface Course {
 }
 
 interface Coupon {
-  id: string;
+  id?: string;
   code: string;
-  discount: number;
-  type: "percentage" | "fixed";
-  validUntil: string;
-  usageLimit: number;
-  used: number;
+  discount_type: "percentage" | "fixed";
+  amount: number;
+  usage_limit: number;
+  valid_until: string; // ✅ Gunakan underscore, bukan spasi
 }
+
+
 
 interface QuizQuestion {
   id: string;
@@ -171,6 +173,19 @@ export function CourseCreator() {
     freePreview: false,
     coupons: [] as Coupon[],
   });
+  // Di dalam CourseCreator
+  // const debounceTimers: { [key: string]: ReturnType<typeof setTimeout> } = {};
+  // const debouncedAutoSave = (field: string, value: any) => {
+  //   // Clear timer jika ada sebelumnya
+  //   if (debounceTimers[field]) {
+  //     clearTimeout(debounceTimers[field]);
+  //   }
+
+  //   // Set timer baru
+  //   debounceTimers[field] = setTimeout(() => {
+  //    debouncedAutoSave(field, value);
+  //   }, 5000);
+  // };
 
   const handleThumbnailUpload = async (
     e: React.ChangeEvent<HTMLInputElement>
@@ -179,50 +194,106 @@ export function CourseCreator() {
     if (!file) return;
 
     setCourse((prev) => ({ ...prev, thumbnail: "" })); // clear preview dulu
-    autoSaveField("thumbnail", file);
+    setPendingCourseData((prev: any) => ({ ...prev, thumbnail: file }));
+    triggerAutoSaveGlobal();
   };
 
   const [courseId, setCourseId] = useState<string | null>(null);
+  const [pricingType, setPricingType] = useState<string>("");
+const [pricingOptions, setPricingOptions] = useState<{ label: string; value: string }[]>([]);
+// const [couponData, setCouponData] = useState({
+//   code: "",
+//   discount_type: "percentage",
+//   amount: "",
+//   usage_limit: "",
+//   valid_until: "",
+// });
+
+
   const [price, setPrice] = useState("");
 const [coupon, setCoupon] = useState({
   id: "",
   code: "",
-  discount_type: "percentage", // ✅ ini valid
-  amount: "",
-  usage_limit: "",
+  discount_type: "percentage",
+  amount: 0,
+  usage_limit: 100,
   valid_until: "",
 });
 
-const [loading, setLoading] = useState(false);
- // ⬅️ Letakkan di dalam komponen, sebelum handleCouponSubmit()
-const fetchCoupon = async () => {
-  try {
-    const response = await fetchData(`/instructor/coupons/${courseId}/course`);
-    if (response.success && response.data) {
-      setCoupon(response.data);
-    }
-  } catch (err) {
-    console.log("No coupon data found.");
-  }
-};
-
-// ⬅️ useEffect tetap seperti ini
 useEffect(() => {
-  if (courseId) {
-    fetchCoupon();
-  }
-}, [courseId]);
+  console.log("🎯 Current coupon state:", coupon);
+}, [coupon]);
 
-// ⬇️ handleCouponSubmit
+
+// useEffect(() => {
+//   if (editingCouponData) {
+//     setCoupon({
+//       id: editingCouponData.id || "",
+//       code: editingCouponData.code || "",
+//       discount_type: editingCouponData.discount_type || "percentage",
+//       amount: Number(editingCouponData.amount || 0),
+//       usage_limit: Number(editingCouponData.usage_limit || 100),
+//       valid_until: editingCouponData.valid_until || new Date().toISOString().split("T")[0],
+//     });
+//   }
+// }, [editingCouponData]);
+
+
+  useEffect(() => {
+  const getPricingOptions = async () => {
+    try {
+      const res = await fetchData("/enums/course/pricing-type");
+      if (res?.data) setPricingOptions(res.data);
+    } catch (err) {
+      console.error("❌ Failed to load pricing type:", err);
+    }
+  };
+  getPricingOptions();
+}, []);
+
+
+  const [loading, setLoading] = useState(false);
+  // ⬅️ Letakkan di dalam komponen, sebelum handleCouponSubmit()
+  const fetchCoupon = async () => {
+    try {
+      const response = await fetchData(
+        `/instructor/coupons/${courseId}/course`
+      );
+      if (response.success && response.data) {
+        setCoupon(response.data);
+      }
+    } catch (err) {
+      console.log("No coupon data found.");
+    }
+  };
+
+  // ⬅️ useEffect tetap seperti ini
+  useEffect(() => {
+    if (courseId) {
+      fetchCoupon();
+    }
+  }, [courseId]);
+
+  // Fungsi parse dari DD/MM/YYYY ke YYYY-MM-DD (tanpa toISOString)
 const handleCouponSubmit = async () => {
   setLoading(true);
   try {
+    const today = new Date().toISOString().split("T")[0];
+    console.log("📆 Today:", today);
+    console.log("📤 Valid Until:", coupon.valid_until);
+
+    if (!coupon.valid_until || coupon.valid_until < today) {
+      alert(`❌ Tanggal valid_until harus hari ini atau lebih baru\n📤 Dikirim: ${coupon.valid_until}\n📅 Hari ini: ${today}`);
+      setLoading(false);
+      return;
+    }
+
     const formData = new FormData();
     formData.append("course_id", courseId!);
     formData.append("code", coupon.code);
     formData.append("discount_type", coupon.discount_type);
-    formData.append("amount", coupon.amount);
-    formData.append("usage_limit", coupon.usage_limit);
+    formData.append("amount", String(Number(coupon.amount)));
+    formData.append("usage_limit", String(parseInt(coupon.usage_limit.toString(), 10)));
     formData.append("valid_until", coupon.valid_until);
 
     let response;
@@ -240,11 +311,11 @@ const handleCouponSubmit = async () => {
     }
 
     if (response.success) {
-      alert("Coupon saved successfully");
-      await fetchCoupon(); // ⬅️ panggil ulang agar data baru muncul
+      alert("✅ Coupon saved successfully");
+      await fetchCoupon();
     }
   } catch (error) {
-    console.error("Failed to save coupon:", error);
+    console.error("❌ Failed to save coupon:", error);
   }
   setLoading(false);
 };
@@ -253,13 +324,16 @@ const handleCouponSubmit = async () => {
 
 
 
-	const [isModuleDialogOpen, setIsModuleDialogOpen] = useState(false);
-	const [isLessonDialogOpen, setIsLessonDialogOpen] = useState(false);
-	const [isQuizDialogOpen, setIsQuizDialogOpen] = useState(false);
-	const [isCouponDialogOpen, setIsCouponDialogOpen] = useState(false);
-	const [selectedModuleId, setSelectedModuleId] = useState<string>("");
-	const [moduleSaveStatus, setModuleSaveStatus] = useState<string>("");
-	const [contentSaveStatus, setContentSaveStatus] = useState<string>("");
+
+  const [fileId] = useState(() => uuidv4());
+  const [isModuleDialogOpen, setIsModuleDialogOpen] = useState(false);
+  const [isLessonDialogOpen, setIsLessonDialogOpen] = useState(false);
+  const [isQuizDialogOpen, setIsQuizDialogOpen] = useState(false);
+  const [isCouponDialogOpen, setIsCouponDialogOpen] = useState(false);
+  const [selectedModuleId, setSelectedModuleId] = useState<string>("");
+  const [moduleSaveStatus, setModuleSaveStatus] = useState<string>("");
+  const [contentSaveStatus, setContentSaveStatus] = useState<string>("");
+  
 
   // Untuk dialog & data edit Module
   const [isEditModuleOpen, setIsEditModuleOpen] = useState(false);
@@ -312,19 +386,102 @@ const handleCouponSubmit = async () => {
     "New Release",
     "Popular",
   ]);
+
+  const [pendingCourseData, setPendingCourseData] = useState<any>({});
+  let autoSaveTimer: ReturnType<typeof setTimeout> | null = null;
+
+  const triggerAutoSaveGlobal = () => {
+    if (autoSaveTimer) clearTimeout(autoSaveTimer);
+    autoSaveTimer = setTimeout(() => {
+      autoSaveAllFields();
+    }, 5000);
+  };
+
+  const autoSaveAllFields = async () => {
+    if (!Object.keys(pendingCourseData).length) return;
+
+    const isUpdate = Boolean(courseId);
+    const endpoint = isUpdate
+      ? `/instructor/courses/${courseId}`
+      : `/instructor/courses/initiate`;
+
+    const body = {
+      ...pendingCourseData,
+      is_visible: course.is_visible,
+      is_published: true,
+      approval_status: "draft",
+      thumbnail: course.thumbnail,
+      video: course.video || "",
+      ...(isUpdate && { _method: "PUT" }),
+    };
+
+    try {
+      const response = await fetchData(endpoint, {
+        method: "POST",
+        body,
+      });
+
+      if (!courseId && (response.data?.id || response.id)) {
+        setCourseId(response.data?.id || response.id);
+      }
+
+      setPendingCourseData({});
+      setSaveStatus((prev) => ({ ...prev, global: "✅ Semua data disimpan" }));
+    } catch {
+      setSaveStatus((prev) => ({ ...prev, global: "❌ Gagal menyimpan data" }));
+    }
+
+    setTimeout(() => {
+      setSaveStatus((prev) => ({ ...prev, global: "" }));
+    }, 3000);
+  };
+
   const [saveStatus, setSaveStatus] = useState<{ [key: string]: string }>({});
+  const debounceTimers: { [key: string]: ReturnType<typeof setTimeout> } = {};
+
+  const debouncedAutoSave = (field: string, value: any) => {
+    if (debounceTimers[field]) {
+      clearTimeout(debounceTimers[field]);
+    }
+
+    debounceTimers[field] = setTimeout(() => {
+      console.log(`[debouncedAutoSave] Triggering auto-save for "${field}"`);
+      autoSaveField(field, value);
+    }, 5000); // 5 detik setelah tidak ada aktivitas
+  };
+
   const autoInitiate = async () => {
     try {
       const res = await fetchData("/instructor/courses/initiate", {
         method: "POST",
       });
+
       const newId = res.data?.id || res.id;
 
       if (newId) {
         setCourseId(newId);
+
+        const transformedModules = (res.data.modules || []).map((mod: any) => {
+          const lessons = (mod.lessons || []).map((lesson: any) => ({
+            ...lesson,
+            type: "lesson" as const,
+          }));
+
+          const quizzes = (mod.quizzes || []).map((quiz: any) => ({
+            ...quiz,
+            type: "quiz" as const,
+          }));
+
+          return {
+            ...mod,
+            contents: [...lessons, ...quizzes],
+          };
+        });
+
         setCourse((prev) => ({
           ...prev,
           ...res.data,
+          modules: transformedModules,
           thumbnail: null,
           video: res.data?.video || "",
         }));
@@ -334,15 +491,17 @@ const handleCouponSubmit = async () => {
     }
   };
 
-	const autoSaveField = async (field: string, value: any) => {
-		const endpoint = courseId
-			? `/instructor/courses/${courseId}`
-			: `/instructor/courses/initiate`;
-		const method = "POST";
-		const isUpdate = Boolean(courseId);
+  const autoSaveField = async (field: string, value: any) => {
+    const endpoint = courseId
+      ? `/instructor/courses/${courseId}`
+      : `/instructor/courses/initiate`;
+
+    const isUpdate = Boolean(courseId);
 
     let body: FormData | any;
     let isFormData = false;
+
+    console.log(`[autoSaveField] Saving field: ${field}`, value); // Debug log
 
     if (field === "thumbnail") {
       body = new FormData();
@@ -357,7 +516,6 @@ const handleCouponSubmit = async () => {
       isFormData = true;
     } else {
       body = {
-        ...course,
         [field]: value,
         is_visible: course.is_visible,
         is_published: true,
@@ -370,17 +528,21 @@ const handleCouponSubmit = async () => {
 
     try {
       const response = await fetchData(endpoint, {
-        method,
+        method: "POST",
         body,
-        headers: isFormData ? {} : undefined,
       });
 
+      console.log(`[autoSaveField] Response for "${field}":`, response); // Debug log
+
       if (!courseId && (response.data?.id || response.id)) {
-        setCourseId(response.data?.id || response.id);
+        const newId = response.data?.id || response.id;
+        setCourseId(newId);
+        console.log(`[autoSaveField] New courseId set: ${newId}`); // Debug log
       }
 
       setSaveStatus((prev) => ({ ...prev, [field]: "✅ Disimpan" }));
-    } catch {
+    } catch (err) {
+      console.error(`[autoSaveField] Error saving field "${field}":`, err);
       setSaveStatus((prev) => ({ ...prev, [field]: "❌ Gagal menyimpan" }));
     }
 
@@ -436,72 +598,110 @@ const handleCouponSubmit = async () => {
     setIsModuleDialogOpen(false);
     setTimeout(() => setModuleSaveStatus(""), 3000);
   };
-
-	const updateModule = async (moduleId: string, updatedData: any) => {
-		updateModule[moduleIndex] = result.data;
-		setCourse((prev) => ({ ...prev, modules: updateModule }));
-		const formData = new FormData();
-		formData.append("_method", "PUT");
-		formData.append("title", updatedData.title);
-		formData.append("description", updatedData.description || "");
-		// formData.append("order", updatedData.order.toString());
-
-		try {
-			const token =
-				typeof window !== "undefined"
-					? localStorage.getItem("access_token")
-					: null;
-			const res = await fetch(
-				`${process.env.NEXT_PUBLIC_BASE_URL}/instructor/courses/modules/${moduleId}`,
-				{
-					method: "POST",
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-					body: formData,
-				}
-			);
-			const result = await res.json();
-			if (result.success) {
-				console.log("✅ Module updated:", result.data);
-				return result.data;
-			}
-		} catch (error) {
-			console.error("❌ Update module failed:", error);
-		}
-	};
-
-  const updateLesson = async (lessonId: string, updatedData: any) => {
+  async function addLesson(
+    moduleId: string,
+    lessonData: {
+      title: string;
+      description?: string;
+      content: string;
+      order?: number;
+      image?: File | null;
+      video_id?: string;
+    }
+  ) {
     const formData = new FormData();
-    formData.append("_method", "PUT");
-    formData.append("title", updatedData.title);
-    formData.append("description", updatedData.description || "");
-    formData.append("content", updatedData.content || "");
-    formData.append("module_id", updatedData.module_id);
-    // formData.append("order", updatedData.order.toString());
+    formData.append("title", lessonData.title);
+    formData.append("description", lessonData.description || "");
+    formData.append("content", lessonData.content);
+    formData.append("order", String(lessonData.order || 1));
+    formData.append("module_id", moduleId);
+    formData.append("video_id", lessonData.video_id);
+    if (lessonData.image) formData.append("image", lessonData.image);
+    // if (lessonData.video_id) formData.append("video_id", lessonData.video_id);
 
     try {
-      const token =
-        typeof window !== "undefined"
-          ? localStorage.getItem("access_token")
-          : null;
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/instructor/courses/modules/lessons/${lessonId}`,
+      for (const [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+      }
+
+      const res = await fetchData("/instructor/courses/modules/lessons/store", {
+        method: "POST",
+        body: formData,
+      });
+      console.log("✅ Lesson created:", res);
+      return res;
+    } catch (error) {
+      console.error("❌ Gagal menambahkan lesson:", error);
+      throw error;
+    }
+  }
+
+const updateModule = async (moduleId: string, updatedData: any) => {
+  const formData = new FormData();
+  formData.append("_method", "PUT");
+  formData.append("title", updatedData.title);
+  formData.append("description", updatedData.description || "");
+
+  try {
+    const token =
+      typeof window !== "undefined"
+        ? localStorage.getItem("access_token")
+        : null;
+
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/instructor/courses/modules/${moduleId}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+          "x-api-key": process.env.NEXT_PUBLIC_API_KEY!,
+        },
+        body: formData,
+      }
+    );
+
+    const result = await res.json();
+
+    if (result.success) {
+      console.log("✅ Module updated:", result.data);
+      updateModuleInState(result.data);
+      return result.data;
+    }
+  } catch (error) {
+    console.error("❌ Update module failed:", error);
+  }
+};
+
+  const updateLesson = async (
+    lessonId: string,
+    lessonData: any,
+    moduleId: string
+  ) => {
+    const formData = new FormData();
+    formData.append("title", lessonData.title);
+    formData.append("description", lessonData.description || "");
+    formData.append("content", lessonData.content);
+    formData.append("order", String(lessonData.order || 1));
+    formData.append("module_id", moduleId);
+    formData.append("_method", "PUT"); // 💡 Override to PUT
+
+    if (lessonData.image) formData.append("image", lessonData.image);
+    if (lessonData.video_id) formData.append("video_id", lessonData.video_id);
+
+    try {
+      const res = await fetchData(
+        `/instructor/courses/modules/lessons/${lessonId}`,
         {
           method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
           body: formData,
         }
       );
-      const result = await res.json();
-      if (result.success) {
-        console.log("✅ Lesson updated:", result.data);
-        return result.data;
-      }
-    } catch (error) {
-      console.error("❌ Update lesson failed:", error);
+
+      return res.data;
+    } catch (err) {
+      console.error("❌ Gagal update lesson:", err);
+      throw err;
     }
   };
 
@@ -520,6 +720,8 @@ const handleCouponSubmit = async () => {
     // formData.append("order", updatedData.order.toString());
     formData.append("module_id", updatedData.module_id);
     formData.append("settings", JSON.stringify(settings));
+    formData.append("type", pricingType); // ✅ Tambahkan ini
+
     // formData.append(
     //   "show_correct_answers",
     //   updatedData.show_correct_answers ? "1" : "0"
@@ -722,7 +924,10 @@ const handleCouponSubmit = async () => {
         if (module.id === moduleId) {
           return {
             ...module,
-            contents: [...module.contents, newContent],
+            contents: [
+              ...(Array.isArray(module.contents) ? module.contents : []),
+              newContent,
+            ],
           };
         }
         return module;
@@ -740,6 +945,7 @@ const handleCouponSubmit = async () => {
           description: contentData.description || "",
           content: contentData.content,
           order: newContent.order,
+          video_id: contentData.video_id,
         });
       } else if (contentData.type === "quiz") {
         await addQuiz(moduleId, {
@@ -790,6 +996,39 @@ const handleCouponSubmit = async () => {
       alert("❌ Gagal menyimpan konten. Periksa module ID atau jaringan.");
     }
   };
+
+  async function getLessonsByModuleId(moduleId: string) {
+    try {
+      const res = await fetchData(
+        `/instructor/courses/modules/lessons/${moduleId}`,
+        {
+          method: "GET",
+        }
+      );
+
+      const data = res?.data ?? res; // mendukung struktur { data: [...] } atau langsung array
+
+      if (!Array.isArray(data)) {
+        console.error("❌ Response bukan array:", res);
+        return [];
+      }
+
+      const formattedLessons: Content[] = data.map((lesson: any) => ({
+        id: lesson.id,
+        module_id: lesson.module_id,
+        title: lesson.title,
+        type: "lesson",
+        content: lesson.content,
+        order: lesson.order || 1,
+        description: lesson.description || "",
+      }));
+
+      return formattedLessons;
+    } catch (error) {
+      console.error("❌ Gagal mengambil data lesson:", error);
+      return [];
+    }
+  }
 
   const [editedLessonIndex, setEditedLessonIndex] = useState<{
     moduleIndex: number;
@@ -892,14 +1131,14 @@ const handleCouponSubmit = async () => {
     }));
   };
 
-	const reorderContents = (
-		contents: Content[],
-		sourceIndex: number,
-		destinationIndex: number
-	) => {
-		const result = Array.from(contents);
-		const [removed] = result.splice(sourceIndex, 1);
-		result.splice(destinationIndex, 0, removed);
+  const reorderContents = (
+    contents: Content[],
+    sourceIndex: number,
+    destinationIndex: number
+  ) => {
+    const result = Array.from(contents);
+    const [removed] = result.splice(sourceIndex, 1);
+    result.splice(destinationIndex, 0, removed);
 
     // Update order numbers
     return (result ?? []).map((content, index) => ({
@@ -912,21 +1151,21 @@ const handleCouponSubmit = async () => {
     if (!course.categories.includes(category)) {
       const updated = [...course.categories, category];
       setCourse((prev) => ({ ...prev, categories: updated }));
-      autoSaveField("categories", updated);
+      debouncedAutoSave("categories", updated);
     }
   };
 
   const removeCategory = (category: string) => {
     const updated = course.categories.filter((c) => c !== category);
     setCourse((prev) => ({ ...prev, categories: updated }));
-    autoSaveField("categories", updated);
+    debouncedAutoSave("categories", updated);
   };
 
   const addTag = (tag: string) => {
     if (!course.tags.includes(tag)) {
       const updated = [...course.tags, tag];
       setCourse((prev) => ({ ...prev, tags: updated }));
-      autoSaveField("tags", updated);
+      debouncedAutoSave("tags", updated);
     }
   };
 
@@ -937,7 +1176,7 @@ const handleCouponSubmit = async () => {
     }));
     const updated = course.tags.filter((t) => t !== tag);
     setCourse((prev) => ({ ...prev, tags: updated }));
-    autoSaveField("tags", updated);
+    debouncedAutoSave("tags", updated);
   };
 
   const generateDescription = async () => {
@@ -953,10 +1192,10 @@ const handleCouponSubmit = async () => {
     setCourse((prev) => ({ ...prev, description: randomDescription }));
   };
 
-	const setDescription = (value: string) => {
-		setCourse((prev) => ({ ...prev, description: value }));
-		autoSaveField("description", value);
-	};
+  const setDescription = (value: string) => {
+    setCourse((prev) => ({ ...prev, description: value }));
+    debouncedAutoSave("description", value);
+  };
 
   return (
     <div className="p-6 space-y-6">
@@ -969,15 +1208,14 @@ const handleCouponSubmit = async () => {
             Build and publish your course step by step
           </p>
         </div>
-        <div className="flex gap-2">
-          <Button variant="outline">
-            <Save className="w-4 h-4 mr-2" />
-            Save Draft
-          </Button>
-          <Button className="bg-midnight-blue-800 hover:bg-midnight-blue-900">
-            <Eye className="w-4 h-4 mr-2" />
-            Preview Course
-          </Button>
+        <div className="flex justify-end items-center gap-4">
+          {saveStatus.global && (
+            <span className="flex items-center text-green-600 text-sm font-medium">
+              ✅ {saveStatus.global}
+            </span>
+          )}
+          <Button>Save Draft</Button>
+          <Button>Preview Course</Button>
         </div>
       </div>
 
@@ -1048,7 +1286,11 @@ const handleCouponSubmit = async () => {
                     onChange={(e) => {
                       const val = e.target.value;
                       setCourse((prev) => ({ ...prev, title: val }));
-                      autoSaveField("title", val);
+                      setPendingCourseData((prev: any) => ({
+                        ...prev,
+                        title: val,
+                      }));
+                      triggerAutoSaveGlobal(); // reset timer
                     }}
                   />
                   {saveStatus.title && (
@@ -1063,7 +1305,7 @@ const handleCouponSubmit = async () => {
                     value={course.level}
                     onValueChange={(value) => {
                       setCourse((prev) => ({ ...prev, level: value }));
-                      autoSaveField("level", value);
+                      debouncedAutoSave("level", value);
                     }}
                   >
                     <SelectTrigger>
@@ -1233,7 +1475,7 @@ const handleCouponSubmit = async () => {
                     checked={course.freePreview}
                     onCheckedChange={(checked) => {
                       setCourse((prev) => ({ ...prev, freePreview: checked }));
-                      autoSaveField("freePreview", checked);
+                      debouncedAutoSave("freePreview", checked);
                     }}
                   />
                   {saveStatus.freePreview && (
@@ -1249,7 +1491,7 @@ const handleCouponSubmit = async () => {
                     checked={course.is_visible}
                     onCheckedChange={(val) => {
                       setCourse((prev) => ({ ...prev, is_visible: val }));
-                      autoSaveField("is_visible", val);
+                      debouncedAutoSave("is_visible", val);
                     }}
                   />
                   <Label>Public Course Visibility</Label>
@@ -1264,7 +1506,7 @@ const handleCouponSubmit = async () => {
                         enabled: checked,
                       };
                       setCourse((prev) => ({ ...prev, certificate: newCert }));
-                      autoSaveField("certificate", newCert);
+                      debouncedAutoSave("certificate", newCert);
                     }}
                   />
                   {saveStatus.certificate && (
@@ -1480,7 +1722,7 @@ const handleCouponSubmit = async () => {
                                     moduleId={module.id}
                                     onSubmit={(data) =>
                                       addContent(module.id, data)
-                                    }
+                                    } // ← INI YANG DIMAKSUD
                                     onClose={() => setIsLessonDialogOpen(false)}
                                   />
                                 </DialogContent>
@@ -1527,20 +1769,26 @@ const handleCouponSubmit = async () => {
                                 <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                                   <DialogHeader>
                                     <DialogTitle>
-                                      Edit Lesson:{" "}
-                                      {
+                                      {editingLesson ? "Edit" : "Add"} Lesson:
+                                      {editingLesson &&
                                         course.modules[
-                                          editingLesson?.moduleIndex
-                                        ]?.title
-                                      }
+                                          editingLesson.moduleIndex
+                                        ].contents[editingLesson.contentIndex]
+                                          .title}
                                     </DialogTitle>
                                     <DialogDescription>
-                                      Update lesson content and materials
+                                      Update lesson content and materials.
                                     </DialogDescription>
                                   </DialogHeader>
 
                                   {editingLesson && (
                                     <LessonForm
+                                      courseId={courseId}
+                                      moduleId={
+                                        course.modules[
+                                          editingLesson.moduleIndex
+                                        ].id
+                                      }
                                       lesson={{
                                         title:
                                           course.modules[
@@ -1552,44 +1800,71 @@ const handleCouponSubmit = async () => {
                                             editingLesson.moduleIndex
                                           ].contents[editingLesson.contentIndex]
                                             .data,
+                                        video_id:
+                                          course.modules[
+                                            editingLesson.moduleIndex
+                                          ].contents[editingLesson.contentIndex]
+                                            .video_id || "",
+                                        images: [],
+                                        files: [],
                                       }}
-                                      onSubmit={(updatedData) => {
+                                      onSubmit={async (updatedData) => {
                                         const lessonId =
                                           course.modules[
                                             editingLesson.moduleIndex
                                           ].contents[editingLesson.contentIndex]
                                             .id;
+                                        const moduleId =
+                                          course.modules[
+                                            editingLesson.moduleIndex
+                                          ].id;
 
-                                        updateLesson(lessonId, {
-                                          ...updatedData,
-                                          module_id:
-                                            course.modules[
-                                              editingLesson.moduleIndex
-                                            ].id,
-                                          order: editingLesson.contentIndex + 1,
-                                        });
-
-                                        const updatedModules = [
-                                          ...course.modules,
-                                        ];
-                                        updatedModules[
-                                          editingLesson.moduleIndex
-                                        ].contents[editingLesson.contentIndex] =
-                                          {
-                                            ...updatedModules[
-                                              editingLesson.moduleIndex
-                                            ].contents[
-                                              editingLesson.contentIndex
-                                            ],
+                                        try {
+                                          await updateLesson(lessonId, {
                                             ...updatedData,
-                                          };
+                                            module_id: moduleId,
+                                            order:
+                                              editingLesson.contentIndex + 1,
+                                          });
 
-                                        setCourse((prev) => ({
-                                          ...prev,
-                                          modules: updatedModules,
-                                        }));
-                                        setIsEditLessonOpen(false);
+                                          const res = await fetchData(
+                                            `/instructor/courses/${courseId}`
+                                          );
+                                          const updatedModules =
+                                            res.data.modules.map((mod: any) => {
+                                              const lessons = mod.lesson?.map(
+                                                (lsn: any) => ({
+                                                  ...lsn,
+                                                  type: "lesson",
+                                                })
+                                              );
+                                              const quizzes = mod.quizzes?.map(
+                                                (qz: any) => ({
+                                                  ...qz,
+                                                  type: "quiz",
+                                                })
+                                              );
+                                              return {
+                                                ...mod,
+                                                contents: [
+                                                  ...lessons,
+                                                  ...quizzes,
+                                                ],
+                                              };
+                                            });
+
+                                          setCourse((prev) => ({
+                                            ...prev,
+                                            modules: updatedModules,
+                                          }));
+
+                                          setIsEditLessonOpen(false);
+                                        } catch (err) {
+                                          alert("❌ Gagal update lesson.");
+                                          console.error(err);
+                                        }
                                       }}
+                                      onClose={() => setIsEditLessonOpen(false)} // ✅ Penting untuk reset form
                                     />
                                   )}
                                 </DialogContent>
@@ -1736,6 +2011,14 @@ const handleCouponSubmit = async () => {
                                                             variant="outline"
                                                             size="icon"
                                                             onClick={() => {
+                                                              console.log(
+                                                                "🟩 Edit lesson",
+                                                                {
+                                                                  moduleIndex,
+                                                                  contentIndex,
+                                                                }
+                                                              );
+
                                                               setEditingLesson({
                                                                 moduleIndex,
                                                                 contentIndex,
@@ -1847,102 +2130,103 @@ const handleCouponSubmit = async () => {
           </Card>
         </TabsContent>
 
-				{/* Step 3: Pricing & Coupons */}
-				<TabsContent value="2" className="space-y-6">
-					<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-						<Card>
-							<CardHeader>
-								<CardTitle>Pricing Strategy</CardTitle>
-								<CardDescription>
-									Set your course pricing and payment options
-								</CardDescription>
-							</CardHeader>
-							<CardContent className="space-y-4">
-								<div className="space-y-2">
-									<Label>Course Price</Label>
-									<div className="relative">
-										<span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
-											Rp
-										</span>
-										<Input
-											type="number"
-											placeholder="0"
-											className="pl-8"
-											value={course.price}
-											onChange={(e) => {
-												const val = Number.parseFloat(e.target.value) || 0;
-												setCourse((prev) => ({ ...prev, price: val }));
-												autoSaveField("price", val);
-											}}
-										/>
-										{saveStatus.price && (
-											<p className="text-xs text-muted-foreground">
-												{saveStatus.price}
-											</p>
-										)}
-									</div>
-								</div>
+        {/* Step 3: Pricing & Coupons */}
+        <TabsContent value="2" className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Pricing Strategy</CardTitle>
+                <CardDescription>
+                  Set your course pricing and payment options
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Course Price</Label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                      Rp
+                    </span>
+                    <Input
+                      type="number"
+                      placeholder="0"
+                      className="pl-8"
+                      value={course.price}
+                      onChange={(e) => {
+                        const val = Number.parseFloat(e.target.value) || 0;
+                        setCourse((prev) => ({ ...prev, price: val }));
+                        debouncedAutoSave("price", val);
+                      }}
+                    />
+                    {saveStatus.price && (
+                      <p className="text-xs text-muted-foreground">
+                        {saveStatus.price}
+                      </p>
+                    )}
+                  </div>
+                </div>
 
-								<div className="space-y-2">
-									<Label>Pricing Type</Label>
-									<Select
-										value={course.price === 0 ? "free" : "one-time"}
-										disabled={course.price === 0}
-									>
-										<SelectTrigger>
-											<SelectValue placeholder="Select pricing type" />
-										</SelectTrigger>
-										<SelectContent>
-											{course.price === 0 ? (
-												<SelectItem value="free">Free Course</SelectItem>
-											) : (
-												<>
-													<SelectItem value="one-time">
-														One-time Payment
-													</SelectItem>
-													<SelectItem value="subscription">
-														Monthly Subscription
-													</SelectItem>
-												</>
-											)}
-										</SelectContent>
-									</Select>
-									{course.price === 0 && (
-										<p className="text-sm text-muted-foreground">
-											Free courses automatically use "Free Course" pricing type
-										</p>
-									)}
-								</div>
-							</CardContent>
-						</Card>
+                <div className="space-y-2">
+  <Label htmlFor="pricing-type">Pricing Type</Label>
+  <Select
+  value={pricingType}
+  onValueChange={(val) => {
+    setPricingType(val);
+    autoSaveField("type", val); // ✅ Trigger auto-save seperti course price
+  }}
+>
+  <SelectTrigger>
+    <SelectValue placeholder="Select type" />
+  </SelectTrigger>
+  <SelectContent>
+    {pricingOptions.map((opt) => (
+      <SelectItem key={opt.value} value={opt.value}>
+        {opt.label}
+      </SelectItem>
+    ))}
+  </SelectContent>
+</Select>
+
+</div>
+
+              </CardContent>
+            </Card>
 
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   Discount Coupons
                   <Dialog
-                    open={isCouponDialogOpen}
-                    onOpenChange={setIsCouponDialogOpen}
-                  >
-                    <DialogTrigger asChild>
-                      <Button
-                        size="sm"
-                        className="bg-midnight-blue-800 hover:bg-midnight-blue-900"
-                      >
-                        <Plus className="w-4 h-4 mr-2" />
-                        Create Coupon
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                      <DialogHeader>
-                        <DialogTitle>Create Discount Coupon</DialogTitle>
-                        <DialogDescription>
-                          Create promotional codes for your course
-                        </DialogDescription>
-                      </DialogHeader>
-                      <CouponForm onSubmit={addCoupon} />
-                    </DialogContent>
-                  </Dialog>
+  open={isCouponDialogOpen}
+  onOpenChange={setIsCouponDialogOpen}
+>
+  <DialogTrigger asChild>
+    <Button
+      size="sm"
+      className="bg-midnight-blue-800 hover:bg-midnight-blue-900"
+    >
+      <Plus className="w-4 h-4 mr-2" />
+      Create Coupon
+    </Button>
+  </DialogTrigger>
+  <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+    <DialogHeader>
+      <DialogTitle>Create Discount Coupon</DialogTitle>
+      <DialogDescription>
+        Create promotional codes for your course
+      </DialogDescription>
+    </DialogHeader>
+
+    {/* ✅ Gunakan handler Anda */}
+    <CouponForm
+      coupon={coupon}
+      setCoupon={setCoupon}
+      loading={loading}
+      onSubmit={handleCouponSubmit}
+    />
+  </DialogContent>
+</Dialog>
+
                 </CardTitle>
                 <CardDescription>
                   Create promotional codes to boost sales
@@ -2160,10 +2444,10 @@ function ModuleForm({
   onSubmit: (data: Omit<Module, "id" | "order" | "contents">) => void;
   module?: Module;
 }) {
-	const [formData, setFormData] = useState({
-		title: "",
-		description: "",
-	});
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -2236,11 +2520,19 @@ function ModuleForm({
 function LessonForm({
   courseId,
   moduleId,
+  lesson,
   onSubmit,
   onClose,
 }: {
   courseId: string;
   moduleId: string;
+  lesson?: {
+    title: string;
+    content: string;
+    video_id?: string;
+    images?: File[];
+    files?: File[];
+  };
   onSubmit: (data: Omit<Content, "id" | "order"> & { type: "lesson" }) => void;
   onClose: () => void;
 }) {
@@ -2248,13 +2540,43 @@ function LessonForm({
     title: "",
     content: "",
     images: [] as File[],
-    videos: [] as File[],
     files: [] as File[],
+    video_id: "",
+    videos: [] as File[], // video upload lokal
   });
+
+  const generateLessonContent = () => {
+    const aiContents = [
+      `<h2 style="text-align: center;">${formData.title}</h2><p>In this lesson, you'll explore the core principles of ${formData.title} through interactive content and practical tasks.</p>`,
+      `<h2 style="text-align: center;">${formData.title}</h2><p>This lesson provides a clear and structured explanation of ${formData.title}, helping you gain confidence and mastery.</p>`,
+      `<h2 style="text-align: center;">${formData.title}</h2><p>Learn ${formData.title} step-by-step with expert insights, visual guides, and real-world examples.</p>`,
+    ];
+
+    const randomContent =
+      aiContents[Math.floor(Math.random() * aiContents.length)];
+
+    setFormData((prev) => ({
+      ...prev,
+      content: randomContent,
+    }));
+  };
 
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadDone, setUploadDone] = useState(false);
+
+  useEffect(() => {
+    if (lesson) {
+      setFormData((prev) => ({
+        ...prev,
+        title: lesson.title || "",
+        content: lesson.content || "",
+        video_id: lesson.video_id || "",
+        images: lesson.images || [],
+        files: lesson.files || [],
+      }));
+    }
+  }, [lesson]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -2262,45 +2584,77 @@ function LessonForm({
     setUploadDone(false);
 
     let videoPath = "";
+    let videoId = "";
+    const fileId = uuidv4();
+    const chunkSize = 1024 * 1024;
+
     if (formData.videos.length > 0) {
+      const videoFile = formData.videos[0];
+      const extension = videoFile.name.split(".").pop()?.toLowerCase();
+      const totalChunks = Math.ceil(videoFile.size / chunkSize);
+
       try {
-        videoPath = await uploadChunk(
-          formData.videos[0],
-          1024 * 1024, // 1 MB chunk
-          courseId,
-          moduleId,
-          (percent) => setUploadProgress(percent)
-        );
-      } catch (error) {
-        alert("❌ Gagal upload video.");
+        for (let i = 0; i < totalChunks; i++) {
+          const start = i * chunkSize;
+          const end = Math.min(start + chunkSize, videoFile.size);
+          const chunk = videoFile.slice(start, end);
+
+          const chunkForm = new FormData();
+          chunkForm.append("chunk_file", chunk);
+          chunkForm.append("file_id", fileId);
+          chunkForm.append("chunk_index", i.toString());
+
+          await fetchData("/chunk/upload", {
+            method: "POST",
+            body: chunkForm,
+          });
+
+          setUploadProgress(Math.round(((i + 1) / totalChunks) * 100));
+        }
+
+        const mergeRes = await fetchData("/chunk/merge", {
+          method: "POST",
+          body: {
+            file_id: fileId,
+            extension,
+            total_chunks: totalChunks,
+          },
+        });
+
+        videoPath = mergeRes.data?.path || "";
+        videoId = mergeRes.data?.id || "";
+
+        setFormData((prev) => ({ ...prev, video_id: videoId }));
+      } catch (err) {
+        alert("❌ Failed to upload video");
         setIsUploading(false);
         return;
       }
     }
 
-    const fullContent = `${formData.content}${
-      videoPath ? `<br><p>Video: ${videoPath}</p>` : ""
-    }`.trim();
-
     const lessonData = {
       title: formData.title,
       type: "lesson",
-      content: fullContent,
-      images: formData.images,
+      content: formData.content,
       videos: videoPath ? [videoPath] : [],
+      video_id: videoId || formData.video_id,
+      images: formData.images,
       files: formData.files,
     };
 
     await onSubmit(lessonData);
     setIsUploading(false);
     setUploadDone(true);
-    setFormData({ title: "", content: "", images: [], videos: [], files: [] });
     setUploadProgress(0);
-    onClose(); // ❗ Tutup dialog otomatis
-  };
-
-  const setContent = (val: string) => {
-    setFormData((prev) => ({ ...prev, content: val }));
+    setFormData({
+      title: "",
+      content: "",
+      images: [],
+      files: [],
+      video_id: "",
+      videos: [],
+    });
+    onClose();
   };
 
   return (
@@ -2333,7 +2687,9 @@ function LessonForm({
         </div>
         <RichTextEditor
           value={formData.content}
-          onChange={setContent}
+          onChange={(val) => {
+            setFormData((prev) => ({ ...prev, content: val }));
+          }}
           placeholder="Write your lesson content here..."
           className="min-h-[300px]"
         />
@@ -2363,7 +2719,11 @@ function LessonForm({
           disabled={isUploading}
           className="bg-midnight-blue-800 hover:bg-midnight-blue-900"
         >
-          {isUploading ? "Uploading..." : "Add Lesson"}
+          {isUploading
+            ? "Uploading..."
+            : lesson
+            ? "Update Lesson"
+            : "Add Lesson"}
         </Button>
       </DialogFooter>
     </form>
@@ -2760,31 +3120,28 @@ function QuizForm({
     </form>
   );
 }
-
 function CouponForm({
   onSubmit,
 }: {
   onSubmit: (data: Omit<Coupon, "id" | "used">) => void;
 }) {
-  const [formData, setFormData] = useState({
-    code: "",
-    discount: 0,
-    type: "percentage" as Coupon["type"],
-    validUntil: "",
-    usageLimit: 100,
-  });
+const [formData, setFormData] = useState<Omit<Coupon, "id" | "used">>({
+  code: "",
+  discount_type: "percentage",
+  amount: 0,
+  usage_limit: 100,
+  valid_until: "", // key sesuai interface
+});
 
-	const handleSubmit = (e: React.FormEvent) => {
-		e.preventDefault();
-		onSubmit(formData);
-		setFormData({
-			code: "",
-			discount: 0,
-			type: "percentage",
-			validUntil: "",
-			usageLimit: 100,
-		});
-	};
+
+
+
+  const handleSubmit = (e: React.FormEvent) => {
+  e.preventDefault();
+  console.log("📤 Submitted:", formData);
+  onSubmit(formData); // Sudah cocok dengan Omit<Coupon, "id" | "used">
+};
+
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -2807,20 +3164,20 @@ function CouponForm({
         <div className="space-y-2">
           <Label htmlFor="discount-type">Discount Type</Label>
           <Select
-            value={formData.type}
+            value={formData.discount_type}
             onValueChange={(value) =>
               setFormData((prev) => ({
                 ...prev,
-                type: value as Coupon["type"],
+                type: value as Coupon["discount_type"],
               }))
             }
           >
             <SelectTrigger>
-              <SelectValue />
+              <SelectValue placeholder="Select type" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="percentage">Percentage</SelectItem>
-              <SelectItem value="fixed">Fixed Amount</SelectItem>
+              <SelectItem value="fixed">Fixed</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -2829,14 +3186,15 @@ function CouponForm({
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="discount-value">
-            Discount{" "}
-            {formData.type === "percentage" ? "Percentage" : "Amount (Rp)"}
+            {formData.discount_type === "percentage"
+              ? "Discount Percentage"
+              : "Discount Amount (Rp)"}
           </Label>
           <Input
             id="discount-value"
             type="number"
-            placeholder={formData.type === "percentage" ? "20" : "10000"}
-            value={formData.discount}
+            placeholder={formData.discount_type === "percentage" ? "20" : "10000"}
+            value={formData.amount}
             onChange={(e) =>
               setFormData((prev) => ({
                 ...prev,
@@ -2852,7 +3210,7 @@ function CouponForm({
             id="usage-limit"
             type="number"
             placeholder="100"
-            value={formData.usageLimit}
+            value={formData.usage_limit}
             onChange={(e) =>
               setFormData((prev) => ({
                 ...prev,
@@ -2867,12 +3225,17 @@ function CouponForm({
       <div className="space-y-2">
         <Label htmlFor="valid-until">Valid Until</Label>
         <Input
-          id="valid-until"
           type="date"
-          value={formData.validUntil}
-          onChange={(e) =>
-            setFormData((prev) => ({ ...prev, validUntil: e.target.value }))
-          }
+          id="valid-until"
+          value={formData.valid_until}
+          onChange={(e) => {
+            const dateValue = e.target.value;
+            console.log("📅 Selected date (raw):", dateValue);
+            setFormData((prev) => ({
+              ...prev,
+              validUntil: dateValue,
+            }));
+          }}
           required
         />
       </div>
@@ -2888,6 +3251,10 @@ function CouponForm({
     </form>
   );
 }
+
+
+
+
 function addQuiz(
   moduleId: string,
   arg1: {
@@ -2900,12 +3267,9 @@ function addQuiz(
 ) {
   throw new Error("Function not implemented.");
 }
-function mergeChunks(
-  fileId: string,
-  totalChunks: number,
-  ext: string,
-  courseId: string,
-  moduleId: string
-): string | PromiseLike<string> {
-  throw new Error("Function not implemented.");
-}
+// function mergeChunks(
+//   fileId: string,
+//   totalChunks: number
+// ): string | PromiseLike<string> {
+//   throw new Error("Function not implemented.");
+// }

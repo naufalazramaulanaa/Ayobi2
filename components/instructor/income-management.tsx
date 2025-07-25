@@ -57,6 +57,8 @@ export function IncomeManagement() {
   const [stats, setStats] = useState<any>(null);
   const [isWithdrawDialogOpen, setIsWithdrawDialogOpen] = useState(false);
   const [withdrawAmount, setWithdrawAmount] = useState("");
+  const [withdrawals, setWithdrawals] = useState<any[]>([]);
+
 
   const dummyTransactions = [
     {
@@ -93,17 +95,22 @@ export function IncomeManagement() {
   ];
 
   useEffect(() => {
-    const loadIncomeData = async () => {
-      try {
-        const response = await fetchData("/instructor/income-management");
-        setSummary(response.data.summaries);
-        setStats(response.data.statistics);
-      } catch (error) {
-        console.error("Failed to load income data", error);
-      }
-    };
-    loadIncomeData();
-  }, []);
+  const loadIncomeData = async () => {
+    try {
+      const response = await fetchData("/instructor/income-management");
+      setSummary(response.data.summaries);
+      setStats(response.data.statistics);
+
+      const withdrawalResponse = await fetchData("/instructor/withdrawal-histories");
+      console.log("withdrawal histories", withdrawalResponse.data.histories);
+      setWithdrawals(withdrawalResponse.data.histories);
+    } catch (error) {
+      console.error("Failed to load income data", error);
+    }
+  };
+  loadIncomeData();
+}, []);
+
 
   const totalEarnings = summary?.income?.total || 0;
   const thisMonthEarnings = summary?.income?.this_month || 0;
@@ -265,16 +272,17 @@ export function IncomeManagement() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {dummyWithdrawals.map((w) => (
-                    <TableRow key={w.id}>
-                      <TableCell>{w.date}</TableCell>
-                      <TableCell>${w.amount}</TableCell>
-                      <TableCell>{w.method}</TableCell>
-                      <TableCell>{w.account}</TableCell>
-                      <TableCell>
-                        <Badge variant="outline">{w.status}</Badge>
-                      </TableCell>
-                    </TableRow>
+                  {withdrawals.map((w) => (
+
+   <TableRow key={w.id}>
+  <TableCell>{formatDate(w.processed_at || w.created_at)}</TableCell>
+  <TableCell>${parseFloat(w.amount).toFixed(2)}</TableCell>
+  <TableCell>Bank</TableCell>
+  <TableCell>—</TableCell>
+  <TableCell><Badge variant="outline">{w.status}</Badge></TableCell>
+</TableRow>
+
+
                   ))}
                 </TableBody>
               </Table>
@@ -284,4 +292,11 @@ export function IncomeManagement() {
       </Tabs>
     </div>
   );
+}
+function formatDate(dateStr: string) {
+  return new Date(dateStr).toLocaleDateString("id-ID", {
+    year: "numeric",
+    month: "short",
+    day: "numeric"
+  });
 }
