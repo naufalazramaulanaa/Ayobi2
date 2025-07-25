@@ -325,7 +325,6 @@ const handleCouponSubmit = async () => {
 
 
 
-
   const [fileId] = useState(() => uuidv4());
   const [isModuleDialogOpen, setIsModuleDialogOpen] = useState(false);
   const [isLessonDialogOpen, setIsLessonDialogOpen] = useState(false);
@@ -335,15 +334,6 @@ const handleCouponSubmit = async () => {
   const [moduleSaveStatus, setModuleSaveStatus] = useState<string>("");
   const [contentSaveStatus, setContentSaveStatus] = useState<string>("");
   
-
-	const [isModuleDialogOpen, setIsModuleDialogOpen] = useState(false);
-	const [isLessonDialogOpen, setIsLessonDialogOpen] = useState(false);
-	const [isQuizDialogOpen, setIsQuizDialogOpen] = useState(false);
-	const [isCouponDialogOpen, setIsCouponDialogOpen] = useState(false);
-	const [selectedModuleId, setSelectedModuleId] = useState<string>("");
-	const [moduleSaveStatus, setModuleSaveStatus] = useState<string>("");
-	const [contentSaveStatus, setContentSaveStatus] = useState<string>("");
-
 
   // Untuk dialog & data edit Module
   const [isEditModuleOpen, setIsEditModuleOpen] = useState(false);
@@ -501,21 +491,12 @@ const handleCouponSubmit = async () => {
     }
   };
 
-
   const autoSaveField = async (field: string, value: any) => {
     const endpoint = courseId
       ? `/instructor/courses/${courseId}`
       : `/instructor/courses/initiate`;
 
     const isUpdate = Boolean(courseId);
-
-	const autoSaveField = async (field: string, value: any) => {
-		const endpoint = courseId
-			? `/instructor/courses/${courseId}`
-			: `/instructor/courses/initiate`;
-
-		const isUpdate = Boolean(courseId);
-
 
     let body: FormData | any;
     let isFormData = false;
@@ -545,22 +526,13 @@ const handleCouponSubmit = async () => {
       if (isUpdate) body._method = "PUT";
     }
 
-    console.log("body", body);
-
     try {
       const response = await fetchData(endpoint, {
         method: "POST",
-
         body,
       });
 
       console.log(`[autoSaveField] Response for "${field}":`, response); // Debug log
-
-        body: body,
-      });
-
-      console.log("response", response);
-
 
       if (!courseId && (response.data?.id || response.id)) {
         const newId = response.data?.id || response.id;
@@ -1310,7 +1282,7 @@ const updateModule = async (moduleId: string, updatedData: any) => {
                   <Input
                     id="title"
                     placeholder="e.g., Complete React Developer Course"
-                    value={course.title}
+                    value={course.title ?? ""}
                     onChange={(e) => {
                       const val = e.target.value;
                       setCourse((prev) => ({ ...prev, title: val }));
@@ -1394,7 +1366,7 @@ const updateModule = async (moduleId: string, updatedData: any) => {
                   </p>
                 )}
                 <div className="flex gap-2">
-                  <Input placeholder="Add new category" id="new-category" />
+                  <Input placeholder="Add new category" id="new-category" defaultValue="" />
                   <Button
                     variant="outline"
                     onClick={() => {
@@ -1451,7 +1423,7 @@ const updateModule = async (moduleId: string, updatedData: any) => {
                   </p>
                 )}
                 <div className="flex gap-2">
-                  <Input placeholder="Add new tag" id="new-tag" />
+                  <Input placeholder="Add new tag" id="new-tag" defaultValue="" />
                   <Button
                     variant="outline"
                     onClick={() => {
@@ -2179,7 +2151,7 @@ const updateModule = async (moduleId: string, updatedData: any) => {
                       type="number"
                       placeholder="0"
                       className="pl-8"
-                      value={course.price}
+                    value={course.price ?? 0}
                       onChange={(e) => {
                         const val = Number.parseFloat(e.target.value) || 0;
                         setCourse((prev) => ({ ...prev, price: val }));
@@ -3238,7 +3210,7 @@ const [formData, setFormData] = useState<Omit<Coupon, "id" | "used">>({
             id="usage-limit"
             type="number"
             placeholder="100"
-            value={formData.usage_limit}
+            value={formData.usage_limit ?? 0}
             onChange={(e) =>
               setFormData((prev) => ({
                 ...prev,
@@ -3255,7 +3227,7 @@ const [formData, setFormData] = useState<Omit<Coupon, "id" | "used">>({
         <Input
           type="date"
           id="valid-until"
-          value={formData.valid_until}
+          value={formData.valid_until ?? ""}
           onChange={(e) => {
             const dateValue = e.target.value;
             console.log("📅 Selected date (raw):", dateValue);
@@ -3295,21 +3267,9 @@ function addQuiz(
 ) {
   throw new Error("Function not implemented.");
 }
-
 // function mergeChunks(
 //   fileId: string,
 //   totalChunks: number
 // ): string | PromiseLike<string> {
 //   throw new Error("Function not implemented.");
 // }
-
-function mergeChunks(
-  fileId: string,
-  totalChunks: number,
-  ext: string,
-  courseId: string,
-  moduleId: string
-): string | PromiseLike<string> {
-  throw new Error("Function not implemented.");
-}
-
