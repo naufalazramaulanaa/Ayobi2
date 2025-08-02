@@ -329,7 +329,6 @@ const handleCouponSubmit = async () => {
 
 
 
-
   const [fileId] = useState(() => uuidv4());
   const [isModuleDialogOpen, setIsModuleDialogOpen] = useState(false);
   const [isLessonDialogOpen, setIsLessonDialogOpen] = useState(false);
@@ -339,15 +338,6 @@ const handleCouponSubmit = async () => {
   const [moduleSaveStatus, setModuleSaveStatus] = useState<string>("");
   const [contentSaveStatus, setContentSaveStatus] = useState<string>("");
   
-
-	const [isModuleDialogOpen, setIsModuleDialogOpen] = useState(false);
-	const [isLessonDialogOpen, setIsLessonDialogOpen] = useState(false);
-	const [isQuizDialogOpen, setIsQuizDialogOpen] = useState(false);
-	const [isCouponDialogOpen, setIsCouponDialogOpen] = useState(false);
-	const [selectedModuleId, setSelectedModuleId] = useState<string>("");
-	const [moduleSaveStatus, setModuleSaveStatus] = useState<string>("");
-	const [contentSaveStatus, setContentSaveStatus] = useState<string>("");
-
 
   // Untuk dialog & data edit Module
   const [isEditModuleOpen, setIsEditModuleOpen] = useState(false);
@@ -505,21 +495,12 @@ const handleCouponSubmit = async () => {
     }
   };
 
-
   const autoSaveField = async (field: string, value: any) => {
     const endpoint = courseId
       ? `/instructor/courses/${courseId}`
       : `/instructor/courses/initiate`;
 
     const isUpdate = Boolean(courseId);
-
-	const autoSaveField = async (field: string, value: any) => {
-		const endpoint = courseId
-			? `/instructor/courses/${courseId}`
-			: `/instructor/courses/initiate`;
-
-		const isUpdate = Boolean(courseId);
-
 
     let body: FormData | any;
     let isFormData = false;
@@ -549,22 +530,13 @@ const handleCouponSubmit = async () => {
       if (isUpdate) body._method = "PUT";
     }
 
-    console.log("body", body);
-
     try {
       const response = await fetchData(endpoint, {
         method: "POST",
-
         body,
       });
 
       console.log(`[autoSaveField] Response for "${field}":`, response); // Debug log
-
-        body: body,
-      });
-
-      console.log("response", response);
-
 
       if (!courseId && (response.data?.id || response.id)) {
         const newId = response.data?.id || response.id;
@@ -3301,7 +3273,6 @@ function addQuiz(
 ) {
   throw new Error("Function not implemented.");
 }
-
 // function mergeChunks(
 //   fileId: string,
 //   totalChunks: number
