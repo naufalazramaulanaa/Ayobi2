@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -22,135 +22,109 @@ import {
   TrendingUp,
   Calendar,
 } from "lucide-react"
+import { fetchData } from "@/lib/api"
+
+interface Module {
+  id: number
+  title: string
+  description?: string
+  order: number
+  lessons?: any[]
+  quizzes?: any[]
+}
 
 interface Course {
-  id: string
+  id: number
   title: string
-  description: string
+  description?: string
   thumbnail: string
-  category: string
-  level: string
-  price: number
+  category: { name: string }
+  level: { name: string }
+  price?: number
   status: "draft" | "published" | "under-review" | "rejected"
   students: number
   rating: number
   reviews: number
   revenue: number
-  createdAt: string
-  lastUpdated: string
-  modules: number
+  created_at: string
+  updated_at: string
+  modules?: number
   duration: string
 }
 
-const mockCourses: Course[] = [
-  {
-    id: "1",
-    title: "Complete React Developer Course",
-    description: "Learn React from basics to advanced concepts with hands-on projects",
-    thumbnail: "/placeholder.svg?height=200&width=300",
-    category: "Web Development",
-    level: "Intermediate",
-    price: 99,
-    status: "published",
-    students: 1247,
-    rating: 4.8,
-    reviews: 324,
-    revenue: 12453,
-    createdAt: "2024-01-15",
-    lastUpdated: "2024-01-20",
-    modules: 12,
-    duration: "24 hours",
-  },
-  {
-    id: "2",
-    title: "Advanced JavaScript Concepts",
-    description: "Master advanced JavaScript concepts and modern ES6+ features",
-    thumbnail: "/placeholder.svg?height=200&width=300",
-    category: "Web Development",
-    level: "Advanced",
-    price: 149,
-    status: "published",
-    students: 892,
-    rating: 4.9,
-    reviews: 156,
-    revenue: 13308,
-    createdAt: "2024-02-01",
-    lastUpdated: "2024-02-10",
-    modules: 8,
-    duration: "18 hours",
-  },
-  {
-    id: "3",
-    title: "UI/UX Design Fundamentals",
-    description: "Learn the principles of user interface and user experience design",
-    thumbnail: "/placeholder.svg?height=200&width=300",
-    category: "UI/UX Design",
-    level: "Beginner",
-    price: 79,
-    status: "under-review",
-    students: 0,
-    rating: 0,
-    reviews: 0,
-    revenue: 0,
-    createdAt: "2024-03-01",
-    lastUpdated: "2024-03-05",
-    modules: 6,
-    duration: "12 hours",
-  },
-  {
-    id: "4",
-    title: "Node.js Backend Development",
-    description: "Build scalable backend applications with Node.js and Express",
-    thumbnail: "/placeholder.svg?height=200&width=300",
-    category: "Web Development",
-    level: "Intermediate",
-    price: 129,
-    status: "draft",
-    students: 0,
-    rating: 0,
-    reviews: 0,
-    revenue: 0,
-    createdAt: "2024-03-10",
-    lastUpdated: "2024-03-15",
-    modules: 10,
-    duration: "20 hours",
-  },
-]
-
 export function MyCourses() {
-  const [courses, setCourses] = useState<Course[]>(mockCourses)
+  const [courses, setCourses] = useState<Course[]>([]) // sudah array dari awal
+  const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
-  const [statusFilter, setStatusFilter] = useState("all")
-  const [categoryFilter, setCategoryFilter] = useState("all")
+  const [statusFilter, setStatusFilter] = useState("all");
+const [categoryFilter, setCategoryFilter] = useState("all");
 
-  const filteredCourses = courses.filter((course) => {
+//   const [courseData, setCourseData] = useState<{ courses: Course[]; stats: any }>({
+//   courses: [],
+//   stats: {},
+// })
+
+
+useEffect(() => {
+  const fetchCourses = async () => {
+    try {
+      const response = await fetchData("/instructor/my-courses?per_page=7", { method: "GET" })
+      console.log("✅ Response:", response)
+      setCourses(response.data.courses || []) // <== ini fix-nya
+    } catch (err) {
+      console.error("❌ Fetch Error:", err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  fetchCourses()
+}, [])
+
+
+  const filteredCourses = (courses || []).filter((course) => {
     const matchesSearch =
-      course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      course.description.toLowerCase().includes(searchTerm.toLowerCase())
+      !searchTerm ||
+      course.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      course.description?.toLowerCase().includes(searchTerm.toLowerCase())
+
     const matchesStatus = statusFilter === "all" || course.status === statusFilter
-    const matchesCategory = categoryFilter === "all" || course.category === categoryFilter
+    const matchesCategory = categoryFilter === "all" || course.category?.name === categoryFilter
 
     return matchesSearch && matchesStatus && matchesCategory
   })
 
-  const getStatusBadge = (status: Course["status"]) => {
-    const variants = {
-      published: "bg-green-100 text-green-800",
-      draft: "bg-gray-100 text-gray-800",
-      "under-review": "bg-yellow-100 text-yellow-800",
-      rejected: "bg-red-100 text-red-800",
-    }
-    return (
-      <Badge className={variants[status]}>
-        {status.replace("-", " ").charAt(0).toUpperCase() + status.replace("-", " ").slice(1)}
-      </Badge>
-    )
-  }
+
+
+  const getStatusBadge = (status?: Course["status"]) => {
+  if (!status) return null;
+
+  const variants = {
+    published: "bg-green-100 text-green-800",
+    draft: "bg-gray-100 text-gray-800",
+    "under-review": "bg-yellow-100 text-yellow-800",
+    rejected: "bg-red-100 text-red-800",
+  };
+
+  const label = status.replace("-", " ");
+  const badgeStyle = variants[status] || "bg-gray-100 text-gray-800";
+
+  return (
+    <Badge className={badgeStyle}>
+      {label.charAt(0).toUpperCase() + label.slice(1)}
+    </Badge>
+  );
+};
+
 
   const totalCourses = courses.length
   const publishedCourses = courses.filter((c) => c.status === "published").length
   const totalStudents = courses.reduce((sum, course) => sum + course.students, 0)
-  const totalRevenue = courses.reduce((sum, course) => sum + course.revenue, 0)
+const totalRevenue = Array.isArray(courses)
+  ? courses.reduce((sum, course) => sum + Number(course.revenue ?? 0), 0)
+  : 0;
+
+
 
   return (
     <div className="p-6 space-y-6">
@@ -200,7 +174,7 @@ export function MyCourses() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Total Students</p>
-                <p className="text-2xl font-bold text-purple-600">{totalStudents}</p>
+                <p className="text-2xl font-bold text-purple-600">${Number(totalStudents ?? 0).toFixed(2)}</p>
               </div>
               <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
                 <Users className="w-4 h-4 text-purple-600" />
@@ -214,7 +188,11 @@ export function MyCourses() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Total Revenue</p>
-                <p className="text-2xl font-bold text-orange-600">${totalRevenue}</p>
+                <p className="text-2xl font-bold text-orange-600">
+  ${Number(totalRevenue ?? 0).toFixed(2)}
+
+</p>
+
               </div>
               <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
                 <DollarSign className="w-4 h-4 text-orange-600" />
@@ -291,37 +269,39 @@ export function MyCourses() {
                 </div>
 
                 <div className="flex items-center justify-between text-sm">
-                  <Badge variant="outline">{course.category}</Badge>
-                  <Badge variant="outline">{course.level}</Badge>
+                   <Badge variant="outline">{course.category?.name || "No category"}</Badge>
+                    <Badge variant="outline">{course.level?.name || "No level"}</Badge>
                 </div>
 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Price:</span>
-                    <span className="font-medium">${course.price}</span>
+                    <span className="font-medium">${Number(course.price ?? 0).toFixed(2)}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Students:</span>
-                    <span className="font-medium">{course.students}</span>
+                    <span className="font-medium">{course.students ?? 0}</span>
                   </div>
                   {course.rating > 0 && (
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-muted-foreground">Rating:</span>
                       <div className="flex items-center gap-1">
                         <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                        <span className="font-medium">{course.rating}</span>
-                        <span className="text-muted-foreground">({course.reviews})</span>
+                        <span className="font-medium">{typeof course.rating === "number" ? `$${course.rating}` : "$0"}</span>
+                        <span className="text-muted-foreground">({course.reviews ?? 0})</span>
                       </div>
                     </div>
                   )}
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Revenue:</span>
-                    <span className="font-medium text-green-600">${course.revenue}</span>
+                    <span>{typeof course.revenue === "number" ? `$${course.revenue}` : "$0"}</span>
+
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between text-xs text-muted-foreground">
-                  <span>{course.modules} modules</span>
+                  <span>{Array.isArray(course.modules) ? course.modules.length : 0} modules</span>
+
                   <span>{course.duration}</span>
                 </div>
 
@@ -385,4 +365,4 @@ export function MyCourses() {
       )}
     </div>
   )
-}
+} 

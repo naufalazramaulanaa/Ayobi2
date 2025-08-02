@@ -120,6 +120,8 @@ interface Course {
   categories: string[];
   tags: string[];
   level: string;
+  is_visible: boolean;
+  is_published: boolean;
   price: number;
   thumbnail: string;
   modules: Module[];
@@ -162,6 +164,8 @@ export function CourseCreator() {
     categories: [] as string[],
     tags: [] as string[],
     level: "",
+    is_visible:false,
+    is_published:false,
     price: 0,
     thumbnail: "",
     modules: [] as Module[],
@@ -397,7 +401,7 @@ const handleCouponSubmit = async () => {
     "Popular",
   ]);
 
-  const [pendingCourseData, setPendingCourseData] = useState<any>({});
+   const [pendingCourseData, setPendingCourseData] = useState<any>({});
   let autoSaveTimer: ReturnType<typeof setTimeout> | null = null;
 
   const triggerAutoSaveGlobal = () => {
@@ -529,7 +533,7 @@ const handleCouponSubmit = async () => {
       body.append("price", course.price?.toString() || "0");
       body.append("approval_status", "draft");
       body.append("is_visible", course.is_visible ? "true" : "false");
-      body.append("is_published", "true");
+      body.append("is_published", course.is_published ? true : false);
       body.append("thumbnail", value);
       if (isUpdate) body.append("_method", "PUT");
       isFormData = true;
@@ -582,6 +586,8 @@ const handleCouponSubmit = async () => {
   useEffect(() => {
     autoInitiate();
   }, []);
+
+
 
   const steps = [
     "Basic Information",
@@ -1310,7 +1316,7 @@ const updateModule = async (moduleId: string, updatedData: any) => {
                   <Input
                     id="title"
                     placeholder="e.g., Complete React Developer Course"
-                    value={course.title}
+                    value={course.title ?? ""}
                     onChange={(e) => {
                       const val = e.target.value;
                       setCourse((prev) => ({ ...prev, title: val }));
@@ -1394,7 +1400,7 @@ const updateModule = async (moduleId: string, updatedData: any) => {
                   </p>
                 )}
                 <div className="flex gap-2">
-                  <Input placeholder="Add new category" id="new-category" />
+                  <Input placeholder="Add new category" id="new-category" defaultValue="" />
                   <Button
                     variant="outline"
                     onClick={() => {
@@ -1451,7 +1457,7 @@ const updateModule = async (moduleId: string, updatedData: any) => {
                   </p>
                 )}
                 <div className="flex gap-2">
-                  <Input placeholder="Add new tag" id="new-tag" />
+                  <Input placeholder="Add new tag" id="new-tag" defaultValue="" />
                   <Button
                     variant="outline"
                     onClick={() => {
@@ -2179,7 +2185,7 @@ const updateModule = async (moduleId: string, updatedData: any) => {
                       type="number"
                       placeholder="0"
                       className="pl-8"
-                      value={course.price}
+                    value={course.price ?? 0}
                       onChange={(e) => {
                         const val = Number.parseFloat(e.target.value) || 0;
                         setCourse((prev) => ({ ...prev, price: val }));
@@ -3238,7 +3244,7 @@ const [formData, setFormData] = useState<Omit<Coupon, "id" | "used">>({
             id="usage-limit"
             type="number"
             placeholder="100"
-            value={formData.usage_limit}
+            value={formData.usage_limit ?? 0}
             onChange={(e) =>
               setFormData((prev) => ({
                 ...prev,
@@ -3255,7 +3261,7 @@ const [formData, setFormData] = useState<Omit<Coupon, "id" | "used">>({
         <Input
           type="date"
           id="valid-until"
-          value={formData.valid_until}
+          value={formData.valid_until ?? ""}
           onChange={(e) => {
             const dateValue = e.target.value;
             console.log("📅 Selected date (raw):", dateValue);
@@ -3302,14 +3308,3 @@ function addQuiz(
 // ): string | PromiseLike<string> {
 //   throw new Error("Function not implemented.");
 // }
-
-function mergeChunks(
-  fileId: string,
-  totalChunks: number,
-  ext: string,
-  courseId: string,
-  moduleId: string
-): string | PromiseLike<string> {
-  throw new Error("Function not implemented.");
-}
-

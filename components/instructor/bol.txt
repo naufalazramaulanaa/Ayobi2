@@ -1,0 +1,2712 @@
+
+
+      {
+    "success": true,
+    "message": "Courses fetched successfully.",
+    "meta": {
+        "total": 24,
+        "per_page": 5,
+        "current_page": 1,
+        "last_page": 5
+    },
+    "data": {
+        "stats": {
+            "total": 24,
+            "course_published": 3,
+            "total_enrollments": 180,
+            "total_earnings": 15008226.719999999
+        },
+        "courses": [
+            {
+                "id": "9f8026f6-59dc-4f21-8db0-80aa8d3c58e5",
+                "title": "Tempora similique et et at.",
+                "overview": {
+                    "modules_count": 1,
+                    "lessons_count": 10,
+                    "quizzes_count": 1
+                },
+                "slug": "6887c25f0743a1753727583",
+                "description": "Cumque est libero sint. Molestias impedit unde odio aut.",
+                "video": "https://api.ayobilearning.com/storage/videos/32f7c8e3-5177-3d87-85d2-bb6dc6a3828c.mp4",
+                "thumbnail": "https://api.ayobilearning.com/assets/images/default/course.jpg",
+                "pricing_type": "premium",
+                "price": "102578.64",
+                "is_visible": false,
+                "is_published": false,
+                "release_date": "2026-07-27 10:19:01",
+                "approval_status": "rejected",
+                "number_of_reviews": 3,
+                "average_rating": 4,
+                "number_of_modules": 1,
+                "total_study_hours": 376,
+                "earnings": [
+                    {
+                        "id": "9f8026f8-5bd2-4f13-811a-cd6797f9e37b",
+                        "course_id": "9f8026f6-59dc-4f21-8db0-80aa8d3c58e5",
+                        "student_id": "9f8026f4-c597-4609-abbb-02bbf4139a9f",
+                        "order_item_id": "9f8026f8-5ba1-4976-bdb3-249c757d938e",
+                        "earnings": "56418.25",
+                        "platform_fee": "46160.39",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-5d1f-43d5-a763-bf3dfdd5fc8a",
+                        "course_id": "9f8026f6-59dc-4f21-8db0-80aa8d3c58e5",
+                        "student_id": "9f8026f4-cb64-4115-9fb3-4dce591e956d",
+                        "order_item_id": "9f8026f8-5cea-4a22-a328-22f563254260",
+                        "earnings": "56418.25",
+                        "platform_fee": "46160.39",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-5e9b-4eb3-a8f2-8024f433d2b6",
+                        "course_id": "9f8026f6-59dc-4f21-8db0-80aa8d3c58e5",
+                        "student_id": "9f8026f5-2bcf-4de3-ab10-32a5535ae9f7",
+                        "order_item_id": "9f8026f8-5e54-4164-88ee-0c9499855a92",
+                        "earnings": "56418.25",
+                        "platform_fee": "46160.39",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-5fca-4424-b70d-2bdb2db1fe09",
+                        "course_id": "9f8026f6-59dc-4f21-8db0-80aa8d3c58e5",
+                        "student_id": "9f8026f5-2c40-4a60-af3e-9e04bf5599d4",
+                        "order_item_id": "9f8026f8-5fa0-4fa3-bb05-618c71deba97",
+                        "earnings": "56418.25",
+                        "platform_fee": "46160.39",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-617b-4f79-a03a-cf4485ca3ab4",
+                        "course_id": "9f8026f6-59dc-4f21-8db0-80aa8d3c58e5",
+                        "student_id": "9f8026f5-2c86-4638-a1ac-a04132747bbf",
+                        "order_item_id": "9f8026f8-614c-4be5-a9dd-cedda41359c4",
+                        "earnings": "56418.25",
+                        "platform_fee": "46160.39",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-6245-4a9e-bf0d-984c27e01015",
+                        "course_id": "9f8026f6-59dc-4f21-8db0-80aa8d3c58e5",
+                        "student_id": "9f8026f5-2cc8-49af-83d4-034c4f51210d",
+                        "order_item_id": "9f8026f8-621e-4171-92bb-50ed59a622a4",
+                        "earnings": "56418.25",
+                        "platform_fee": "46160.39",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-633e-4bfc-9a20-43c3d6d2132f",
+                        "course_id": "9f8026f6-59dc-4f21-8db0-80aa8d3c58e5",
+                        "student_id": "9f8026f5-2d13-4eaf-b3c4-105fd53cb628",
+                        "order_item_id": "9f8026f8-630a-41c4-b896-bbd47c058bbe",
+                        "earnings": "56418.25",
+                        "platform_fee": "46160.39",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-643d-4340-aabc-cb5559e61722",
+                        "course_id": "9f8026f6-59dc-4f21-8db0-80aa8d3c58e5",
+                        "student_id": "9f8026f5-2d60-4a3c-8da1-6c354f11d162",
+                        "order_item_id": "9f8026f8-6412-46cf-85f7-66c97684037b",
+                        "earnings": "56418.25",
+                        "platform_fee": "46160.39",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-652c-4937-b6ff-00cfee9e7504",
+                        "course_id": "9f8026f6-59dc-4f21-8db0-80aa8d3c58e5",
+                        "student_id": "9f8026f5-2dac-48d4-9a7c-7822a0d4ad08",
+                        "order_item_id": "9f8026f8-6503-49b1-a9c6-1858896c8751",
+                        "earnings": "56418.25",
+                        "platform_fee": "46160.39",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-6602-4dcf-8253-0666791845ff",
+                        "course_id": "9f8026f6-59dc-4f21-8db0-80aa8d3c58e5",
+                        "student_id": "9f8026f5-2df6-4a2a-950c-f80479affdb9",
+                        "order_item_id": "9f8026f8-65e0-4795-b24d-e68b96572260",
+                        "earnings": "56418.25",
+                        "platform_fee": "46160.39",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-672b-4523-bbc4-bd0cbe278b13",
+                        "course_id": "9f8026f6-59dc-4f21-8db0-80aa8d3c58e5",
+                        "student_id": "9f8026f5-2e3e-473f-80ed-551e1945922e",
+                        "order_item_id": "9f8026f8-66f7-4ee1-91fb-4261f8ce0de8",
+                        "earnings": "56418.25",
+                        "platform_fee": "46160.39",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-6850-4581-8bbb-4cc9f5cbe87b",
+                        "course_id": "9f8026f6-59dc-4f21-8db0-80aa8d3c58e5",
+                        "student_id": "9f8026f5-2e86-4ab9-a3d1-b673e86231b8",
+                        "order_item_id": "9f8026f8-6828-4be4-8a75-481af1246411",
+                        "earnings": "56418.25",
+                        "platform_fee": "46160.39",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    }
+                ],
+                "enrollments": [
+                    {
+                        "id": "9f8026f8-5afe-4717-b70e-c7fb4a8c95d0",
+                        "course_id": "9f8026f6-59dc-4f21-8db0-80aa8d3c58e5",
+                        "student_id": "9f8026f4-c597-4609-abbb-02bbf4139a9f",
+                        "enrolled_at": "2024-11-13 04:26:10",
+                        "status": "dropped",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-5c5b-4899-9ed6-0c3606f9ad14",
+                        "course_id": "9f8026f6-59dc-4f21-8db0-80aa8d3c58e5",
+                        "student_id": "9f8026f4-cb64-4115-9fb3-4dce591e956d",
+                        "enrolled_at": "2025-04-05 08:16:47",
+                        "status": "active",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-5dda-4732-9e96-434de4f115cd",
+                        "course_id": "9f8026f6-59dc-4f21-8db0-80aa8d3c58e5",
+                        "student_id": "9f8026f5-2bcf-4de3-ab10-32a5535ae9f7",
+                        "enrolled_at": "2025-05-16 23:53:09",
+                        "status": "completed",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-5f2f-4b9a-999a-5ff3f2ea2b41",
+                        "course_id": "9f8026f6-59dc-4f21-8db0-80aa8d3c58e5",
+                        "student_id": "9f8026f5-2c40-4a60-af3e-9e04bf5599d4",
+                        "enrolled_at": "2024-08-27 18:57:22",
+                        "status": "dropped",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-6094-4496-a5df-b21b39512dc8",
+                        "course_id": "9f8026f6-59dc-4f21-8db0-80aa8d3c58e5",
+                        "student_id": "9f8026f5-2c86-4638-a1ac-a04132747bbf",
+                        "enrolled_at": "2024-11-30 21:11:42",
+                        "status": "completed",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-61cd-4f52-9fbc-ac0c08740716",
+                        "course_id": "9f8026f6-59dc-4f21-8db0-80aa8d3c58e5",
+                        "student_id": "9f8026f5-2cc8-49af-83d4-034c4f51210d",
+                        "enrolled_at": "2025-05-22 09:42:46",
+                        "status": "completed",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-62a3-480a-8d60-f3072a2a264a",
+                        "course_id": "9f8026f6-59dc-4f21-8db0-80aa8d3c58e5",
+                        "student_id": "9f8026f5-2d13-4eaf-b3c4-105fd53cb628",
+                        "enrolled_at": "2025-04-07 22:55:17",
+                        "status": "completed",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-63ac-4e94-8766-c2cde9e1606f",
+                        "course_id": "9f8026f6-59dc-4f21-8db0-80aa8d3c58e5",
+                        "student_id": "9f8026f5-2d60-4a3c-8da1-6c354f11d162",
+                        "enrolled_at": "2025-03-03 06:54:34",
+                        "status": "active",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-649d-48d8-a3b3-ef89cf193967",
+                        "course_id": "9f8026f6-59dc-4f21-8db0-80aa8d3c58e5",
+                        "student_id": "9f8026f5-2dac-48d4-9a7c-7822a0d4ad08",
+                        "enrolled_at": "2024-08-17 10:28:11",
+                        "status": "dropped",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-658d-4c36-a5ca-2c4a5447e199",
+                        "course_id": "9f8026f6-59dc-4f21-8db0-80aa8d3c58e5",
+                        "student_id": "9f8026f5-2df6-4a2a-950c-f80479affdb9",
+                        "enrolled_at": "2025-05-14 17:40:53",
+                        "status": "active",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-665a-4b91-ad59-6d042a27d8ad",
+                        "course_id": "9f8026f6-59dc-4f21-8db0-80aa8d3c58e5",
+                        "student_id": "9f8026f5-2e3e-473f-80ed-551e1945922e",
+                        "enrolled_at": "2024-09-29 14:57:07",
+                        "status": "active",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-67b7-46e4-b026-9e814a1a788f",
+                        "course_id": "9f8026f6-59dc-4f21-8db0-80aa8d3c58e5",
+                        "student_id": "9f8026f5-2e86-4ab9-a3d1-b673e86231b8",
+                        "enrolled_at": "2024-10-12 11:26:17",
+                        "status": "active",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    }
+                ],
+                "created_at": "29 July 2025",
+                "updated_at": "29 July 2025",
+                "level": {
+                    "id": "9f8026f6-412a-41a7-8673-984f24dde7c4",
+                    "slug": "ut-iure-non-placeat-sint-aut-animi",
+                    "name": "advanced",
+                    "created_at": "2025-07-28T18:33:03.000000Z",
+                    "updated_at": "2025-07-28T18:33:03.000000Z"
+                },
+                "categories": [
+                    {
+                        "id": "9f8026f6-6044-4092-862b-cc8fad24ede8",
+                        "category": {
+                            "id": "9f8026f6-5ef0-4f4d-88f7-b307209e4906",
+                            "name": "impedit commodi",
+                            "slug": "impedit-commodi-6887c25f19b4b",
+                            "description": "Non necessitatibus dignissimos quia earum veritatis consequuntur.",
+                            "image": null,
+                            "is_active": false,
+                            "created_at": "29 July 2025",
+                            "updated_at": "29 July 2025"
+                        }
+                    },
+                    {
+                        "id": "9f8026f6-607d-42c0-af60-6fa9ebbc4804",
+                        "category": {
+                            "id": "9f8026f6-6009-49d0-bfb0-c29acf99faf8",
+                            "name": "sequi consequatur",
+                            "slug": "sequi-consequatur-6887c25f1a552",
+                            "description": "Omnis dolore atque unde quo.",
+                            "image": null,
+                            "is_active": false,
+                            "created_at": "29 July 2025",
+                            "updated_at": "29 July 2025"
+                        }
+                    }
+                ],
+                "modules": [
+                    {
+                        "id": "9f8026f6-6109-4416-8ddb-ee798a7fe459",
+                        "title": "Dolores ut quaerat aliquam porro ratione rerum aut ducimus.",
+                        "description": "Nemo nam voluptate et sit alias. Temporibus aut illo unde sequi magni. Similique quo vitae nesciunt provident distinctio. Non nisi ea est distinctio.",
+                        "order": 1,
+                        "lessons": [
+                            {
+                                "id": "9f8026f6-6e75-494b-9349-74f1b7b4e10f",
+                                "module_id": "9f8026f6-6109-4416-8ddb-ee798a7fe459",
+                                "title": "Eius iste non repellendus nostrum voluptatibus.",
+                                "content": "Architecto impedit quia dignissimos enim iusto nesciunt temporibus et. Voluptatum saepe qui nisi. Minus alias rerum earum.\n\nVeniam rerum mollitia suscipit laboriosam eveniet nihil deleniti eius. Rerum sed possimus consequatur explicabo voluptas. Aliquam rerum ut sed repellendus ipsa.\n\nVoluptatum esse enim quod placeat illum qui. Nostrum non dolor quaerat non. Architecto modi nisi repellendus et eius minus commodi dolor. Tempora minima et quis et qui beatae quae at. Rerum et molestias accusantium assumenda autem.",
+                                "duration": 13,
+                                "video": {
+                                    "id": "9f8026f6-61dd-4f6c-bf0b-76630330b1f0",
+                                    "filename": "perferendis.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/97ff10a8-8941-3df3-ae39-233d5bcf65af.mp4",
+                                    "size": "886589",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-6260-4b51-8b8c-a977accc2da1",
+                                    "filename": "incidunt.jpg",
+                                    "path": "https://api.ayobilearning.com/storage/images/ab268304-0663-3e47-8fa2-904462a0c5c9.jpg",
+                                    "size": "4427163",
+                                    "type": "image"
+                                },
+                                "order": 1
+                            },
+                            {
+                                "id": "9f8026f6-6ea0-4807-9d27-c40c82566dab",
+                                "module_id": "9f8026f6-6109-4416-8ddb-ee798a7fe459",
+                                "title": "Ullam fugiat commodi corporis sint voluptates in.",
+                                "content": "Optio officiis earum iusto officia rem. Commodi vel ipsum dolorem fuga. Aut fugit dolorem aut nisi totam ea corporis. Possimus tenetur qui quasi earum fuga eum.\n\nVoluptatibus voluptatem quaerat eos. Omnis nostrum ipsam et. Repellendus ipsam magnam in sit. Sint autem aliquam voluptas magni optio.\n\nOdit id voluptatem excepturi ipsam ratione ipsam aut. Accusamus eum aut temporibus. Sint hic expedita rem est ut aliquid doloribus.",
+                                "duration": 53,
+                                "video": {
+                                    "id": "9f8026f6-62ff-4842-93f1-3502faaa26dc",
+                                    "filename": "quo.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/1c606567-35a5-3d1e-ba10-b158f04c8105.mp4",
+                                    "size": "2445394",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-63c0-4ea1-b121-841a546d195f",
+                                    "filename": "maxime.png",
+                                    "path": "https://api.ayobilearning.com/storage/images/5c280fc7-a843-3b09-b502-9c1b95f0d4be.png",
+                                    "size": "6604212",
+                                    "type": "image"
+                                },
+                                "order": 2
+                            },
+                            {
+                                "id": "9f8026f6-6ec9-4684-8332-93bdb2cd819a",
+                                "module_id": "9f8026f6-6109-4416-8ddb-ee798a7fe459",
+                                "title": "Qui iusto deleniti est vero necessitatibus in in.",
+                                "content": "Perferendis dolorem quis quis velit consequatur optio minus. Libero quia et tempore ea. Recusandae et quod ut voluptatem nostrum. Officiis illo adipisci doloremque rerum eum nihil.\n\nCumque explicabo corporis et. Qui ut asperiores et. Illum iste nobis doloribus. Ad aliquid voluptatem repudiandae at velit omnis.\n\nDistinctio dicta perspiciatis soluta doloribus tempore sunt excepturi. Iste voluptas beatae dicta dolorem nam vero et. Eaque ipsa voluptas assumenda nulla.",
+                                "duration": 53,
+                                "video": {
+                                    "id": "9f8026f6-6464-45b2-a7a0-ce0d4a0d3693",
+                                    "filename": "maiores.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/261860fa-ea55-36a8-9519-032818158a23.mp4",
+                                    "size": "337591",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-65b9-4b75-b765-cfa611efb25e",
+                                    "filename": "eos.png",
+                                    "path": "https://api.ayobilearning.com/storage/images/3e6ee1b8-e077-3806-93d2-f23ea8c974b4.png",
+                                    "size": "3038974",
+                                    "type": "image"
+                                },
+                                "order": 3
+                            },
+                            {
+                                "id": "9f8026f6-6ee9-4e44-ba7a-8aa4285cff8b",
+                                "module_id": "9f8026f6-6109-4416-8ddb-ee798a7fe459",
+                                "title": "Minus molestias molestiae in qui soluta.",
+                                "content": "Ut quis recusandae rerum expedita cupiditate animi. Officiis laudantium sit consectetur sed maxime reprehenderit perspiciatis molestiae. A quas dolor rerum in facilis corrupti.\n\nNumquam esse quasi ut tempore ipsum laboriosam. Et error aut fugiat ipsam quis. Qui maiores ipsa velit tenetur. Eius dolor nulla aut minima ratione quis aut expedita.\n\nUt eveniet at dicta distinctio dignissimos. Odit adipisci sit est et.",
+                                "duration": 49,
+                                "video": {
+                                    "id": "9f8026f6-6654-4b20-9da5-31ab54e8189c",
+                                    "filename": "sed.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/ade4bb34-adea-330f-9b34-bb25d45c64e6.mp4",
+                                    "size": "5637409",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-66c0-45b8-a426-6abd9e5b230b",
+                                    "filename": "maiores.jpg",
+                                    "path": "https://api.ayobilearning.com/storage/images/f13ff958-3707-3770-b16e-f221b2a13430.jpg",
+                                    "size": "9895581",
+                                    "type": "image"
+                                },
+                                "order": 4
+                            },
+                            {
+                                "id": "9f8026f6-6f08-492f-b61d-bf64ff9b4830",
+                                "module_id": "9f8026f6-6109-4416-8ddb-ee798a7fe459",
+                                "title": "Velit ut nihil commodi beatae.",
+                                "content": "Aliquam quidem ratione provident blanditiis natus atque tenetur sint. Distinctio sint rem et maiores dicta exercitationem. Sint eum soluta magni iusto minima sed. Doloremque consequatur minus libero voluptatibus suscipit.\n\nBeatae cumque molestiae a doloribus a vel. Magnam est voluptatem porro magni omnis quos. Sequi ullam quia totam qui.\n\nIpsa neque eligendi in. Voluptatem ut ut consequatur ut suscipit dolor. Incidunt et non quam eligendi. Ut tempora qui voluptas unde.",
+                                "duration": 41,
+                                "video": {
+                                    "id": "9f8026f6-6735-4ffb-b325-cf9f874a4506",
+                                    "filename": "deserunt.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/6a6d5c1e-1c04-339f-a8bb-67f8d1b5c365.mp4",
+                                    "size": "6035016",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-67be-4035-baf1-eb6f3233b029",
+                                    "filename": "rerum.png",
+                                    "path": "https://api.ayobilearning.com/storage/images/d1b2ef32-20db-330c-a9f1-cccdc89c2fa1.png",
+                                    "size": "3373088",
+                                    "type": "image"
+                                },
+                                "order": 5
+                            },
+                            {
+                                "id": "9f8026f6-6f29-43dc-8bb6-a993778a33cf",
+                                "module_id": "9f8026f6-6109-4416-8ddb-ee798a7fe459",
+                                "title": "Occaecati error veritatis quia exercitationem numquam.",
+                                "content": "Quia aut debitis pariatur sit. In molestiae est consequuntur. Excepturi consequatur voluptatum distinctio aut quisquam repellendus rerum. Necessitatibus sequi iste iste consectetur perspiciatis ut nulla.\n\nCum eius enim recusandae sequi doloribus. Ea est sit similique perferendis. Eligendi et amet autem cupiditate non odit ea.\n\nAmet doloremque eos numquam enim sit dolores harum. Quisquam dolores incidunt est accusamus. Et qui aut voluptas praesentium quia vero ut.",
+                                "duration": 44,
+                                "video": {
+                                    "id": "9f8026f6-6863-4af6-870f-c2b8c7fd0cbf",
+                                    "filename": "molestiae.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/a227b637-3928-3d2d-a84c-49cd822eeb47.mp4",
+                                    "size": "3762740",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-68e1-4d78-97ca-068037b2a973",
+                                    "filename": "numquam.png",
+                                    "path": "https://api.ayobilearning.com/storage/images/ab7eec41-8f89-3ea4-913a-76e298388be2.png",
+                                    "size": "9708943",
+                                    "type": "image"
+                                },
+                                "order": 6
+                            },
+                            {
+                                "id": "9f8026f6-6f47-4d32-b5e7-4a2088db9203",
+                                "module_id": "9f8026f6-6109-4416-8ddb-ee798a7fe459",
+                                "title": "Et sed non nemo et.",
+                                "content": "Provident et non ullam maiores consectetur omnis autem. Libero aliquid cupiditate maxime error placeat numquam consequuntur. Accusamus ut magnam mollitia.\n\nVelit omnis facilis ut aut necessitatibus odio. Nobis deleniti voluptatem sed doloremque est eos modi. Dolorem minus architecto velit sunt consequatur eveniet.\n\nUt inventore assumenda sequi unde voluptas non ullam. Qui quisquam voluptatem consectetur inventore. Officia eaque dolorum sed ipsa. Molestiae saepe sint aut consequuntur vitae maiores provident.",
+                                "duration": 44,
+                                "video": {
+                                    "id": "9f8026f6-6964-431d-a4d2-03a7120aed21",
+                                    "filename": "vel.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/92476ae2-0996-3154-b576-422f89c22bdd.mp4",
+                                    "size": "7794295",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-6a12-4f27-81ac-e3136eef09f2",
+                                    "filename": "numquam.png",
+                                    "path": "https://api.ayobilearning.com/storage/images/236ab8bd-ced0-3938-9651-92bd7a3b0a65.png",
+                                    "size": "7941693",
+                                    "type": "image"
+                                },
+                                "order": 7
+                            },
+                            {
+                                "id": "9f8026f6-6f64-4ce6-84fc-8b0dae1de3cb",
+                                "module_id": "9f8026f6-6109-4416-8ddb-ee798a7fe459",
+                                "title": "Vel assumenda ut molestiae perspiciatis.",
+                                "content": "Molestiae in soluta voluptates modi ut unde quam. Et eius odit ab repudiandae. Sed est voluptatibus voluptatem suscipit expedita doloremque vitae possimus. Non placeat fugit deleniti odit.\n\nAliquam in ut iure atque ad maxime in. Quibusdam voluptatem voluptas unde deserunt eos. Unde est quam aliquid quis optio sunt in.\n\nAut quidem et amet deleniti ratione et ipsa labore. Debitis iure repellendus qui placeat. In et similique quas eius unde. Non cupiditate omnis ex cupiditate dolor.",
+                                "duration": 16,
+                                "video": {
+                                    "id": "9f8026f6-6a97-432c-8c14-8be18eeb77eb",
+                                    "filename": "numquam.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/fa82cf91-8733-3bbe-87ae-29e85efe9852.mp4",
+                                    "size": "1513353",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-6b44-46cd-b00e-c1a04cc9b7dd",
+                                    "filename": "minus.png",
+                                    "path": "https://api.ayobilearning.com/storage/images/cddb7068-7b6f-3aa1-92c7-c11d9ed083db.png",
+                                    "size": "5781568",
+                                    "type": "image"
+                                },
+                                "order": 8
+                            },
+                            {
+                                "id": "9f8026f6-6f83-495b-a759-2ec4d1a783da",
+                                "module_id": "9f8026f6-6109-4416-8ddb-ee798a7fe459",
+                                "title": "Qui sapiente eum et incidunt.",
+                                "content": "Labore distinctio hic tenetur quo ut consequatur est. Aut aperiam quibusdam illo aut id iure voluptas.\n\nVoluptatibus soluta fuga ullam molestiae. Ut nam quam et ex explicabo voluptas. Voluptates dolorem iste voluptatum temporibus libero dolor.\n\nMolestiae et quisquam quibusdam non vel ea non modi. Nemo sint tempore dolores nisi expedita. Nam harum voluptatem nam amet enim inventore sequi. Maiores hic tempora ad aut ex accusamus harum voluptatem.",
+                                "duration": 11,
+                                "video": {
+                                    "id": "9f8026f6-6c40-4c00-900b-dafc32c8f9f5",
+                                    "filename": "aperiam.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/84f376be-0d41-341c-9581-e4830a8548b4.mp4",
+                                    "size": "4730483",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-6ce5-4004-8a38-2dee1d74a5fb",
+                                    "filename": "maiores.jpg",
+                                    "path": "https://api.ayobilearning.com/storage/images/f53b77e6-27c5-3570-a7a0-8737d86118f0.jpg",
+                                    "size": "9880944",
+                                    "type": "image"
+                                },
+                                "order": 9
+                            },
+                            {
+                                "id": "9f8026f6-7004-41ac-85fd-349f6ddf948c",
+                                "module_id": "9f8026f6-6109-4416-8ddb-ee798a7fe459",
+                                "title": "Illo commodi ducimus sunt distinctio maiores.",
+                                "content": "Officia harum quaerat ex laborum. Exercitationem aut officiis perferendis voluptatibus dolorum officia. Est ducimus velit et est.\n\nMollitia tenetur reiciendis tenetur magnam. Qui ea sed earum omnis quisquam fugiat magnam.\n\nLibero placeat porro et iste fugiat. Ex nesciunt commodi quisquam ducimus officia sit. Dolorem voluptatum sit at ut qui perspiciatis. Molestias nihil ut odit vitae.",
+                                "duration": 52,
+                                "video": {
+                                    "id": "9f8026f6-6dd1-4e11-9f73-8d377fd648c4",
+                                    "filename": "illum.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/b4e190ac-daed-3e31-82d2-0eab397bce33.mp4",
+                                    "size": "6524705",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-6e43-41e6-8348-7bf38f12b32a",
+                                    "filename": "molestias.jpg",
+                                    "path": "https://api.ayobilearning.com/storage/images/2a9bb53b-1788-3ab7-a829-1d7dacce0461.jpg",
+                                    "size": "2729516",
+                                    "type": "image"
+                                },
+                                "order": 10
+                            }
+                        ],
+                        "quizzes": [
+                            {
+                                "id": "9f8026f9-836f-43c6-8e52-659950a9e8b8",
+                                "module_id": "9f8026f6-6109-4416-8ddb-ee798a7fe459",
+                                "title": "Facilis inventore assumenda praesentium reprehenderit aliquid atque molestiae.",
+                                "order": 3,
+                                "description": "Porro qui est aut est vel nam. Soluta natus provident expedita ea possimus quam. Neque velit ut accusantium inventore dolore officiis et. Laboriosam est et fuga atque quo vero.",
+                                "settings": {
+                                    "time_limit": 38,
+                                    "passing_score": 80,
+                                    "show_answers": false,
+                                    "randomize_questions": true,
+                                    "attempts_allowed": 2
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "9f8026f6-5a05-453d-b953-63f90a2d8dea",
+                "title": "Excepturi sit sint consectetur.22",
+                "overview": {
+                    "modules_count": 1,
+                    "lessons_count": 10,
+                    "quizzes_count": 1
+                },
+                "slug": "excepturi-sit-sint-consectetur22",
+                "description": "Occaecati cumque libero iure veniam quos. Impedit sint sapiente omnis magnam. Dolores cupiditate reiciendis culpa assumenda. Qui aut est facere doloribus facere minus rerum.",
+                "video": "https://api.ayobilearning.com/storage/videos/417a14a3-c8b2-3432-b3a2-1ae1b6b754da.mp4",
+                "thumbnail": "https://api.ayobilearning.com/assets/images/default/course.jpg",
+                "pricing_type": "free",
+                "price": "195373.07",
+                "is_visible": true,
+                "is_published": true,
+                "release_date": "2026-05-09 19:27:36",
+                "approval_status": "pending",
+                "number_of_reviews": 3,
+                "average_rating": 4,
+                "number_of_modules": 1,
+                "total_study_hours": 345,
+                "earnings": [
+                    {
+                        "id": "9f8026f8-69dd-4442-9ffe-bcd9579b1072",
+                        "course_id": "9f8026f6-5a05-453d-b953-63f90a2d8dea",
+                        "student_id": "9f8026f4-c597-4609-abbb-02bbf4139a9f",
+                        "order_item_id": "9f8026f8-69bb-4d4a-9bf2-f91bdeaa72ee",
+                        "earnings": "107455.19",
+                        "platform_fee": "87917.88",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-6aa2-4a7d-8d09-7fa0dc05f1c4",
+                        "course_id": "9f8026f6-5a05-453d-b953-63f90a2d8dea",
+                        "student_id": "9f8026f4-cb64-4115-9fb3-4dce591e956d",
+                        "order_item_id": "9f8026f8-6a7a-419a-8918-8c9293a471eb",
+                        "earnings": "107455.19",
+                        "platform_fee": "87917.88",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-6bf8-4f45-860b-22716278f229",
+                        "course_id": "9f8026f6-5a05-453d-b953-63f90a2d8dea",
+                        "student_id": "9f8026f5-2bcf-4de3-ab10-32a5535ae9f7",
+                        "order_item_id": "9f8026f8-6bcb-44e3-9237-ea3f49f2c1a6",
+                        "earnings": "107455.19",
+                        "platform_fee": "87917.88",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-6d0d-461e-a92a-7abaca36559c",
+                        "course_id": "9f8026f6-5a05-453d-b953-63f90a2d8dea",
+                        "student_id": "9f8026f5-2c40-4a60-af3e-9e04bf5599d4",
+                        "order_item_id": "9f8026f8-6cc0-4f5f-857f-e6c157375752",
+                        "earnings": "107455.19",
+                        "platform_fee": "87917.88",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-7072-4f45-9d43-8b0598eb11bc",
+                        "course_id": "9f8026f6-5a05-453d-b953-63f90a2d8dea",
+                        "student_id": "9f8026f5-2c86-4638-a1ac-a04132747bbf",
+                        "order_item_id": "9f8026f8-6f77-4890-ad0b-ea6bf63e2fe3",
+                        "earnings": "107455.19",
+                        "platform_fee": "87917.88",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-71ac-4629-bac9-fb6d6ff8898f",
+                        "course_id": "9f8026f6-5a05-453d-b953-63f90a2d8dea",
+                        "student_id": "9f8026f5-2cc8-49af-83d4-034c4f51210d",
+                        "order_item_id": "9f8026f8-717a-475d-aed4-a37d049defbe",
+                        "earnings": "107455.19",
+                        "platform_fee": "87917.88",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-72a9-46d5-8280-8eadea5d4dab",
+                        "course_id": "9f8026f6-5a05-453d-b953-63f90a2d8dea",
+                        "student_id": "9f8026f5-2d13-4eaf-b3c4-105fd53cb628",
+                        "order_item_id": "9f8026f8-7276-408b-8f93-2a58d499824c",
+                        "earnings": "107455.19",
+                        "platform_fee": "87917.88",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-73a2-4195-89d0-39cb21a29b61",
+                        "course_id": "9f8026f6-5a05-453d-b953-63f90a2d8dea",
+                        "student_id": "9f8026f5-2d60-4a3c-8da1-6c354f11d162",
+                        "order_item_id": "9f8026f8-7378-454e-b957-32ddcf84727f",
+                        "earnings": "107455.19",
+                        "platform_fee": "87917.88",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-74cb-4c42-9cbd-2c15e56cd872",
+                        "course_id": "9f8026f6-5a05-453d-b953-63f90a2d8dea",
+                        "student_id": "9f8026f5-2dac-48d4-9a7c-7822a0d4ad08",
+                        "order_item_id": "9f8026f8-749b-4a61-8ad3-cf1a3700b64d",
+                        "earnings": "107455.19",
+                        "platform_fee": "87917.88",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-75c9-4b7a-a5bb-6bb98c0b7209",
+                        "course_id": "9f8026f6-5a05-453d-b953-63f90a2d8dea",
+                        "student_id": "9f8026f5-2df6-4a2a-950c-f80479affdb9",
+                        "order_item_id": "9f8026f8-7597-46c3-b55b-ea2d09b260b5",
+                        "earnings": "107455.19",
+                        "platform_fee": "87917.88",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-76bc-4569-b3e5-a665289829e1",
+                        "course_id": "9f8026f6-5a05-453d-b953-63f90a2d8dea",
+                        "student_id": "9f8026f5-2e3e-473f-80ed-551e1945922e",
+                        "order_item_id": "9f8026f8-768e-4a98-b215-19aba8298d1e",
+                        "earnings": "107455.19",
+                        "platform_fee": "87917.88",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-77b7-4806-a515-4dd6900c4afb",
+                        "course_id": "9f8026f6-5a05-453d-b953-63f90a2d8dea",
+                        "student_id": "9f8026f5-2e86-4ab9-a3d1-b673e86231b8",
+                        "order_item_id": "9f8026f8-776e-4b6b-b769-c586377a052a",
+                        "earnings": "107455.19",
+                        "platform_fee": "87917.88",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    }
+                ],
+                "enrollments": [
+                    {
+                        "id": "9f8026f8-695a-4260-bfe8-fe77e81f0e0b",
+                        "course_id": "9f8026f6-5a05-453d-b953-63f90a2d8dea",
+                        "student_id": "9f8026f4-c597-4609-abbb-02bbf4139a9f",
+                        "enrolled_at": "2025-02-09 10:58:39",
+                        "status": "dropped",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-6a2c-4392-9cf2-b154942d15ca",
+                        "course_id": "9f8026f6-5a05-453d-b953-63f90a2d8dea",
+                        "student_id": "9f8026f4-cb64-4115-9fb3-4dce591e956d",
+                        "enrolled_at": "2024-08-10 06:55:24",
+                        "status": "completed",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-6b4b-4f9f-ba44-517ba7ccfb39",
+                        "course_id": "9f8026f6-5a05-453d-b953-63f90a2d8dea",
+                        "student_id": "9f8026f5-2bcf-4de3-ab10-32a5535ae9f7",
+                        "enrolled_at": "2025-05-18 08:23:02",
+                        "status": "active",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-6c59-4d41-95d4-389a913b6c08",
+                        "course_id": "9f8026f6-5a05-453d-b953-63f90a2d8dea",
+                        "student_id": "9f8026f5-2c40-4a60-af3e-9e04bf5599d4",
+                        "enrolled_at": "2024-12-05 08:33:19",
+                        "status": "active",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-6e08-40ac-ab1d-0d74f8d19414",
+                        "course_id": "9f8026f6-5a05-453d-b953-63f90a2d8dea",
+                        "student_id": "9f8026f5-2c86-4638-a1ac-a04132747bbf",
+                        "enrolled_at": "2024-12-28 11:47:08",
+                        "status": "active",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-7112-444f-9974-3e0b61fd7eea",
+                        "course_id": "9f8026f6-5a05-453d-b953-63f90a2d8dea",
+                        "student_id": "9f8026f5-2cc8-49af-83d4-034c4f51210d",
+                        "enrolled_at": "2025-04-27 22:12:43",
+                        "status": "active",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-720f-43e1-af37-756dfb9d37c1",
+                        "course_id": "9f8026f6-5a05-453d-b953-63f90a2d8dea",
+                        "student_id": "9f8026f5-2d13-4eaf-b3c4-105fd53cb628",
+                        "enrolled_at": "2024-10-18 11:39:13",
+                        "status": "completed",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-730f-4d87-b5aa-a0557df171c0",
+                        "course_id": "9f8026f6-5a05-453d-b953-63f90a2d8dea",
+                        "student_id": "9f8026f5-2d60-4a3c-8da1-6c354f11d162",
+                        "enrolled_at": "2025-04-15 12:49:04",
+                        "status": "completed",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-7428-42c7-907b-e8ec119572bf",
+                        "course_id": "9f8026f6-5a05-453d-b953-63f90a2d8dea",
+                        "student_id": "9f8026f5-2dac-48d4-9a7c-7822a0d4ad08",
+                        "enrolled_at": "2025-01-24 19:00:00",
+                        "status": "completed",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-752f-4fbc-b96d-90c1f3ecc47c",
+                        "course_id": "9f8026f6-5a05-453d-b953-63f90a2d8dea",
+                        "student_id": "9f8026f5-2df6-4a2a-950c-f80479affdb9",
+                        "enrolled_at": "2024-12-29 09:39:54",
+                        "status": "active",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-7627-4c92-9d6b-a5760959faaf",
+                        "course_id": "9f8026f6-5a05-453d-b953-63f90a2d8dea",
+                        "student_id": "9f8026f5-2e3e-473f-80ed-551e1945922e",
+                        "enrolled_at": "2024-07-29 03:21:05",
+                        "status": "active",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-770c-40b6-94f9-96403be1e1e1",
+                        "course_id": "9f8026f6-5a05-453d-b953-63f90a2d8dea",
+                        "student_id": "9f8026f5-2e86-4ab9-a3d1-b673e86231b8",
+                        "enrolled_at": "2025-03-03 02:32:52",
+                        "status": "completed",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    }
+                ],
+                "created_at": "29 July 2025",
+                "updated_at": "29 July 2025",
+                "level": {
+                    "id": "9f8026f6-434b-49d9-bfff-347423099811",
+                    "slug": "eius-nisi-velit-perferendis-in",
+                    "name": "expert",
+                    "created_at": "2025-07-28T18:33:03.000000Z",
+                    "updated_at": "2025-07-28T18:33:03.000000Z"
+                },
+                "categories": [
+                    {
+                        "id": "9f8026f6-7187-4b17-a1fa-c6a83c4228ba",
+                        "category": {
+                            "id": "9f8026f6-710c-4358-a2c8-0861362e0ca1",
+                            "name": "voluptatem rerum",
+                            "slug": "voluptatem-rerum-6887c25f25222",
+                            "description": "Sunt eum ut quia a distinctio.",
+                            "image": null,
+                            "is_active": false,
+                            "created_at": "29 July 2025",
+                            "updated_at": "29 July 2025"
+                        }
+                    },
+                    {
+                        "id": "9f8026f6-71ba-4b05-996f-e35b64ae09d0",
+                        "category": {
+                            "id": "9f8026f6-7169-4f5b-b05f-9479f06a8d81",
+                            "name": "ad eos",
+                            "slug": "ad-eos-6887c25f25651",
+                            "description": "Minus velit omnis expedita hic.",
+                            "image": null,
+                            "is_active": false,
+                            "created_at": "29 July 2025",
+                            "updated_at": "29 July 2025"
+                        }
+                    }
+                ],
+                "modules": [
+                    {
+                        "id": "9f8026f6-71f1-4d2f-9749-2f1e4b680aa1",
+                        "title": "Repellat harum voluptatem vitae officia delectus iure.",
+                        "description": "Vero magni dolores voluptates sed rerum modi commodi doloremque. Voluptatem nam deleniti unde ex sed. Nihil temporibus accusamus aut id fugit impedit. Beatae perspiciatis sed rem.",
+                        "order": 1,
+                        "lessons": [
+                            {
+                                "id": "9f8026f6-7ce9-4561-8ce7-d8c4774b900e",
+                                "module_id": "9f8026f6-71f1-4d2f-9749-2f1e4b680aa1",
+                                "title": "Dignissimos beatae quas dicta saepe sit sed delectus cupiditate.",
+                                "content": "Reprehenderit est quo quas. Id exercitationem numquam iusto sed culpa molestiae. Est odit necessitatibus odit.\n\nBlanditiis eos ducimus aliquam est voluptate. Temporibus occaecati dignissimos laboriosam qui et. Sit omnis recusandae sapiente aperiam necessitatibus sit.\n\nDolor eos perspiciatis suscipit voluptate. Consequatur similique non ut et temporibus. Ea eveniet error libero. Veritatis rerum ut occaecati explicabo odit est architecto.",
+                                "duration": 31,
+                                "video": {
+                                    "id": "9f8026f6-728c-4557-aac5-57ae15b56f56",
+                                    "filename": "quibusdam.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/9c140f6f-b6b7-3b2f-b889-70be53892358.mp4",
+                                    "size": "2144702",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-7330-4f36-99da-90055c7b4d78",
+                                    "filename": "rerum.jpg",
+                                    "path": "https://api.ayobilearning.com/storage/images/df7e9301-e8f6-326e-a6f8-dcc9c60f6572.jpg",
+                                    "size": "1828163",
+                                    "type": "image"
+                                },
+                                "order": 1
+                            },
+                            {
+                                "id": "9f8026f6-7d17-41c9-a8bb-9629cd0ebf1f",
+                                "module_id": "9f8026f6-71f1-4d2f-9749-2f1e4b680aa1",
+                                "title": "Commodi iure consequuntur est et laboriosam praesentium minima explicabo.",
+                                "content": "Voluptatem est sint fugit aut deleniti eum. Voluptatem et libero repellat non vitae. Qui illo perferendis et est non. Eos tempora dignissimos tempora sed voluptas.\n\nVel excepturi laboriosam quasi sed sed at similique. Incidunt rerum aut voluptatem ratione facilis tempora. Rerum voluptatum nihil consequuntur omnis quam ut dignissimos et. Hic officiis at et ut autem sapiente facere.\n\nEst eius optio ipsum aut ut beatae sunt quia. Et occaecati a nulla omnis quae sapiente nam molestiae. Quia et architecto molestias facilis.",
+                                "duration": 53,
+                                "video": {
+                                    "id": "9f8026f6-73f8-4dbb-ac5c-6fc3d1cad273",
+                                    "filename": "distinctio.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/05d21886-4ffb-34a8-8cf4-b3cbbb6a2c72.mp4",
+                                    "size": "6203531",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-74c6-40b3-806a-918092962867",
+                                    "filename": "sint.png",
+                                    "path": "https://api.ayobilearning.com/storage/images/e290762d-f600-3086-b827-616b6f787f77.png",
+                                    "size": "2092664",
+                                    "type": "image"
+                                },
+                                "order": 2
+                            },
+                            {
+                                "id": "9f8026f6-7d42-4aae-93b3-f9b65f01ac0f",
+                                "module_id": "9f8026f6-71f1-4d2f-9749-2f1e4b680aa1",
+                                "title": "Quasi architecto distinctio voluptatem recusandae quam et.",
+                                "content": "Quo qui temporibus est quas. Quo unde exercitationem ducimus deleniti. Harum ut qui mollitia neque qui quia alias. Incidunt voluptatem pariatur blanditiis eligendi et non.\n\nNisi et ipsa nesciunt voluptatem. Numquam maiores totam sed molestiae ut quia. Velit hic explicabo earum vel non iste. Nulla illum aut iure est modi.\n\nEnim quis aliquam omnis enim est natus saepe. Voluptates fuga ut explicabo sunt. Recusandae veritatis aliquid ipsam voluptas veritatis. Et aut maiores nihil inventore odit. Odit magnam repellendus inventore et.",
+                                "duration": 29,
+                                "video": {
+                                    "id": "9f8026f6-757c-416c-911b-71e46dbc5c77",
+                                    "filename": "in.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/7c713498-4561-3c2d-a6b6-e98771208971.mp4",
+                                    "size": "5465808",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-75f9-4ef7-90a4-5c0485b997fe",
+                                    "filename": "dolorem.jpg",
+                                    "path": "https://api.ayobilearning.com/storage/images/e89f7b54-225d-36b1-8c0d-cb73ff368439.jpg",
+                                    "size": "6882570",
+                                    "type": "image"
+                                },
+                                "order": 3
+                            },
+                            {
+                                "id": "9f8026f6-7d6f-4ff7-9572-6bca627c1dc4",
+                                "module_id": "9f8026f6-71f1-4d2f-9749-2f1e4b680aa1",
+                                "title": "Perspiciatis odio quis accusantium saepe architecto voluptatum.",
+                                "content": "Eaque vero ut quos. In est voluptas nostrum ut porro ipsa quis.\n\nFugiat aliquam maxime provident natus. Nostrum vitae quisquam sed eaque aperiam sunt nisi consequatur. Tempora consectetur eaque iusto deserunt aspernatur.\n\nNihil autem est inventore ratione necessitatibus nesciunt fugiat. Eveniet deserunt modi consectetur repudiandae ipsum. Veniam ut animi deleniti quod dignissimos blanditiis eum. Nemo minima hic animi sit.",
+                                "duration": 25,
+                                "video": {
+                                    "id": "9f8026f6-7690-4634-b80a-bf685d8e55e2",
+                                    "filename": "possimus.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/b1873cff-fbde-3cee-b70f-9ec542ff847c.mp4",
+                                    "size": "1218864",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-7707-449d-8782-6205378f1472",
+                                    "filename": "dolore.jpg",
+                                    "path": "https://api.ayobilearning.com/storage/images/b0318196-ced2-3b4b-b358-ed673c5eabb5.jpg",
+                                    "size": "2015729",
+                                    "type": "image"
+                                },
+                                "order": 4
+                            },
+                            {
+                                "id": "9f8026f6-7d99-4a9c-b43d-5eb7eb6d2f49",
+                                "module_id": "9f8026f6-71f1-4d2f-9749-2f1e4b680aa1",
+                                "title": "Perferendis nihil culpa aut eius sunt molestiae est.",
+                                "content": "Qui qui neque quaerat omnis voluptas fuga quo. Incidunt nihil nesciunt totam sint libero quae. Natus hic eligendi optio et delectus.\n\nEt nesciunt ut est aut natus rerum perferendis. Consequuntur voluptatum nihil veritatis nihil corporis. Aut vitae rerum nesciunt qui vel id. Autem quis ipsum quia.\n\nAut est consequuntur voluptatem facilis illo pariatur. Qui sit magnam voluptatem et consequatur. Dolore earum provident qui saepe nihil cupiditate.",
+                                "duration": 36,
+                                "video": {
+                                    "id": "9f8026f6-778b-471d-baa2-2eb70507f6ff",
+                                    "filename": "alias.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/ec5438ab-ea9b-308b-a8d1-4f17b6b0184a.mp4",
+                                    "size": "7391898",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-7806-4fdf-9449-62da6fbb9993",
+                                    "filename": "tempora.png",
+                                    "path": "https://api.ayobilearning.com/storage/images/12f7d0f9-a64f-3500-9d2e-44d2bce8a465.png",
+                                    "size": "5004726",
+                                    "type": "image"
+                                },
+                                "order": 5
+                            },
+                            {
+                                "id": "9f8026f6-7dce-444d-a129-9c379db82ebe",
+                                "module_id": "9f8026f6-71f1-4d2f-9749-2f1e4b680aa1",
+                                "title": "Optio laboriosam saepe in quidem.",
+                                "content": "Non doloribus voluptatem at dolores dicta voluptas nihil. Laborum iure aliquam quam voluptatum sequi. Dolorem voluptatem adipisci nemo. Omnis et distinctio ut quia consequatur eligendi molestiae.\n\nA aut tenetur iure corporis. Quis soluta voluptas nisi pariatur ipsam explicabo. Quia qui ullam ut illo. Voluptatum porro rerum velit.\n\nExpedita odit quia rerum porro et autem. Consequuntur quibusdam consequatur sapiente consequatur et aut. Doloremque esse ut eos iste. Officia veritatis rerum quam repellendus vitae repellat.",
+                                "duration": 19,
+                                "video": {
+                                    "id": "9f8026f6-7883-49f9-b464-d60cac759aad",
+                                    "filename": "quod.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/1488c17d-0f2b-3d8b-b5ff-799b4745ebea.mp4",
+                                    "size": "3951889",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-78f0-4eab-b953-0eadaf009d5b",
+                                    "filename": "et.png",
+                                    "path": "https://api.ayobilearning.com/storage/images/6040d952-fdf4-3a6f-a101-9cb4f5f9d519.png",
+                                    "size": "834704",
+                                    "type": "image"
+                                },
+                                "order": 6
+                            },
+                            {
+                                "id": "9f8026f6-7dff-4d97-baf6-6d5d6e4fd2b6",
+                                "module_id": "9f8026f6-71f1-4d2f-9749-2f1e4b680aa1",
+                                "title": "Qui sed aliquam voluptatem aut repellat veniam.",
+                                "content": "Rerum aperiam ut nihil distinctio suscipit consequuntur rerum. At eos incidunt ea voluptates eveniet accusantium voluptatem. Qui sint autem pariatur ex iste dolores et. Laboriosam possimus officiis ut animi voluptas aut ut.\n\nNulla eos accusamus hic iusto facere odio neque quidem. Nemo et et inventore aut et iusto eum. Dicta quae aut rerum quis ut. Vero maiores voluptas eum culpa.\n\nVeritatis odit est ipsa sit at. Ut quo architecto rerum molestias voluptas consequuntur. Sapiente earum consequatur id. Blanditiis ad veritatis provident maxime reprehenderit est sed.",
+                                "duration": 38,
+                                "video": {
+                                    "id": "9f8026f6-7978-42ec-a34c-25d7bb80f3e2",
+                                    "filename": "dignissimos.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/c8e50a05-1cb3-3ce7-a4fc-63ed3992dffd.mp4",
+                                    "size": "3744213",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-79e2-4907-a710-6308f41ad13d",
+                                    "filename": "eos.jpg",
+                                    "path": "https://api.ayobilearning.com/storage/images/5b493366-a70a-3c26-9b03-0c8f506b96ea.jpg",
+                                    "size": "4752185",
+                                    "type": "image"
+                                },
+                                "order": 7
+                            },
+                            {
+                                "id": "9f8026f6-7e43-4f8f-98fd-ba0d8331b02c",
+                                "module_id": "9f8026f6-71f1-4d2f-9749-2f1e4b680aa1",
+                                "title": "Ipsum molestiae omnis commodi numquam.",
+                                "content": "Quas porro ut rerum eos ipsa nam consequuntur. Expedita at molestiae et vel. Reprehenderit error sed asperiores voluptatem ipsa cum fugiat. Suscipit qui illum temporibus est amet voluptatem optio.\n\nNobis quia beatae qui perferendis ducimus doloremque. Aut et dicta et ut libero ipsa ducimus. Blanditiis animi sint a dolor. Ullam saepe possimus sed sequi qui voluptas.\n\nCorrupti numquam itaque sapiente vel. Rerum fuga quia harum amet eum pariatur est. Est fugiat voluptatem ut qui et.",
+                                "duration": 36,
+                                "video": {
+                                    "id": "9f8026f6-7a60-4e0d-9635-82aefad57a14",
+                                    "filename": "suscipit.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/bd5dd16d-12c2-3f72-87c8-567c86bcda4c.mp4",
+                                    "size": "2657402",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-7ac7-4b2f-9632-46785fc00cc2",
+                                    "filename": "voluptas.jpg",
+                                    "path": "https://api.ayobilearning.com/storage/images/cea2243c-6fd4-3b32-8a56-32dedc76c965.jpg",
+                                    "size": "3954793",
+                                    "type": "image"
+                                },
+                                "order": 8
+                            },
+                            {
+                                "id": "9f8026f6-7e83-4010-b7b3-76efb0bd763a",
+                                "module_id": "9f8026f6-71f1-4d2f-9749-2f1e4b680aa1",
+                                "title": "Blanditiis quaerat ducimus sequi qui.",
+                                "content": "Ipsa ipsa quasi voluptatem sunt. Consequatur id qui voluptates temporibus quia fuga. Et nisi necessitatibus nostrum fugiat enim et. Illo id adipisci assumenda dolorem at at dolores.\n\nHarum non soluta voluptatem sequi impedit voluptates. Corrupti libero velit sed a rerum quaerat non. Neque hic minus adipisci aut inventore sequi et. Ipsa sequi vel nostrum. Debitis voluptatum voluptatem eum sapiente quos tempore.\n\nNeque quaerat et modi quod sequi pariatur inventore. At atque adipisci necessitatibus aliquam. Maxime aut voluptas fuga omnis corrupti. Est quo magnam ratione necessitatibus.",
+                                "duration": 29,
+                                "video": {
+                                    "id": "9f8026f6-7b3b-4565-803a-0a93a139caef",
+                                    "filename": "aliquid.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/d73f9dda-2226-3d85-984a-462cd97cceee.mp4",
+                                    "size": "6496872",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-7b99-41eb-a617-aa316bd915eb",
+                                    "filename": "aut.jpg",
+                                    "path": "https://api.ayobilearning.com/storage/images/696a087e-8523-3f7c-b69e-13c426f4d0be.jpg",
+                                    "size": "1252532",
+                                    "type": "image"
+                                },
+                                "order": 9
+                            },
+                            {
+                                "id": "9f8026f6-7ece-406a-8240-155123a34bf6",
+                                "module_id": "9f8026f6-71f1-4d2f-9749-2f1e4b680aa1",
+                                "title": "Sint harum tenetur vero accusantium perspiciatis.",
+                                "content": "Voluptatem ducimus et vel fuga numquam eos eius error. Architecto sint officiis voluptate asperiores ea in. Cupiditate laudantium quisquam consequatur.\n\nQuia aliquid veritatis ipsum temporibus ut quia a harum. Tempora dolorum corporis laudantium saepe sit et dolores. In modi maxime sit non.\n\nEnim molestiae sint voluptas accusantium corporis. Sapiente eveniet rerum sunt ullam. Ipsa dignissimos alias unde blanditiis. Est voluptatem accusantium neque qui quo distinctio. Sit sint aut vel id dignissimos sed.",
+                                "duration": 49,
+                                "video": {
+                                    "id": "9f8026f6-7c14-4ef8-ae96-24c7d396c582",
+                                    "filename": "ut.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/7263c8b3-58bf-3a47-a30c-dbe3306b1617.mp4",
+                                    "size": "2633430",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-7cbb-4d82-8963-d04085a2d3d5",
+                                    "filename": "explicabo.jpg",
+                                    "path": "https://api.ayobilearning.com/storage/images/7bf47a30-d473-381e-bb29-f54ed69ae3be.jpg",
+                                    "size": "9730670",
+                                    "type": "image"
+                                },
+                                "order": 10
+                            }
+                        ],
+                        "quizzes": [
+                            {
+                                "id": "9f8026f9-8b85-43f0-98d5-6645237e560c",
+                                "module_id": "9f8026f6-71f1-4d2f-9749-2f1e4b680aa1",
+                                "title": "Ipsa eius eligendi rerum.",
+                                "order": 9,
+                                "description": "Occaecati debitis fugiat quos et et est quo eum. Nisi voluptatem cumque quis distinctio. Similique minus asperiores cum voluptas facilis necessitatibus. Omnis est aut eum quo.",
+                                "settings": {
+                                    "time_limit": 50,
+                                    "passing_score": 67,
+                                    "show_answers": true,
+                                    "randomize_questions": true,
+                                    "attempts_allowed": 3
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "9f8026f6-5a2b-4568-a618-fd1685273d6c",
+                "title": "Rerum accusantium eveniet et vero incidunt sint qui.2",
+                "overview": {
+                    "modules_count": 1,
+                    "lessons_count": 10,
+                    "quizzes_count": 1
+                },
+                "slug": "rerum-accusantium-eveniet-et-vero-incidunt-sint-qui2",
+                "description": "Fugiat fugit eligendi facere qui nisi. Assumenda veniam sit quia voluptate officiis. Voluptate sunt qui omnis ut quo deserunt qui. Eveniet dolore ut consectetur saepe.",
+                "video": "https://api.ayobilearning.com/storage/videos/e7ca9057-c4c9-3064-a7ef-e7a202489632.mp4",
+                "thumbnail": "https://api.ayobilearning.com/assets/images/default/course.jpg",
+                "pricing_type": "free",
+                "price": "126638.90",
+                "is_visible": true,
+                "is_published": true,
+                "release_date": "2025-08-31 17:15:03",
+                "approval_status": "pending",
+                "number_of_reviews": 3,
+                "average_rating": 3.3333333333333335,
+                "number_of_modules": 1,
+                "total_study_hours": 364,
+                "earnings": [
+                    {
+                        "id": "9f8026f8-7a90-428a-8c98-29966e010660",
+                        "course_id": "9f8026f6-5a2b-4568-a618-fd1685273d6c",
+                        "student_id": "9f8026f4-c597-4609-abbb-02bbf4139a9f",
+                        "order_item_id": "9f8026f8-79a9-4d03-817f-35d4b5cf8d1c",
+                        "earnings": "69651.40",
+                        "platform_fee": "56987.51",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-7d43-49c6-aa9c-c1ccb8a50b71",
+                        "course_id": "9f8026f6-5a2b-4568-a618-fd1685273d6c",
+                        "student_id": "9f8026f4-cb64-4115-9fb3-4dce591e956d",
+                        "order_item_id": "9f8026f8-7d13-4b7d-b1b6-a19175e37566",
+                        "earnings": "69651.40",
+                        "platform_fee": "56987.51",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-7e40-423b-ae82-6bde90e9b942",
+                        "course_id": "9f8026f6-5a2b-4568-a618-fd1685273d6c",
+                        "student_id": "9f8026f5-2bcf-4de3-ab10-32a5535ae9f7",
+                        "order_item_id": "9f8026f8-7e14-4af3-b467-eb5a243e236b",
+                        "earnings": "69651.40",
+                        "platform_fee": "56987.51",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-7f3a-41a9-890e-9b079c53882f",
+                        "course_id": "9f8026f6-5a2b-4568-a618-fd1685273d6c",
+                        "student_id": "9f8026f5-2c40-4a60-af3e-9e04bf5599d4",
+                        "order_item_id": "9f8026f8-7f0f-4609-8518-495a60719fb6",
+                        "earnings": "69651.40",
+                        "platform_fee": "56987.51",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-8035-4cf1-ae5e-71cb720f1a4d",
+                        "course_id": "9f8026f6-5a2b-4568-a618-fd1685273d6c",
+                        "student_id": "9f8026f5-2c86-4638-a1ac-a04132747bbf",
+                        "order_item_id": "9f8026f8-8008-4cde-b058-f77f7a7d5279",
+                        "earnings": "69651.40",
+                        "platform_fee": "56987.51",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-8123-4906-a2de-b1d4f84609ad",
+                        "course_id": "9f8026f6-5a2b-4568-a618-fd1685273d6c",
+                        "student_id": "9f8026f5-2cc8-49af-83d4-034c4f51210d",
+                        "order_item_id": "9f8026f8-80f9-4e78-8148-b4add8482fbd",
+                        "earnings": "69651.40",
+                        "platform_fee": "56987.51",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-8216-4441-8ad3-9e0c942ad173",
+                        "course_id": "9f8026f6-5a2b-4568-a618-fd1685273d6c",
+                        "student_id": "9f8026f5-2d13-4eaf-b3c4-105fd53cb628",
+                        "order_item_id": "9f8026f8-81e9-41d0-9063-05af5074ae89",
+                        "earnings": "69651.40",
+                        "platform_fee": "56987.51",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-82fe-4b32-b81c-13c851dff56f",
+                        "course_id": "9f8026f6-5a2b-4568-a618-fd1685273d6c",
+                        "student_id": "9f8026f5-2d60-4a3c-8da1-6c354f11d162",
+                        "order_item_id": "9f8026f8-82d2-4b33-8962-0743c79242b5",
+                        "earnings": "69651.40",
+                        "platform_fee": "56987.51",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-83fa-48b5-a61f-2ddc124013fd",
+                        "course_id": "9f8026f6-5a2b-4568-a618-fd1685273d6c",
+                        "student_id": "9f8026f5-2dac-48d4-9a7c-7822a0d4ad08",
+                        "order_item_id": "9f8026f8-83cf-4151-9f90-4868d1467d48",
+                        "earnings": "69651.40",
+                        "platform_fee": "56987.51",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-8555-4899-8d65-567cbcdde971",
+                        "course_id": "9f8026f6-5a2b-4568-a618-fd1685273d6c",
+                        "student_id": "9f8026f5-2df6-4a2a-950c-f80479affdb9",
+                        "order_item_id": "9f8026f8-8526-41bf-83d6-9a1a0ae53f11",
+                        "earnings": "69651.40",
+                        "platform_fee": "56987.51",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-8649-46cf-9e2a-22686dc6e58e",
+                        "course_id": "9f8026f6-5a2b-4568-a618-fd1685273d6c",
+                        "student_id": "9f8026f5-2e3e-473f-80ed-551e1945922e",
+                        "order_item_id": "9f8026f8-8626-4b2e-a9b4-f8dadc60aa26",
+                        "earnings": "69651.40",
+                        "platform_fee": "56987.51",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-870c-48db-b222-8382f5d8c690",
+                        "course_id": "9f8026f6-5a2b-4568-a618-fd1685273d6c",
+                        "student_id": "9f8026f5-2e86-4ab9-a3d1-b673e86231b8",
+                        "order_item_id": "9f8026f8-86eb-44f6-9e7f-e791e54bffb6",
+                        "earnings": "69651.40",
+                        "platform_fee": "56987.51",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    }
+                ],
+                "enrollments": [
+                    {
+                        "id": "9f8026f8-7870-4cee-9f52-74def338b6c7",
+                        "course_id": "9f8026f6-5a2b-4568-a618-fd1685273d6c",
+                        "student_id": "9f8026f4-c597-4609-abbb-02bbf4139a9f",
+                        "enrolled_at": "2025-07-22 03:05:39",
+                        "status": "completed",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-7c3e-4f59-8256-0428f4eaa51b",
+                        "course_id": "9f8026f6-5a2b-4568-a618-fd1685273d6c",
+                        "student_id": "9f8026f4-cb64-4115-9fb3-4dce591e956d",
+                        "enrolled_at": "2025-07-16 10:46:35",
+                        "status": "dropped",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-7da9-4503-85f0-3ab6875ad583",
+                        "course_id": "9f8026f6-5a2b-4568-a618-fd1685273d6c",
+                        "student_id": "9f8026f5-2bcf-4de3-ab10-32a5535ae9f7",
+                        "enrolled_at": "2024-08-09 07:00:48",
+                        "status": "active",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-7ea5-4477-8a23-2ef33dc71cc9",
+                        "course_id": "9f8026f6-5a2b-4568-a618-fd1685273d6c",
+                        "student_id": "9f8026f5-2c40-4a60-af3e-9e04bf5599d4",
+                        "enrolled_at": "2025-05-25 11:52:15",
+                        "status": "completed",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-7f9d-48dd-8ddd-3589aa2d230b",
+                        "course_id": "9f8026f6-5a2b-4568-a618-fd1685273d6c",
+                        "student_id": "9f8026f5-2c86-4638-a1ac-a04132747bbf",
+                        "enrolled_at": "2024-12-17 12:11:49",
+                        "status": "completed",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-8096-4b75-9f4a-f05a22623915",
+                        "course_id": "9f8026f6-5a2b-4568-a618-fd1685273d6c",
+                        "student_id": "9f8026f5-2cc8-49af-83d4-034c4f51210d",
+                        "enrolled_at": "2025-07-11 06:11:07",
+                        "status": "dropped",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-8185-4725-91ca-9d00c3e5c67e",
+                        "course_id": "9f8026f6-5a2b-4568-a618-fd1685273d6c",
+                        "student_id": "9f8026f5-2d13-4eaf-b3c4-105fd53cb628",
+                        "enrolled_at": "2024-09-29 22:19:33",
+                        "status": "completed",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-826d-43df-93b7-21e0c2f7a9fe",
+                        "course_id": "9f8026f6-5a2b-4568-a618-fd1685273d6c",
+                        "student_id": "9f8026f5-2d60-4a3c-8da1-6c354f11d162",
+                        "enrolled_at": "2025-01-30 02:47:37",
+                        "status": "active",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-835c-4dbe-800c-bd86376dd015",
+                        "course_id": "9f8026f6-5a2b-4568-a618-fd1685273d6c",
+                        "student_id": "9f8026f5-2dac-48d4-9a7c-7822a0d4ad08",
+                        "enrolled_at": "2025-01-13 11:31:02",
+                        "status": "dropped",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-84b6-4b65-a23c-e8830fceea0e",
+                        "course_id": "9f8026f6-5a2b-4568-a618-fd1685273d6c",
+                        "student_id": "9f8026f5-2df6-4a2a-950c-f80479affdb9",
+                        "enrolled_at": "2024-09-07 22:14:03",
+                        "status": "completed",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-85b9-4a38-a81b-cc5c5810ba6d",
+                        "course_id": "9f8026f6-5a2b-4568-a618-fd1685273d6c",
+                        "student_id": "9f8026f5-2e3e-473f-80ed-551e1945922e",
+                        "enrolled_at": "2025-01-26 04:37:14",
+                        "status": "dropped",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-8698-4173-bdcb-f75dcd44188e",
+                        "course_id": "9f8026f6-5a2b-4568-a618-fd1685273d6c",
+                        "student_id": "9f8026f5-2e86-4ab9-a3d1-b673e86231b8",
+                        "enrolled_at": "2025-03-28 05:10:05",
+                        "status": "active",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    }
+                ],
+                "created_at": "29 July 2025",
+                "updated_at": "29 July 2025",
+                "level": {
+                    "id": "9f8026f6-44a4-47f2-b5d5-3b5ec04a7200",
+                    "slug": "repellat-ex-et-eligendi-sapiente",
+                    "name": "advanced",
+                    "created_at": "2025-07-28T18:33:03.000000Z",
+                    "updated_at": "2025-07-28T18:33:03.000000Z"
+                },
+                "categories": [
+                    {
+                        "id": "9f8026f6-8201-457c-ae47-291335f3d62e",
+                        "category": {
+                            "id": "9f8026f6-811c-4266-9115-aa74c5926ca4",
+                            "name": "placeat repudiandae",
+                            "slug": "placeat-repudiandae-6887c25f2ef62",
+                            "description": "Ut fugiat amet maxime sint a.",
+                            "image": null,
+                            "is_active": false,
+                            "created_at": "29 July 2025",
+                            "updated_at": "29 July 2025"
+                        }
+                    },
+                    {
+                        "id": "9f8026f6-8256-4c41-9d15-f3cd207afb57",
+                        "category": {
+                            "id": "9f8026f6-81b4-409f-bc34-f86aeae60d70",
+                            "name": "aut maiores",
+                            "slug": "aut-maiores-6887c25f2f792",
+                            "description": "Corrupti ipsum dolores quos cum voluptatem deserunt.",
+                            "image": null,
+                            "is_active": false,
+                            "created_at": "29 July 2025",
+                            "updated_at": "29 July 2025"
+                        }
+                    }
+                ],
+                "modules": [
+                    {
+                        "id": "9f8026f6-82b6-4c08-8b6c-8c6009b130c3",
+                        "title": "Commodi omnis sint eum.",
+                        "description": "Aliquam amet cumque minus quibusdam nobis aut. Enim tempore sit ratione eligendi cum.",
+                        "order": 1,
+                        "lessons": [
+                            {
+                                "id": "9f8026f6-ab53-4bb4-a1e7-20e72d1a88db",
+                                "module_id": "9f8026f6-82b6-4c08-8b6c-8c6009b130c3",
+                                "title": "Eos ex odio distinctio occaecati.",
+                                "content": "Deleniti ut minus non odit natus placeat voluptatibus. Fugit eos consequatur at rem placeat dolores. Error distinctio sed enim molestiae sit in.\n\nIllo at dolore quo rem. Asperiores aliquid molestiae quia ea. Qui recusandae autem architecto inventore magni.\n\nSit fuga inventore repudiandae sint totam et laboriosam. Voluptatem est non adipisci minima. Et voluptates debitis quia quia ratione. Voluptatem quia at nesciunt aspernatur qui neque omnis similique. Non voluptatem quia quia ad explicabo est culpa.",
+                                "duration": 55,
+                                "video": {
+                                    "id": "9f8026f6-842c-44fa-8ec5-4859690838bc",
+                                    "filename": "libero.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/c7424c9b-5543-3864-b3ed-4391c883a10d.mp4",
+                                    "size": "5929080",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-8634-4ddd-bc7d-549ffbeb1614",
+                                    "filename": "repellendus.jpg",
+                                    "path": "https://api.ayobilearning.com/storage/images/5b76f42e-a202-3152-a99c-cb05550448c4.jpg",
+                                    "size": "6246400",
+                                    "type": "image"
+                                },
+                                "order": 1
+                            },
+                            {
+                                "id": "9f8026f6-ab8e-4f11-9df6-0ff8268c7c55",
+                                "module_id": "9f8026f6-82b6-4c08-8b6c-8c6009b130c3",
+                                "title": "A ab distinctio sed praesentium.",
+                                "content": "Id quia numquam dolore occaecati ut illum eligendi. Dolor ea quo at voluptas. Sit velit et iste.\n\nPariatur voluptatum autem fugiat quisquam molestias sint eligendi. Voluptas blanditiis quos eos et consequatur sed maxime. Omnis eos provident delectus ut libero aut.\n\nVoluptate quia natus et et. Quia saepe libero molestias et rem voluptatem. Qui voluptate id dolorem et et rerum eos non. Consequatur ea molestiae sit blanditiis voluptas.",
+                                "duration": 52,
+                                "video": {
+                                    "id": "9f8026f6-8766-473f-b6df-05dc6358bf0c",
+                                    "filename": "quibusdam.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/da3589bf-4f2d-3c03-92ff-494bb522c46f.mp4",
+                                    "size": "7173522",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-88c8-4f6c-b80c-15a4320e819c",
+                                    "filename": "illum.jpg",
+                                    "path": "https://api.ayobilearning.com/storage/images/9e119c46-b65c-3303-969e-3c1e531462af.jpg",
+                                    "size": "7037553",
+                                    "type": "image"
+                                },
+                                "order": 2
+                            },
+                            {
+                                "id": "9f8026f6-abbe-4ab4-b79f-cf936cd287f3",
+                                "module_id": "9f8026f6-82b6-4c08-8b6c-8c6009b130c3",
+                                "title": "Dolores qui veritatis eligendi provident.",
+                                "content": "Debitis beatae hic voluptatem itaque qui nisi. Qui molestiae dolorem nihil incidunt quod. Et veniam consequatur dolorem sit. Eos ipsam commodi excepturi tenetur nihil.\n\nEt nisi nesciunt autem fugit. Id rerum voluptatem quaerat sed. Quibusdam vero aut explicabo et.\n\nSaepe ratione est consequatur cupiditate neque adipisci. Et nulla tempora sit non. Accusantium odio quibusdam nam laudantium ut iusto. Tenetur omnis enim ipsam iste.",
+                                "duration": 38,
+                                "video": {
+                                    "id": "9f8026f6-89ca-4409-b501-a968686dab38",
+                                    "filename": "consequatur.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/b075eb31-3945-3e20-8a7f-1a54d369706a.mp4",
+                                    "size": "2897699",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-8a50-456f-b038-945c7a67caf2",
+                                    "filename": "non.png",
+                                    "path": "https://api.ayobilearning.com/storage/images/93b353aa-13e7-3ed5-bc6b-45e32ea1d2af.png",
+                                    "size": "8214230",
+                                    "type": "image"
+                                },
+                                "order": 3
+                            },
+                            {
+                                "id": "9f8026f6-abee-40a0-b565-3572996bd3cd",
+                                "module_id": "9f8026f6-82b6-4c08-8b6c-8c6009b130c3",
+                                "title": "Et voluptatum quod eaque eum eum aut.",
+                                "content": "Minima dolor repellendus fuga quae qui ut. Magnam ut non nulla cum dicta quis aut dolorem. Ut quis commodi maxime est totam.\n\nNon id sit quia similique rerum architecto sint. Reiciendis quia doloremque animi velit et doloremque quo. Quod soluta fuga officiis sunt consequatur enim dolores. Illo occaecati qui asperiores blanditiis.\n\nAb distinctio est eaque libero autem natus ea. Dolore minima doloribus et sed autem ipsa vel. Necessitatibus facere autem quo repellat itaque.",
+                                "duration": 59,
+                                "video": {
+                                    "id": "9f8026f6-8cdb-4e91-a75b-bf6da5cdf1fc",
+                                    "filename": "animi.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/6ab046fc-3205-338d-8c91-3528de937556.mp4",
+                                    "size": "1665699",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-8e10-489b-8df4-69e31f09d56f",
+                                    "filename": "est.png",
+                                    "path": "https://api.ayobilearning.com/storage/images/11d99746-4a7f-3c0b-8f76-4ea100e1da8f.png",
+                                    "size": "439396",
+                                    "type": "image"
+                                },
+                                "order": 4
+                            },
+                            {
+                                "id": "9f8026f6-ac1b-4a36-b4fc-9c16929fe770",
+                                "module_id": "9f8026f6-82b6-4c08-8b6c-8c6009b130c3",
+                                "title": "Omnis voluptas quod aspernatur qui eum cumque eveniet.",
+                                "content": "Beatae sed praesentium expedita. Non dolore neque dolore veniam. Hic maiores ipsa quo sed veritatis. Exercitationem aut sint nesciunt iusto dignissimos eaque.\n\nDeleniti error ut eos sint ipsa odio natus. Debitis maiores nemo culpa reprehenderit quis libero. Eaque id corporis hic molestiae. Et quia quo nesciunt perspiciatis odit in aut optio.\n\nDistinctio recusandae modi nulla et sed. Commodi voluptatem dolor iure corporis nemo. Iusto quaerat autem qui.",
+                                "duration": 49,
+                                "video": {
+                                    "id": "9f8026f6-8efb-4a65-aab7-040395cb9352",
+                                    "filename": "vero.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/8d860aa1-20ba-3228-a1ed-39b8031c528e.mp4",
+                                    "size": "8422749",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-9062-453a-aab0-339e6774e69e",
+                                    "filename": "qui.png",
+                                    "path": "https://api.ayobilearning.com/storage/images/31e39445-bdff-3c38-961c-0474146e3e64.png",
+                                    "size": "2781029",
+                                    "type": "image"
+                                },
+                                "order": 5
+                            },
+                            {
+                                "id": "9f8026f6-ac48-4a2f-a2a8-22cb4800aec5",
+                                "module_id": "9f8026f6-82b6-4c08-8b6c-8c6009b130c3",
+                                "title": "Sit et voluptas accusantium eligendi.",
+                                "content": "Corporis minima provident sint laudantium. Rerum sequi fugit quos voluptatem. Explicabo consequatur quidem aut quas. Ut aspernatur assumenda aut velit.\n\nSint iste aliquid et. Eos iusto blanditiis est iure nostrum quia odit. Ut inventore et quis quibusdam praesentium. Possimus dolor vitae quidem fugit.\n\nSed hic voluptatem incidunt enim. Quaerat et officiis porro quidem deserunt et. Deserunt ipsa facere assumenda quia nam ipsa libero sint. Ea officia et consequatur doloribus corrupti sequi.",
+                                "duration": 11,
+                                "video": {
+                                    "id": "9f8026f6-9d7d-4da9-bcf0-614b35e987ea",
+                                    "filename": "non.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/b47bc0c1-b0e3-3ef8-a0f0-600e3aeb8e68.mp4",
+                                    "size": "9141225",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-a003-4d81-b5c0-6afeab176eb7",
+                                    "filename": "voluptas.jpg",
+                                    "path": "https://api.ayobilearning.com/storage/images/41306357-c14e-3122-b918-b4c39a97dd64.jpg",
+                                    "size": "7156665",
+                                    "type": "image"
+                                },
+                                "order": 6
+                            },
+                            {
+                                "id": "9f8026f6-ac75-4a6f-b2c9-c99828aa9771",
+                                "module_id": "9f8026f6-82b6-4c08-8b6c-8c6009b130c3",
+                                "title": "Fuga earum et nulla maiores sequi.",
+                                "content": "Voluptatem saepe rerum aspernatur. Qui rerum ut ab sequi nobis. Quam laudantium dolores ex distinctio nisi sapiente illum eos. Consequatur velit enim cumque occaecati suscipit ea.\n\nOmnis expedita aperiam similique aliquam voluptatem voluptatem placeat. Dolores voluptatum voluptate pariatur sit rem. Officia unde consequuntur nobis architecto pariatur adipisci ut debitis. Molestias maiores voluptatem non est et.\n\nQuia quia dolorem est facilis molestiae rerum. Est qui facilis fugiat voluptatem sed. Quo possimus quia voluptatem velit. Suscipit earum assumenda facilis ex. Iste totam delectus architecto tempore nihil tempore et consectetur.",
+                                "duration": 51,
+                                "video": {
+                                    "id": "9f8026f6-a1bd-4ea0-90cc-535908d2056c",
+                                    "filename": "dolorem.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/3740d772-8273-381e-9b1f-cb72982710f2.mp4",
+                                    "size": "5274187",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-a308-44aa-b4c7-ceee93549158",
+                                    "filename": "aut.jpg",
+                                    "path": "https://api.ayobilearning.com/storage/images/bc674cef-9ebb-39c1-876a-f3abbf7e36f6.jpg",
+                                    "size": "8179387",
+                                    "type": "image"
+                                },
+                                "order": 7
+                            },
+                            {
+                                "id": "9f8026f6-aca4-47e2-9683-1aa5045a078b",
+                                "module_id": "9f8026f6-82b6-4c08-8b6c-8c6009b130c3",
+                                "title": "Repellat mollitia non ut sint.",
+                                "content": "Vel recusandae quos tempora dolorum natus reprehenderit. Doloribus odio delectus dolores. Voluptates voluptatem et sed qui blanditiis. Nulla a aperiam fuga quis nemo eos facilis.\n\nConsequatur ad voluptatem doloremque assumenda atque animi quisquam. Et porro facilis voluptas ex consectetur ea. In enim ea ut sequi perspiciatis. Consequatur minima veniam eius et nemo commodi necessitatibus.\n\nUllam rem rerum reiciendis reprehenderit. Quam dolor placeat aut voluptas. Omnis doloremque eligendi provident voluptas amet vero et. Aut enim nihil rerum nisi fugiat minima.",
+                                "duration": 12,
+                                "video": {
+                                    "id": "9f8026f6-a5c6-4ba2-8e11-7084fa17b717",
+                                    "filename": "est.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/75c05e5a-5106-3fa4-adb2-4c24e690df7a.mp4",
+                                    "size": "8660313",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-a6cd-4d2b-bd38-c1b552ea762f",
+                                    "filename": "deserunt.jpg",
+                                    "path": "https://api.ayobilearning.com/storage/images/bcc9bdb7-dfb2-31c2-a61c-1873d63f5575.jpg",
+                                    "size": "4336864",
+                                    "type": "image"
+                                },
+                                "order": 8
+                            },
+                            {
+                                "id": "9f8026f6-acd2-4539-9162-d4c3aaafe112",
+                                "module_id": "9f8026f6-82b6-4c08-8b6c-8c6009b130c3",
+                                "title": "Debitis omnis earum esse corrupti qui asperiores.",
+                                "content": "Quae tempora ipsam enim tempora nihil. Ipsa assumenda doloremque nostrum sit. Fugit optio ut est voluptas.\n\nSit unde ea veritatis mollitia assumenda quia veniam. Dolor non consequuntur qui. Provident et rerum temporibus culpa itaque voluptas dolor culpa.\n\nIste aspernatur ea doloribus quos quis. Quidem aut velit blanditiis dolorum. Veniam eveniet distinctio sit provident voluptatem asperiores voluptatem.",
+                                "duration": 24,
+                                "video": {
+                                    "id": "9f8026f6-a801-4c03-a703-02e2ea0900c6",
+                                    "filename": "expedita.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/188998c6-c3ce-316e-b7e4-01414b114746.mp4",
+                                    "size": "7773324",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-a8bc-4f23-b628-a349bb77c694",
+                                    "filename": "vel.png",
+                                    "path": "https://api.ayobilearning.com/storage/images/6c98236f-2664-3172-8e78-452aac33762a.png",
+                                    "size": "8536038",
+                                    "type": "image"
+                                },
+                                "order": 9
+                            },
+                            {
+                                "id": "9f8026f6-acff-4b51-aaa1-f025e62e4604",
+                                "module_id": "9f8026f6-82b6-4c08-8b6c-8c6009b130c3",
+                                "title": "Autem vitae unde sint tempore eos nihil.",
+                                "content": "Et at nesciunt tempora saepe et. Quibusdam saepe animi ab ullam. Error nesciunt enim hic quod.\n\nEos dignissimos rem animi aut ducimus tenetur. Qui nulla nam nisi optio sint. Voluptatum consequatur ut natus repudiandae minus labore. Quia corrupti vel dolores recusandae.\n\nOfficia quasi harum dicta suscipit fuga fugiat. Aperiam quia est qui illo. Veritatis debitis maxime reiciendis rerum animi dolorem accusantium.",
+                                "duration": 13,
+                                "video": {
+                                    "id": "9f8026f6-a9b3-45d0-b1ed-a1a1fc8483f2",
+                                    "filename": "omnis.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/8f35de61-b1d7-317b-9bbe-d8fabf6410c3.mp4",
+                                    "size": "5238691",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-aac8-49d8-8cc0-f34d3a5cd84b",
+                                    "filename": "corporis.jpg",
+                                    "path": "https://api.ayobilearning.com/storage/images/35fe03ce-b1c2-3f99-868c-c7f802901b71.jpg",
+                                    "size": "4092906",
+                                    "type": "image"
+                                },
+                                "order": 10
+                            }
+                        ],
+                        "quizzes": [
+                            {
+                                "id": "9f8026f9-933f-4cc4-8ed4-73a7b20e91c6",
+                                "module_id": "9f8026f6-82b6-4c08-8b6c-8c6009b130c3",
+                                "title": "Ut nihil ut et rerum velit maxime ratione id.",
+                                "order": 1,
+                                "description": "Quam distinctio tenetur voluptas sapiente. Rerum aut nulla sed quisquam numquam minima eos. Quam tenetur rerum odit ipsam porro expedita. Et non minus harum iste quaerat. Laboriosam aut quas eligendi voluptatum sit.",
+                                "settings": {
+                                    "time_limit": 30,
+                                    "passing_score": 62,
+                                    "show_answers": true,
+                                    "randomize_questions": false,
+                                    "attempts_allowed": 3
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "9f8026f6-5aa0-4227-97c3-e47c84c90520",
+                "title": "Aut culpa sunt blanditiis corporis.",
+                "overview": {
+                    "modules_count": 1,
+                    "lessons_count": 10,
+                    "quizzes_count": 1
+                },
+                "slug": "6887c25f0a3d91753727583",
+                "description": "Explicabo deleniti in recusandae culpa et. Cumque minus consequatur dicta eveniet dicta omnis sed reiciendis. Nobis porro quia qui praesentium et maxime ea.",
+                "video": "https://api.ayobilearning.com/storage/videos/2bdc897b-fcd1-39ee-ad0a-4fe5612e4007.mp4",
+                "thumbnail": "https://api.ayobilearning.com/assets/images/default/course.jpg",
+                "pricing_type": "subscription",
+                "price": "139218.58",
+                "is_visible": true,
+                "is_published": true,
+                "release_date": "2026-01-04 14:00:27",
+                "approval_status": "rejected",
+                "number_of_reviews": 3,
+                "average_rating": 3.3333333333333335,
+                "number_of_modules": 1,
+                "total_study_hours": 389,
+                "earnings": [
+                    {
+                        "id": "9f8026f8-882f-45be-ae6b-eb72636ff598",
+                        "course_id": "9f8026f6-5aa0-4227-97c3-e47c84c90520",
+                        "student_id": "9f8026f4-c597-4609-abbb-02bbf4139a9f",
+                        "order_item_id": "9f8026f8-8804-4f30-9823-3c07e00999ed",
+                        "earnings": "76570.22",
+                        "platform_fee": "62648.36",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-891d-4de8-8fc7-42a6543758d5",
+                        "course_id": "9f8026f6-5aa0-4227-97c3-e47c84c90520",
+                        "student_id": "9f8026f4-cb64-4115-9fb3-4dce591e956d",
+                        "order_item_id": "9f8026f8-88f2-41a9-9186-05b3a616d676",
+                        "earnings": "76570.22",
+                        "platform_fee": "62648.36",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-8a0d-4983-974e-d849806f1b06",
+                        "course_id": "9f8026f6-5aa0-4227-97c3-e47c84c90520",
+                        "student_id": "9f8026f5-2bcf-4de3-ab10-32a5535ae9f7",
+                        "order_item_id": "9f8026f8-89e2-42cf-9376-e594eaead79b",
+                        "earnings": "76570.22",
+                        "platform_fee": "62648.36",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-8aee-477d-ade9-c401fac852d3",
+                        "course_id": "9f8026f6-5aa0-4227-97c3-e47c84c90520",
+                        "student_id": "9f8026f5-2c40-4a60-af3e-9e04bf5599d4",
+                        "order_item_id": "9f8026f8-8ac9-4a39-8f58-6664cfb4c865",
+                        "earnings": "76570.22",
+                        "platform_fee": "62648.36",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-8bd6-4b43-8e1e-01da6060bd25",
+                        "course_id": "9f8026f6-5aa0-4227-97c3-e47c84c90520",
+                        "student_id": "9f8026f5-2c86-4638-a1ac-a04132747bbf",
+                        "order_item_id": "9f8026f8-8bb2-4bcb-bbb8-52d41743927b",
+                        "earnings": "76570.22",
+                        "platform_fee": "62648.36",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-8ca3-43ac-839a-300387d82f45",
+                        "course_id": "9f8026f6-5aa0-4227-97c3-e47c84c90520",
+                        "student_id": "9f8026f5-2cc8-49af-83d4-034c4f51210d",
+                        "order_item_id": "9f8026f8-8c79-4d69-bb4e-1a3455bba95c",
+                        "earnings": "76570.22",
+                        "platform_fee": "62648.36",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-8db0-482b-a125-b68d72c48490",
+                        "course_id": "9f8026f6-5aa0-4227-97c3-e47c84c90520",
+                        "student_id": "9f8026f5-2d13-4eaf-b3c4-105fd53cb628",
+                        "order_item_id": "9f8026f8-8d46-44a2-b8df-44050dc4a86f",
+                        "earnings": "76570.22",
+                        "platform_fee": "62648.36",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-8eae-4fd8-ac57-28e2cf32b626",
+                        "course_id": "9f8026f6-5aa0-4227-97c3-e47c84c90520",
+                        "student_id": "9f8026f5-2d60-4a3c-8da1-6c354f11d162",
+                        "order_item_id": "9f8026f8-8e88-441c-a3a8-06ed5f8bd82d",
+                        "earnings": "76570.22",
+                        "platform_fee": "62648.36",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-8f77-4435-9b00-cf5ced4917b9",
+                        "course_id": "9f8026f6-5aa0-4227-97c3-e47c84c90520",
+                        "student_id": "9f8026f5-2dac-48d4-9a7c-7822a0d4ad08",
+                        "order_item_id": "9f8026f8-8f50-48ca-9054-229c227bad11",
+                        "earnings": "76570.22",
+                        "platform_fee": "62648.36",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-9042-41af-a576-99faac867042",
+                        "course_id": "9f8026f6-5aa0-4227-97c3-e47c84c90520",
+                        "student_id": "9f8026f5-2df6-4a2a-950c-f80479affdb9",
+                        "order_item_id": "9f8026f8-901d-4394-82a7-3aa440a9a607",
+                        "earnings": "76570.22",
+                        "platform_fee": "62648.36",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-9132-4ad6-a5f6-3373d25c6934",
+                        "course_id": "9f8026f6-5aa0-4227-97c3-e47c84c90520",
+                        "student_id": "9f8026f5-2e3e-473f-80ed-551e1945922e",
+                        "order_item_id": "9f8026f8-910c-44a7-904d-cbc264b619bd",
+                        "earnings": "76570.22",
+                        "platform_fee": "62648.36",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-91fd-4757-b3e1-8458e0f9c4ed",
+                        "course_id": "9f8026f6-5aa0-4227-97c3-e47c84c90520",
+                        "student_id": "9f8026f5-2e86-4ab9-a3d1-b673e86231b8",
+                        "order_item_id": "9f8026f8-91d9-4f1f-a5ac-2acbf9d42707",
+                        "earnings": "76570.22",
+                        "platform_fee": "62648.36",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    }
+                ],
+                "enrollments": [
+                    {
+                        "id": "9f8026f8-879d-4acc-b449-a5e28eb56c94",
+                        "course_id": "9f8026f6-5aa0-4227-97c3-e47c84c90520",
+                        "student_id": "9f8026f4-c597-4609-abbb-02bbf4139a9f",
+                        "enrolled_at": "2025-07-05 07:33:24",
+                        "status": "active",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-888d-45eb-8331-51027ccf4f22",
+                        "course_id": "9f8026f6-5aa0-4227-97c3-e47c84c90520",
+                        "student_id": "9f8026f4-cb64-4115-9fb3-4dce591e956d",
+                        "enrolled_at": "2025-02-13 22:16:17",
+                        "status": "active",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-897c-4b3c-a28c-518216c4adbe",
+                        "course_id": "9f8026f6-5aa0-4227-97c3-e47c84c90520",
+                        "student_id": "9f8026f5-2bcf-4de3-ab10-32a5535ae9f7",
+                        "enrolled_at": "2024-11-08 09:21:56",
+                        "status": "dropped",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-8a66-43fc-a988-0b16d42f3ffc",
+                        "course_id": "9f8026f6-5aa0-4227-97c3-e47c84c90520",
+                        "student_id": "9f8026f5-2c40-4a60-af3e-9e04bf5599d4",
+                        "enrolled_at": "2025-07-16 03:05:18",
+                        "status": "completed",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-8b4c-4c81-a3fa-1ca0abf0d7d3",
+                        "course_id": "9f8026f6-5aa0-4227-97c3-e47c84c90520",
+                        "student_id": "9f8026f5-2c86-4638-a1ac-a04132747bbf",
+                        "enrolled_at": "2024-12-23 06:23:09",
+                        "status": "dropped",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-8c23-4e4b-b8f2-0db186eb9d1a",
+                        "course_id": "9f8026f6-5aa0-4227-97c3-e47c84c90520",
+                        "student_id": "9f8026f5-2cc8-49af-83d4-034c4f51210d",
+                        "enrolled_at": "2025-07-08 05:58:14",
+                        "status": "active",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-8cf6-4ed9-b74e-fd79047cac5d",
+                        "course_id": "9f8026f6-5aa0-4227-97c3-e47c84c90520",
+                        "student_id": "9f8026f5-2d13-4eaf-b3c4-105fd53cb628",
+                        "enrolled_at": "2025-02-17 09:52:37",
+                        "status": "dropped",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-8e05-493e-aa10-6535d339f792",
+                        "course_id": "9f8026f6-5aa0-4227-97c3-e47c84c90520",
+                        "student_id": "9f8026f5-2d60-4a3c-8da1-6c354f11d162",
+                        "enrolled_at": "2025-02-20 13:08:22",
+                        "status": "dropped",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-8efd-4b69-835a-3839ea9bdf53",
+                        "course_id": "9f8026f6-5aa0-4227-97c3-e47c84c90520",
+                        "student_id": "9f8026f5-2dac-48d4-9a7c-7822a0d4ad08",
+                        "enrolled_at": "2024-12-10 11:20:04",
+                        "status": "completed",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-8fc9-4a29-9b6d-4e131f6650ea",
+                        "course_id": "9f8026f6-5aa0-4227-97c3-e47c84c90520",
+                        "student_id": "9f8026f5-2df6-4a2a-950c-f80479affdb9",
+                        "enrolled_at": "2025-01-28 08:54:04",
+                        "status": "completed",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-909f-4b0e-ae99-ead3c6be6582",
+                        "course_id": "9f8026f6-5aa0-4227-97c3-e47c84c90520",
+                        "student_id": "9f8026f5-2e3e-473f-80ed-551e1945922e",
+                        "enrolled_at": "2024-10-04 17:42:00",
+                        "status": "active",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-9185-4e30-8f62-316b03addbb6",
+                        "course_id": "9f8026f6-5aa0-4227-97c3-e47c84c90520",
+                        "student_id": "9f8026f5-2e86-4ab9-a3d1-b673e86231b8",
+                        "enrolled_at": "2025-03-08 23:26:20",
+                        "status": "active",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    }
+                ],
+                "created_at": "29 July 2025",
+                "updated_at": "29 July 2025",
+                "level": {
+                    "id": "9f8026f6-45d8-4da5-aa2a-9d3bcf7b1ffc",
+                    "slug": "quam-quo-veniam-ratione-assumenda",
+                    "name": "beginner",
+                    "created_at": "2025-07-28T18:33:03.000000Z",
+                    "updated_at": "2025-07-28T18:33:03.000000Z"
+                },
+                "categories": [
+                    {
+                        "id": "9f8026f6-b209-4748-bae7-ebeb9c12ec4d",
+                        "category": {
+                            "id": "9f8026f6-b110-4de1-bdb7-770e829869d5",
+                            "name": "voluptatem quos",
+                            "slug": "voluptatem-quos-6887c25f4d0b0",
+                            "description": "Voluptas expedita beatae tempore cum sint quia.",
+                            "image": null,
+                            "is_active": false,
+                            "created_at": "29 July 2025",
+                            "updated_at": "29 July 2025"
+                        }
+                    },
+                    {
+                        "id": "9f8026f6-b235-471c-91a5-b4d9660f4229",
+                        "category": {
+                            "id": "9f8026f6-b1d9-41ea-8bda-f87182f2897f",
+                            "name": "at sequi",
+                            "slug": "at-sequi-6887c25f4d964",
+                            "description": "Magni excepturi quas aut.",
+                            "image": null,
+                            "is_active": false,
+                            "created_at": "29 July 2025",
+                            "updated_at": "29 July 2025"
+                        }
+                    }
+                ],
+                "modules": [
+                    {
+                        "id": "9f8026f6-b273-4137-8a84-cc46d5ed2ca0",
+                        "title": "Veniam expedita voluptas distinctio quis aliquid.",
+                        "description": "Recusandae animi quae rerum incidunt. Aspernatur beatae quo ut aut repudiandae sunt non nesciunt. Aperiam officiis ab est aut deleniti. Doloribus iste vitae impedit ipsum dicta.",
+                        "order": 1,
+                        "lessons": [
+                            {
+                                "id": "9f8026f6-cdf3-482f-b028-772a30fc3e73",
+                                "module_id": "9f8026f6-b273-4137-8a84-cc46d5ed2ca0",
+                                "title": "Ea cum sit necessitatibus explicabo delectus deserunt.",
+                                "content": "Eos fugit atque dolor voluptas et. Placeat culpa est ut aperiam minima veritatis tenetur. Ex ipsum eum repellat tenetur omnis.\n\nNostrum facilis cumque ut necessitatibus rerum itaque nisi. Excepturi assumenda laborum facere facere qui repudiandae debitis. Eveniet nobis quas quisquam sint iusto nemo minima ut. Aut minus sapiente doloribus porro labore quia.\n\nConsequatur adipisci laudantium repellat sit. Et quia commodi accusamus est earum labore. Velit ducimus iusto placeat eligendi omnis non reprehenderit laudantium.",
+                                "duration": 52,
+                                "video": {
+                                    "id": "9f8026f6-b30e-47be-96f8-68a2a8d7aae7",
+                                    "filename": "dolores.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/819058a8-58fb-3b06-b5eb-79cc4943bcf1.mp4",
+                                    "size": "1742783",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-b392-4eb5-aca2-82438d1f959f",
+                                    "filename": "ducimus.jpg",
+                                    "path": "https://api.ayobilearning.com/storage/images/24e52a2d-bdbe-3a9d-898d-c9c5fab2853a.jpg",
+                                    "size": "104725",
+                                    "type": "image"
+                                },
+                                "order": 1
+                            },
+                            {
+                                "id": "9f8026f6-ce1c-4fb2-8e6f-67bb6df89697",
+                                "module_id": "9f8026f6-b273-4137-8a84-cc46d5ed2ca0",
+                                "title": "Rerum quia cupiditate ea quae autem.",
+                                "content": "Odit a et dolorum vitae odit et. Autem minima placeat minus est ea ea aut suscipit. Vel id necessitatibus voluptatem officia alias placeat accusantium.\n\nEnim enim est dignissimos vel ut occaecati. Et et quaerat corrupti nam et in. Voluptatem qui autem qui.\n\nIn aliquid et quasi doloribus quos et facilis. Dolore aut qui illum quo eveniet commodi. Asperiores assumenda aut a qui cumque.",
+                                "duration": 42,
+                                "video": {
+                                    "id": "9f8026f6-b428-43d3-9b9e-0596ed3fe9f7",
+                                    "filename": "mollitia.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/aebdc60d-e955-320e-a5b0-091aa9befa3b.mp4",
+                                    "size": "6432392",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-b4b4-41cb-a430-db5ab893cd59",
+                                    "filename": "nulla.png",
+                                    "path": "https://api.ayobilearning.com/storage/images/a97e1e46-2419-3ea9-8516-9cda06f3f567.png",
+                                    "size": "7786974",
+                                    "type": "image"
+                                },
+                                "order": 2
+                            },
+                            {
+                                "id": "9f8026f6-ce50-4434-ac22-1804b3bf31a2",
+                                "module_id": "9f8026f6-b273-4137-8a84-cc46d5ed2ca0",
+                                "title": "Sequi aperiam numquam qui.",
+                                "content": "Natus est vel dignissimos sunt. Quis sapiente ad accusamus. Molestiae iusto voluptate rerum odit laboriosam reprehenderit. Voluptas pariatur dolores quibusdam atque. Delectus consequatur et error magnam.\n\nOptio quaerat saepe voluptas. Illum blanditiis ea doloribus ea. Culpa cum molestiae ab placeat ea qui reprehenderit.\n\nLaboriosam tempora id placeat animi asperiores aut. Suscipit est dolor voluptatem temporibus dolorum aliquid expedita non. Similique aspernatur optio enim vel illum omnis. Delectus quia earum dolorem iusto.",
+                                "duration": 34,
+                                "video": {
+                                    "id": "9f8026f6-b552-4934-ab25-b02e1f11e4bb",
+                                    "filename": "rerum.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/0f3de7e7-3dc0-3947-a78f-f317bec8da07.mp4",
+                                    "size": "9379083",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-c293-43b8-afc9-2b8dbf9d957f",
+                                    "filename": "officiis.png",
+                                    "path": "https://api.ayobilearning.com/storage/images/d770c41c-b05e-35e9-900f-82fca0469a8b.png",
+                                    "size": "1434353",
+                                    "type": "image"
+                                },
+                                "order": 3
+                            },
+                            {
+                                "id": "9f8026f6-ce7a-4b3e-b2f2-448757866a8e",
+                                "module_id": "9f8026f6-b273-4137-8a84-cc46d5ed2ca0",
+                                "title": "Expedita velit atque velit culpa.",
+                                "content": "Maxime consequatur itaque eaque. Et totam aliquid perferendis vitae distinctio. Nulla voluptatibus libero praesentium ut commodi ab in.\n\nDolores veniam est ea porro officiis perferendis sed. Aut porro fugit culpa ab atque blanditiis.\n\nIn distinctio possimus sit vel voluptates qui. Omnis ut quisquam at nesciunt incidunt nam. Aut ullam dignissimos distinctio. Ut libero alias autem ullam est nostrum.",
+                                "duration": 52,
+                                "video": {
+                                    "id": "9f8026f6-c387-4504-a84e-8f2044c90cb5",
+                                    "filename": "in.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/c69fa52a-7cfd-3b6d-a6c4-5a4ffc2fe699.mp4",
+                                    "size": "4858650",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-c421-4c09-9178-bec0ed791b87",
+                                    "filename": "qui.jpg",
+                                    "path": "https://api.ayobilearning.com/storage/images/eca7ddf2-6d65-3ec8-b3b4-ec2db5e8665e.jpg",
+                                    "size": "7132952",
+                                    "type": "image"
+                                },
+                                "order": 4
+                            },
+                            {
+                                "id": "9f8026f6-ced5-4aa1-8f12-51f6c5318ccc",
+                                "module_id": "9f8026f6-b273-4137-8a84-cc46d5ed2ca0",
+                                "title": "Itaque mollitia facere repellendus explicabo aut quidem quis.",
+                                "content": "Deleniti ut perferendis magni quia minima nostrum. Aut autem dolore molestiae tenetur tempora molestias officiis. Et beatae occaecati natus non dolores quia. Aut alias quia enim odio facere quo iure repellendus.\n\nAliquam cum ut maiores. Exercitationem qui nobis cupiditate qui voluptas. Quia fuga minus porro nam laborum. Repudiandae ea deleniti doloremque ratione et mollitia sunt.\n\nIncidunt deleniti dolor porro aut est vel. Quia qui voluptas quos odio dolore est. Debitis debitis facilis dolor non. Atque unde earum dolores saepe ut sed. Dolorem nesciunt consectetur quis consequuntur voluptatibus rerum.",
+                                "duration": 55,
+                                "video": {
+                                    "id": "9f8026f6-c4b5-4176-916c-ad32a34cd73f",
+                                    "filename": "saepe.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/2735e513-5c18-3fb5-8ed5-d15ea153d16d.mp4",
+                                    "size": "3036325",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-c539-4a83-b1d6-f2c962adf601",
+                                    "filename": "iusto.jpg",
+                                    "path": "https://api.ayobilearning.com/storage/images/46bb2db3-10fa-3a24-a9a9-edec5425dccc.jpg",
+                                    "size": "8122127",
+                                    "type": "image"
+                                },
+                                "order": 5
+                            },
+                            {
+                                "id": "9f8026f6-cf08-418f-be5e-f7ab8f1ffdf3",
+                                "module_id": "9f8026f6-b273-4137-8a84-cc46d5ed2ca0",
+                                "title": "Molestiae repudiandae ad deserunt iusto.",
+                                "content": "Beatae incidunt magnam vero odio repellat. Iusto aspernatur similique laborum a. Magni dolorum voluptas doloribus accusamus excepturi beatae necessitatibus. Dolores ab enim consequatur. Ipsa aperiam et quis quisquam ea dolores dolores.\n\nAd fugit et optio ut quae provident. Nihil delectus itaque rerum a placeat blanditiis vitae. Sit laborum et explicabo delectus aliquam ut.\n\nSint deserunt facere nostrum sed libero sint provident eveniet. Et rem ut optio ipsum ratione blanditiis. Nesciunt eum culpa id est.",
+                                "duration": 11,
+                                "video": {
+                                    "id": "9f8026f6-c5cf-476d-b89f-04b728f9fb3c",
+                                    "filename": "est.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/936c55f7-a791-346a-9534-e336555d4ca7.mp4",
+                                    "size": "4855926",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-c647-4ba9-a602-e45c568749b3",
+                                    "filename": "error.png",
+                                    "path": "https://api.ayobilearning.com/storage/images/b5d07f10-c8cb-3013-b992-7e95d44f9a81.png",
+                                    "size": "2952457",
+                                    "type": "image"
+                                },
+                                "order": 6
+                            },
+                            {
+                                "id": "9f8026f6-cf30-4f02-8781-96c660468934",
+                                "module_id": "9f8026f6-b273-4137-8a84-cc46d5ed2ca0",
+                                "title": "Modi velit in iusto non eveniet esse.",
+                                "content": "Est et dolorum doloremque tempora. Qui soluta enim assumenda modi quae animi tenetur. Quia voluptas est voluptas ipsum asperiores enim consequatur.\n\nSaepe ratione voluptas sunt officiis nulla veniam reiciendis. Omnis delectus dolorum sit quae doloremque.\n\nEx velit fuga expedita amet molestiae sapiente. Consequatur quos dolorum quia distinctio. Doloribus ducimus saepe adipisci reiciendis. Occaecati consequatur dolorum beatae ipsa.",
+                                "duration": 37,
+                                "video": {
+                                    "id": "9f8026f6-c6da-46ad-87bb-16b0e0e13106",
+                                    "filename": "eius.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/8399ba37-0df3-33d8-b862-ede2a004d9de.mp4",
+                                    "size": "7030043",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-c755-4ec1-8b4f-5487a5267aea",
+                                    "filename": "sit.png",
+                                    "path": "https://api.ayobilearning.com/storage/images/b1696beb-eb48-31ae-b4f9-3c9a74838efb.png",
+                                    "size": "8182900",
+                                    "type": "image"
+                                },
+                                "order": 7
+                            },
+                            {
+                                "id": "9f8026f6-cf53-4073-a032-cf971962f6df",
+                                "module_id": "9f8026f6-b273-4137-8a84-cc46d5ed2ca0",
+                                "title": "Delectus neque incidunt debitis quisquam.",
+                                "content": "Ad nisi rem voluptatem in. Dicta aut non dolor sed qui. Amet et aliquid possimus quam amet ea.\n\nUt qui quae expedita rerum. Libero et dolores optio autem est. Maiores beatae earum adipisci est. Dicta inventore ea aliquid nostrum dicta id necessitatibus vitae.\n\nEnim dolor architecto qui. Quos voluptatem pariatur id esse nesciunt. Voluptas eos qui iste inventore. Dolor facere blanditiis cum voluptate similique est.",
+                                "duration": 34,
+                                "video": {
+                                    "id": "9f8026f6-c818-4986-9caa-ef07705761a9",
+                                    "filename": "unde.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/df857302-ba93-3a98-912e-fb68af080209.mp4",
+                                    "size": "3442898",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-c923-44e7-84c8-3725314da9db",
+                                    "filename": "consequatur.png",
+                                    "path": "https://api.ayobilearning.com/storage/images/3f9d48f8-eb8a-3dd9-a19f-f14fc7bf4721.png",
+                                    "size": "1944483",
+                                    "type": "image"
+                                },
+                                "order": 8
+                            },
+                            {
+                                "id": "9f8026f6-cf79-48d8-bb3a-fb4f30d83cbf",
+                                "module_id": "9f8026f6-b273-4137-8a84-cc46d5ed2ca0",
+                                "title": "Velit iusto saepe voluptatem ut aliquam.",
+                                "content": "Beatae ut quod eaque vero et quam. Et ad eum iste minus atque necessitatibus. Necessitatibus velit nisi voluptas perspiciatis corporis.\n\nLaborum qui enim aliquid libero velit. Repellat laboriosam aut alias quis necessitatibus. Quisquam quis voluptatum aut rerum iure sapiente molestiae.\n\nQuis et et alias voluptate perspiciatis debitis. Perferendis aut architecto ratione quas eligendi voluptatum. Qui voluptate id consequuntur omnis facilis atque. Dicta quaerat sit deleniti saepe totam.",
+                                "duration": 26,
+                                "video": {
+                                    "id": "9f8026f6-cad6-4b1b-9b9a-0d2c3d4d041a",
+                                    "filename": "expedita.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/0ba25060-83c6-3ed0-ab51-f1e1c9e73206.mp4",
+                                    "size": "7710398",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-cb46-43f1-ae29-c9d1720352a8",
+                                    "filename": "quam.jpg",
+                                    "path": "https://api.ayobilearning.com/storage/images/6586a788-b0b5-39da-b43f-be8a36eb5520.jpg",
+                                    "size": "9476268",
+                                    "type": "image"
+                                },
+                                "order": 9
+                            },
+                            {
+                                "id": "9f8026f6-cf9a-4713-88a3-748179617271",
+                                "module_id": "9f8026f6-b273-4137-8a84-cc46d5ed2ca0",
+                                "title": "Et deleniti voluptatem sunt reiciendis quam quisquam.",
+                                "content": "Aut nemo aliquam eius nihil voluptatibus fugiat quis aut. Ipsum autem omnis nulla itaque delectus officiis. Ut maiores a eum quam veritatis. Vitae quam est fuga reiciendis.\n\nProvident provident animi temporibus enim a voluptatem aspernatur. Dolorum est tempore consequuntur deserunt et reiciendis sapiente.\n\nA iure eius harum sunt quisquam voluptatem assumenda veniam. Eum impedit doloremque voluptatem. Eos exercitationem nesciunt saepe eaque modi dolores vero. Voluptatum animi quod magni corporis et.",
+                                "duration": 46,
+                                "video": {
+                                    "id": "9f8026f6-cd1e-4e8b-ab7a-f2cf98503011",
+                                    "filename": "dolor.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/bb1d0a6e-12ae-36e6-9c58-8277627dec0a.mp4",
+                                    "size": "9855118",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-cdb6-4ad1-a13d-e2985f49e327",
+                                    "filename": "officia.png",
+                                    "path": "https://api.ayobilearning.com/storage/images/29aab7fa-bd17-3c8c-a858-a6fb48a1de25.png",
+                                    "size": "6843176",
+                                    "type": "image"
+                                },
+                                "order": 10
+                            }
+                        ],
+                        "quizzes": [
+                            {
+                                "id": "9f8026f9-99eb-41b2-852e-7ed7d90f8355",
+                                "module_id": "9f8026f6-b273-4137-8a84-cc46d5ed2ca0",
+                                "title": "Commodi sed maxime quo.",
+                                "order": 2,
+                                "description": "Omnis quidem vitae animi quae dicta et. Maiores ducimus quod totam dolorem praesentium. Iure in quia quaerat autem. Architecto et explicabo eius ab accusantium veniam.",
+                                "settings": {
+                                    "time_limit": 40,
+                                    "passing_score": 63,
+                                    "show_answers": false,
+                                    "randomize_questions": false,
+                                    "attempts_allowed": 1
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "id": "9f8026f6-5ad8-498b-abbc-c72fae874373",
+                "title": "Dolor ad blanditiis eos tempora numquam 12",
+                "overview": {
+                    "modules_count": 1,
+                    "lessons_count": 10,
+                    "quizzes_count": 1
+                },
+                "slug": "dolor-ad-blanditiis-eos-tempora-numquam-12",
+                "description": "Molestiae nulla qui quaerat quia. Et dolores optio optio libero vel aliquam quisquam. Ipsa quod deleniti reiciendis dicta perferendis. Et molestiae et voluptas laboriosam quas.",
+                "video": "https://api.ayobilearning.com/storage/videos/42e491fb-b201-33eb-9dce-4bd1e340dcc7.mp4",
+                "thumbnail": "https://api.ayobilearning.com/assets/images/default/course.jpg",
+                "pricing_type": "free",
+                "price": "191088.77",
+                "is_visible": false,
+                "is_published": true,
+                "release_date": "2026-05-07 15:45:24",
+                "approval_status": "pending",
+                "number_of_reviews": 3,
+                "average_rating": 3.6666666666666665,
+                "number_of_modules": 1,
+                "total_study_hours": 328,
+                "earnings": [
+                    {
+                        "id": "9f8026f8-9314-4d00-ad54-da9cfb11b027",
+                        "course_id": "9f8026f6-5ad8-498b-abbc-c72fae874373",
+                        "student_id": "9f8026f4-c597-4609-abbb-02bbf4139a9f",
+                        "order_item_id": "9f8026f8-92e7-4fd2-8dcd-af6d969f48ca",
+                        "earnings": "105098.82",
+                        "platform_fee": "85989.95",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-93f7-4f8d-ab6a-e8363f83885c",
+                        "course_id": "9f8026f6-5ad8-498b-abbc-c72fae874373",
+                        "student_id": "9f8026f4-cb64-4115-9fb3-4dce591e956d",
+                        "order_item_id": "9f8026f8-93bd-469e-9892-6162f33594fb",
+                        "earnings": "105098.82",
+                        "platform_fee": "85989.95",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-94df-4d4a-bfac-39cb2bc0981d",
+                        "course_id": "9f8026f6-5ad8-498b-abbc-c72fae874373",
+                        "student_id": "9f8026f5-2bcf-4de3-ab10-32a5535ae9f7",
+                        "order_item_id": "9f8026f8-94bb-480b-8ddb-700d3ca79631",
+                        "earnings": "105098.82",
+                        "platform_fee": "85989.95",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-96e8-43f6-8aec-c7e3beebc68a",
+                        "course_id": "9f8026f6-5ad8-498b-abbc-c72fae874373",
+                        "student_id": "9f8026f5-2c40-4a60-af3e-9e04bf5599d4",
+                        "order_item_id": "9f8026f8-9693-498a-9bb9-7b2c4e2eb38b",
+                        "earnings": "105098.82",
+                        "platform_fee": "85989.95",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-98e3-44c9-a12a-92850e42fab4",
+                        "course_id": "9f8026f6-5ad8-498b-abbc-c72fae874373",
+                        "student_id": "9f8026f5-2c86-4638-a1ac-a04132747bbf",
+                        "order_item_id": "9f8026f8-98ba-4047-891e-302e9c88bb9d",
+                        "earnings": "105098.82",
+                        "platform_fee": "85989.95",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-99de-46c2-85bc-8960034eaed4",
+                        "course_id": "9f8026f6-5ad8-498b-abbc-c72fae874373",
+                        "student_id": "9f8026f5-2cc8-49af-83d4-034c4f51210d",
+                        "order_item_id": "9f8026f8-99b2-4db4-87f3-f92a8dc4cb90",
+                        "earnings": "105098.82",
+                        "platform_fee": "85989.95",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-9b00-4b35-8697-13da21694f35",
+                        "course_id": "9f8026f6-5ad8-498b-abbc-c72fae874373",
+                        "student_id": "9f8026f5-2d13-4eaf-b3c4-105fd53cb628",
+                        "order_item_id": "9f8026f8-9ad9-4967-9aae-41908236ded9",
+                        "earnings": "105098.82",
+                        "platform_fee": "85989.95",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-9c3c-470e-9a76-b8e389b679fb",
+                        "course_id": "9f8026f6-5ad8-498b-abbc-c72fae874373",
+                        "student_id": "9f8026f5-2d60-4a3c-8da1-6c354f11d162",
+                        "order_item_id": "9f8026f8-9c11-4471-9fb9-34c6aa22f824",
+                        "earnings": "105098.82",
+                        "platform_fee": "85989.95",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-9d73-471b-83e3-03fff3c09a62",
+                        "course_id": "9f8026f6-5ad8-498b-abbc-c72fae874373",
+                        "student_id": "9f8026f5-2dac-48d4-9a7c-7822a0d4ad08",
+                        "order_item_id": "9f8026f8-9d3a-4a20-8216-07af33f03420",
+                        "earnings": "105098.82",
+                        "platform_fee": "85989.95",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-9e92-4aa1-bb2e-fbea23b57b04",
+                        "course_id": "9f8026f6-5ad8-498b-abbc-c72fae874373",
+                        "student_id": "9f8026f5-2df6-4a2a-950c-f80479affdb9",
+                        "order_item_id": "9f8026f8-9e68-45cc-b70a-f507f0f227dc",
+                        "earnings": "105098.82",
+                        "platform_fee": "85989.95",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-9fbe-4fee-99b6-139656b0204c",
+                        "course_id": "9f8026f6-5ad8-498b-abbc-c72fae874373",
+                        "student_id": "9f8026f5-2e3e-473f-80ed-551e1945922e",
+                        "order_item_id": "9f8026f8-9f84-45d1-8e45-f3f650ba079c",
+                        "earnings": "105098.82",
+                        "platform_fee": "85989.95",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-a098-4306-91fa-ab9601b596b1",
+                        "course_id": "9f8026f6-5ad8-498b-abbc-c72fae874373",
+                        "student_id": "9f8026f5-2e86-4ab9-a3d1-b673e86231b8",
+                        "order_item_id": "9f8026f8-a072-45a9-b488-f676c6b96161",
+                        "earnings": "105098.82",
+                        "platform_fee": "85989.95",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    }
+                ],
+                "enrollments": [
+                    {
+                        "id": "9f8026f8-9291-4414-acc7-0815a1b9e08a",
+                        "course_id": "9f8026f6-5ad8-498b-abbc-c72fae874373",
+                        "student_id": "9f8026f4-c597-4609-abbb-02bbf4139a9f",
+                        "enrolled_at": "2024-10-08 18:41:31",
+                        "status": "dropped",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-936a-445b-a8c7-377908c8a808",
+                        "course_id": "9f8026f6-5ad8-498b-abbc-c72fae874373",
+                        "student_id": "9f8026f4-cb64-4115-9fb3-4dce591e956d",
+                        "enrolled_at": "2024-12-27 17:49:39",
+                        "status": "dropped",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-9469-4981-b4c4-6658f7cf8bf2",
+                        "course_id": "9f8026f6-5ad8-498b-abbc-c72fae874373",
+                        "student_id": "9f8026f5-2bcf-4de3-ab10-32a5535ae9f7",
+                        "enrolled_at": "2024-12-05 19:19:47",
+                        "status": "active",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-9532-4be1-a024-9bba0e2939ab",
+                        "course_id": "9f8026f6-5ad8-498b-abbc-c72fae874373",
+                        "student_id": "9f8026f5-2c40-4a60-af3e-9e04bf5599d4",
+                        "enrolled_at": "2024-10-31 02:01:04",
+                        "status": "dropped",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-9817-4fae-b0d0-7c6a07512a85",
+                        "course_id": "9f8026f6-5ad8-498b-abbc-c72fae874373",
+                        "student_id": "9f8026f5-2c86-4638-a1ac-a04132747bbf",
+                        "enrolled_at": "2024-11-23 12:46:55",
+                        "status": "completed",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-993b-4280-9f66-60e05360300f",
+                        "course_id": "9f8026f6-5ad8-498b-abbc-c72fae874373",
+                        "student_id": "9f8026f5-2cc8-49af-83d4-034c4f51210d",
+                        "enrolled_at": "2025-01-08 18:00:41",
+                        "status": "completed",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-9a5d-4e8d-bd41-20fd8836b67c",
+                        "course_id": "9f8026f6-5ad8-498b-abbc-c72fae874373",
+                        "student_id": "9f8026f5-2d13-4eaf-b3c4-105fd53cb628",
+                        "enrolled_at": "2025-02-10 09:22:15",
+                        "status": "dropped",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-9b56-4982-9e05-de5c06dca91f",
+                        "course_id": "9f8026f6-5ad8-498b-abbc-c72fae874373",
+                        "student_id": "9f8026f5-2d60-4a3c-8da1-6c354f11d162",
+                        "enrolled_at": "2025-01-13 19:27:13",
+                        "status": "dropped",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-9cad-4d3f-9813-9b6f57ca70d6",
+                        "course_id": "9f8026f6-5ad8-498b-abbc-c72fae874373",
+                        "student_id": "9f8026f5-2dac-48d4-9a7c-7822a0d4ad08",
+                        "enrolled_at": "2025-02-02 02:13:19",
+                        "status": "dropped",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-9dfd-44f7-b9dd-76f25e52e267",
+                        "course_id": "9f8026f6-5ad8-498b-abbc-c72fae874373",
+                        "student_id": "9f8026f5-2df6-4a2a-950c-f80479affdb9",
+                        "enrolled_at": "2024-12-02 06:22:20",
+                        "status": "active",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-9f1a-4738-9b6d-8cd494813ecc",
+                        "course_id": "9f8026f6-5ad8-498b-abbc-c72fae874373",
+                        "student_id": "9f8026f5-2e3e-473f-80ed-551e1945922e",
+                        "enrolled_at": "2025-07-28 19:50:30",
+                        "status": "active",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    },
+                    {
+                        "id": "9f8026f8-a015-452b-b958-3ce4bcff69f6",
+                        "course_id": "9f8026f6-5ad8-498b-abbc-c72fae874373",
+                        "student_id": "9f8026f5-2e86-4ab9-a3d1-b673e86231b8",
+                        "enrolled_at": "2025-01-30 13:52:41",
+                        "status": "dropped",
+                        "created_at": "2025-07-28T18:33:04.000000Z",
+                        "updated_at": "2025-07-28T18:33:04.000000Z"
+                    }
+                ],
+                "created_at": "29 July 2025",
+                "updated_at": "29 July 2025",
+                "level": {
+                    "id": "9f8026f6-46fb-49a9-aa47-faf1d97520a5",
+                    "slug": "velit-nisi-deserunt-perferendis",
+                    "name": "intermediate",
+                    "created_at": "2025-07-28T18:33:03.000000Z",
+                    "updated_at": "2025-07-28T18:33:03.000000Z"
+                },
+                "categories": [
+                    {
+                        "id": "9f8026f6-d17b-4a83-8b28-7e2b04144f54",
+                        "category": {
+                            "id": "9f8026f6-d0ae-4190-827e-cadfcd539b62",
+                            "name": "illo sit",
+                            "slug": "illo-sit-6887c25f60e57",
+                            "description": "Dolorem non dolorem amet.",
+                            "image": null,
+                            "is_active": false,
+                            "created_at": "29 July 2025",
+                            "updated_at": "29 July 2025"
+                        }
+                    },
+                    {
+                        "id": "9f8026f6-d1a4-476f-a666-090475f851e2",
+                        "category": {
+                            "id": "9f8026f6-d13f-419e-bf91-f70080ae993e",
+                            "name": "aut ut",
+                            "slug": "aut-ut-6887c25f6132a",
+                            "description": "Assumenda autem facere facere sit.",
+                            "image": null,
+                            "is_active": false,
+                            "created_at": "29 July 2025",
+                            "updated_at": "29 July 2025"
+                        }
+                    }
+                ],
+                "modules": [
+                    {
+                        "id": "9f8026f6-d1eb-44e2-83bf-b73ef09301f2",
+                        "title": "Qui quia qui quo.",
+                        "description": "Atque temporibus assumenda sit optio. Rem non ut qui et. Itaque et totam saepe quis consequatur ut. Quam voluptatem quia facere itaque.",
+                        "order": 1,
+                        "lessons": [
+                            {
+                                "id": "9f8026f6-dcd8-4150-8951-72c95821267d",
+                                "module_id": "9f8026f6-d1eb-44e2-83bf-b73ef09301f2",
+                                "title": "Veritatis quia omnis rerum minima impedit praesentium deleniti.",
+                                "content": "Id et sed mollitia deserunt illo. Dolore quas suscipit veritatis. A perspiciatis qui sed harum perspiciatis est totam. Pariatur iste neque natus incidunt.\n\nConsequatur tenetur exercitationem corporis tenetur consequatur voluptatem itaque. Quia rerum atque sunt reprehenderit rem dolor. Consectetur corporis enim accusantium iusto id qui.\n\nQuia odit pariatur sint non. Soluta non tenetur natus tempore qui nihil ea.",
+                                "duration": 40,
+                                "video": {
+                                    "id": "9f8026f6-d278-44e7-a73c-4c92262f9fe2",
+                                    "filename": "quas.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/666db4db-0c1d-3a44-9c2f-376e9bf1357c.mp4",
+                                    "size": "676836",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-d2fa-4df1-b15d-361e2bb64aa3",
+                                    "filename": "quis.jpg",
+                                    "path": "https://api.ayobilearning.com/storage/images/6840f994-b54f-3238-8c9e-0c5e24420de1.jpg",
+                                    "size": "4939342",
+                                    "type": "image"
+                                },
+                                "order": 1
+                            },
+                            {
+                                "id": "9f8026f6-dd05-45b1-931e-851941f26672",
+                                "module_id": "9f8026f6-d1eb-44e2-83bf-b73ef09301f2",
+                                "title": "Amet cum quas saepe at voluptatibus eum.",
+                                "content": "Porro modi ad qui. Libero libero voluptatem a repudiandae. Veritatis aliquam ut culpa quos deserunt beatae a. Fugit sed tempore vel id vel atque voluptatem.\n\nExplicabo quo rerum nihil magnam necessitatibus omnis labore. Consequatur quae aut eum necessitatibus. Alias harum laborum asperiores quis iste et.\n\nConsequatur soluta iure sunt et. Voluptas hic commodi pariatur ut ex. Enim quo recusandae totam non.",
+                                "duration": 47,
+                                "video": {
+                                    "id": "9f8026f6-d38c-4188-a020-8e59445af48f",
+                                    "filename": "et.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/273f5198-fb7b-338a-9d5f-761a2d0d654d.mp4",
+                                    "size": "6361043",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-d40c-45b0-a0a6-897ee0dc4c1b",
+                                    "filename": "rem.jpg",
+                                    "path": "https://api.ayobilearning.com/storage/images/63970f97-0276-3568-9c89-bc2e6a7ec1b6.jpg",
+                                    "size": "1161189",
+                                    "type": "image"
+                                },
+                                "order": 2
+                            },
+                            {
+                                "id": "9f8026f6-dd35-4568-bffa-3152f962d69d",
+                                "module_id": "9f8026f6-d1eb-44e2-83bf-b73ef09301f2",
+                                "title": "Distinctio aut eveniet at ratione ratione.",
+                                "content": "Sapiente nobis dolores dignissimos voluptatem explicabo illum. Enim sed nisi voluptatem magnam rem laboriosam earum. Ab ut molestiae delectus quo.\n\nUt qui odio dolor autem qui debitis. Cupiditate voluptates molestias quia dignissimos quo beatae. Eum iusto veritatis amet ipsum. Similique enim non maxime consequuntur. Sed sit recusandae earum omnis.\n\nOmnis beatae earum ipsam inventore iste culpa. Libero quia porro est. Aliquid porro repudiandae voluptatem et.",
+                                "duration": 35,
+                                "video": {
+                                    "id": "9f8026f6-d4ca-431a-adc0-a80a9f9720a8",
+                                    "filename": "adipisci.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/fba39aff-9cd4-37cf-9122-d8bc6299adcd.mp4",
+                                    "size": "6980469",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-d587-4800-b6a9-b5108db368ef",
+                                    "filename": "et.png",
+                                    "path": "https://api.ayobilearning.com/storage/images/c7477227-907f-39ca-a7fe-0011017e6ff6.png",
+                                    "size": "5160402",
+                                    "type": "image"
+                                },
+                                "order": 3
+                            },
+                            {
+                                "id": "9f8026f6-dd69-4876-b8dc-66fd57e91e55",
+                                "module_id": "9f8026f6-d1eb-44e2-83bf-b73ef09301f2",
+                                "title": "Eum architecto qui tempore labore.",
+                                "content": "Eveniet autem modi omnis et ab rerum. Non officiis et voluptas maxime est aut aut. Eos illum impedit sint totam. Voluptatem impedit eum eius incidunt quia commodi. Odio assumenda animi a debitis.\n\nEt velit et distinctio ab quisquam. Dolorem magni perferendis aut. Eos a beatae incidunt iste officiis. Nesciunt aliquam ut hic quo qui nostrum voluptas.\n\nTempora expedita consequuntur enim autem incidunt dignissimos. Ea voluptate doloremque hic officia nostrum illo eveniet. Illo voluptates aliquid vero natus in exercitationem ut adipisci. Fugit ipsam rerum excepturi deserunt beatae itaque optio.",
+                                "duration": 35,
+                                "video": {
+                                    "id": "9f8026f6-d6b0-4812-b2fb-3b01b7fb7226",
+                                    "filename": "minima.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/9e2ae664-5989-3bcd-a419-9a960bd77e10.mp4",
+                                    "size": "8619897",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-d725-42fc-905f-9a924b50b64d",
+                                    "filename": "ut.png",
+                                    "path": "https://api.ayobilearning.com/storage/images/59e4b087-9969-3345-9a60-114e7732b86b.png",
+                                    "size": "3571834",
+                                    "type": "image"
+                                },
+                                "order": 4
+                            },
+                            {
+                                "id": "9f8026f6-dd97-4ac4-ac03-b167e2f86368",
+                                "module_id": "9f8026f6-d1eb-44e2-83bf-b73ef09301f2",
+                                "title": "Vel reprehenderit labore et consequatur neque similique ut.",
+                                "content": "Aut nobis voluptate et nobis. Quia qui ea sunt laboriosam qui suscipit. Ipsam et neque itaque voluptas libero molestiae nostrum et.\n\nOdit nulla corporis et cupiditate. Corrupti maiores ex quis. Eos quibusdam perspiciatis distinctio sit. Et rerum eum tempora illo officia voluptas corrupti.\n\nVoluptatem quis exercitationem reiciendis rerum provident et voluptas. Occaecati asperiores perferendis aliquam omnis temporibus voluptatem modi. Suscipit corporis cupiditate corrupti consequatur voluptatum.",
+                                "duration": 31,
+                                "video": {
+                                    "id": "9f8026f6-d7ac-4e40-8b2d-1348c7ec7c98",
+                                    "filename": "neque.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/8550d9fd-5765-3804-a489-e024a22a8383.mp4",
+                                    "size": "689165",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-d822-4056-9f98-1830b091942b",
+                                    "filename": "non.png",
+                                    "path": "https://api.ayobilearning.com/storage/images/0cc04b0d-06eb-3f18-9506-206c25c352c9.png",
+                                    "size": "7619808",
+                                    "type": "image"
+                                },
+                                "order": 5
+                            },
+                            {
+                                "id": "9f8026f6-ddbf-4647-9220-bed00d19688e",
+                                "module_id": "9f8026f6-d1eb-44e2-83bf-b73ef09301f2",
+                                "title": "Voluptatem numquam error perspiciatis velit.",
+                                "content": "Cumque id quia laboriosam a molestias alias laborum. Voluptatem autem reprehenderit reiciendis at atque et nam esse. Hic iste dolorum aperiam magni similique pariatur tempore. Labore aliquid et qui consequatur quis fuga.\n\nAmet natus ea minima qui illum aperiam pariatur. Eos sint non itaque blanditiis. Sunt deleniti illo odit eum. Accusantium alias repellendus quasi placeat neque.\n\nDolorem consequatur consequatur magni minus facere et. Animi non consequuntur est est enim eligendi sint. Aperiam id velit at voluptatibus possimus aliquid suscipit voluptates. In laudantium rerum quas magnam et qui.",
+                                "duration": 25,
+                                "video": {
+                                    "id": "9f8026f6-d8a2-4bb9-ab6f-1a1c09572257",
+                                    "filename": "laudantium.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/bcc5bd8b-2c7a-3222-aa96-25bb88a9a7ce.mp4",
+                                    "size": "8374707",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-d90c-4d76-b476-6c93c86f0f23",
+                                    "filename": "autem.jpg",
+                                    "path": "https://api.ayobilearning.com/storage/images/53efc4c0-34cb-33c3-ae58-d23a0f74600d.jpg",
+                                    "size": "9564075",
+                                    "type": "image"
+                                },
+                                "order": 6
+                            },
+                            {
+                                "id": "9f8026f6-ddeb-4169-8757-7cd8902a40cc",
+                                "module_id": "9f8026f6-d1eb-44e2-83bf-b73ef09301f2",
+                                "title": "Est minima earum quia excepturi et.",
+                                "content": "Quis expedita excepturi reprehenderit vitae libero autem. Et officia id enim accusamus quo et velit hic. Pariatur ducimus inventore in quia impedit. Dolorum placeat accusantium et nesciunt deleniti dolores non.\n\nAccusamus qui aspernatur iure aut esse ut. Natus nihil et ratione est. Ipsum molestias nulla dolore quo. Nulla cumque at veniam ipsam dolore modi.\n\nVelit dolorum error cumque et in voluptatem ipsa. Excepturi iste natus ex consequatur molestiae dicta consequuntur expedita. Repudiandae harum recusandae cumque iure voluptatem.",
+                                "duration": 15,
+                                "video": {
+                                    "id": "9f8026f6-d98a-4f5b-99cd-45f22288fa65",
+                                    "filename": "quibusdam.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/2e98d33f-a395-3bfb-a522-ec951d74c1aa.mp4",
+                                    "size": "7319731",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-d9ee-4592-a2b2-039e5e231822",
+                                    "filename": "est.png",
+                                    "path": "https://api.ayobilearning.com/storage/images/360d3dff-b62a-35c8-95c2-a76367ae8612.png",
+                                    "size": "3283699",
+                                    "type": "image"
+                                },
+                                "order": 7
+                            },
+                            {
+                                "id": "9f8026f6-de19-46e5-941d-642fe9fa0a21",
+                                "module_id": "9f8026f6-d1eb-44e2-83bf-b73ef09301f2",
+                                "title": "Commodi voluptatem iure consequuntur aut numquam.",
+                                "content": "Neque consequuntur debitis sunt tempora aspernatur ipsum quia odio. Doloremque pariatur earum ipsum magni. Id est ducimus nulla dolore molestias. Quis repellat sint et ad voluptatum ut minima ex.\n\nFuga culpa possimus minus maiores rerum. Voluptate praesentium voluptatibus harum voluptatem quia. Voluptas possimus incidunt dolores. Quae iure inventore ratione modi alias sapiente et. Ipsam nobis eaque nesciunt ut.\n\nOmnis qui voluptatem accusantium iusto assumenda delectus est. Distinctio debitis quas nam consequatur facere. Eos molestiae tempora impedit et. Iste rerum voluptatibus dolor aut fugit.",
+                                "duration": 14,
+                                "video": {
+                                    "id": "9f8026f6-da62-4d82-b885-b62219428232",
+                                    "filename": "expedita.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/f6292f2c-5ce2-3d51-9edd-2d9653784977.mp4",
+                                    "size": "3590582",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-dabe-4488-b3c3-f22ea70b002c",
+                                    "filename": "adipisci.jpg",
+                                    "path": "https://api.ayobilearning.com/storage/images/9c74a0ac-d6dd-3aa9-a99d-3855122e12b2.jpg",
+                                    "size": "6979594",
+                                    "type": "image"
+                                },
+                                "order": 8
+                            },
+                            {
+                                "id": "9f8026f6-de43-40f6-b059-af8127a0fa16",
+                                "module_id": "9f8026f6-d1eb-44e2-83bf-b73ef09301f2",
+                                "title": "Temporibus qui est et quasi magnam delectus nisi.",
+                                "content": "Non impedit illum ab perspiciatis aut ipsam magni. Rerum quasi quis aperiam eos. Fuga labore laudantium necessitatibus tempore ipsum.\n\nQuae est molestiae odio omnis cumque. Et facere quod voluptatem qui provident quae explicabo. Aspernatur atque et voluptate reiciendis consequatur.\n\nMagnam officia quasi aut sint est. Deleniti autem voluptas sit magnam mollitia ducimus natus. Totam id labore et sint et enim.",
+                                "duration": 39,
+                                "video": {
+                                    "id": "9f8026f6-db32-45eb-ab94-db349380c744",
+                                    "filename": "nostrum.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/b2abec00-d04d-3e01-b874-21837c66ab5e.mp4",
+                                    "size": "2135810",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-db90-4afc-9979-92f973f40d3a",
+                                    "filename": "consequatur.png",
+                                    "path": "https://api.ayobilearning.com/storage/images/b6857311-dc46-3853-978c-f60c017c9772.png",
+                                    "size": "3977260",
+                                    "type": "image"
+                                },
+                                "order": 9
+                            },
+                            {
+                                "id": "9f8026f6-de6c-4f2c-924d-bac20ef83833",
+                                "module_id": "9f8026f6-d1eb-44e2-83bf-b73ef09301f2",
+                                "title": "Sunt sed ut qui eum voluptate quod itaque.",
+                                "content": "Voluptatem distinctio dolorem voluptas deserunt similique. Sequi est vel deserunt nemo quisquam. Harum ut molestiae sed quibusdam omnis soluta est. Rerum dolor repellat a ipsa autem qui voluptatem temporibus.\n\nVitae molestias aliquid voluptatem aperiam et aut. Excepturi recusandae facilis maxime ut voluptate dolorem.\n\nNatus et fugit optio qui incidunt ab autem. A odio animi magni dolore sapiente. Voluptatem et sed facere ut quod.",
+                                "duration": 47,
+                                "video": {
+                                    "id": "9f8026f6-dbfc-47c2-bdfe-e7d3e85f7d44",
+                                    "filename": "necessitatibus.mp4",
+                                    "path": "https://api.ayobilearning.com/storage/videos/2e9ae4ee-ccd9-39d9-ad29-080b60053831.mp4",
+                                    "size": "7823167",
+                                    "type": "video"
+                                },
+                                "image": {
+                                    "id": "9f8026f6-dca2-478d-9544-4108b7ddd62a",
+                                    "filename": "et.png",
+                                    "path": "https://api.ayobilearning.com/storage/images/15966a58-c8e0-3240-816e-ec294a6db0f5.png",
+                                    "size": "1344300",
+                                    "type": "image"
+                                },
+                                "order": 10
+                            }
+                        ],
+                        "quizzes": [
+                            {
+                                "id": "9f8026f9-a09c-44ba-bb65-54effcc0af7d",
+                                "module_id": "9f8026f6-d1eb-44e2-83bf-b73ef09301f2",
+                                "title": "Temporibus illo voluptatibus tenetur aliquid quaerat delectus.",
+                                "order": 1,
+                                "description": "Eos quia voluptas sequi voluptatem. Dolorem qui impedit non mollitia natus itaque voluptatem. Explicabo recusandae nulla maxime qui quo.",
+                                "settings": {
+                                    "time_limit": 33,
+                                    "passing_score": 66,
+                                    "show_answers": true,
+                                    "randomize_questions": false,
+                                    "attempts_allowed": 3
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+}
