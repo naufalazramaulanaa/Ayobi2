@@ -1,6 +1,8 @@
 "use client";
 
 import type React from "react";
+import Swal from "sweetalert2";
+
 
 import { useEffect, useState, useRef } from "react";
 import {
@@ -61,6 +63,20 @@ import {
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { RichTextEditor } from "@/components/ui/rich-text-editor";
 import { fetchData } from "@/lib/api";
+
+// const updateLesson = async (lessonId: string, payload: any) => {
+//   const formData = new FormData();
+//   Object.entries(payload).forEach(([key, value]) => {
+//     formData.append(key, value as string);
+//   });
+//   formData.append('_method', 'PUT');
+
+//   return await fetchData(`/instructor/courses/modules/lessons/${lessonId}`, {
+//     method: 'POST', // <-- wajib ditambahkan
+//     body: formData,
+//   });
+// };
+
 import { toast } from "sonner";
 import { uploadChunk } from "@/utils/uploadChunk";
 import { getTokenFromCookie } from "@/lib/auth";
@@ -89,6 +105,7 @@ type Content = {
 		showAnswers?: boolean;
 	};
 };
+
 
 interface Module {
 	id: string;
@@ -590,46 +607,55 @@ export function CourseCreator() {
 		}
 	};
 
-	const updateQuiz = async (quizId: string, updatedData: any) => {
-		const settings = {
-			passing_grade: updatedData.passing_grade?.toString() ?? "0",
-			time_limit: updatedData.time_limit?.toString() ?? "0",
-			max_attempts: updatedData.max_attempts?.toString() ?? "1",
-			show_correct_answers: updatedData.show_correct_answers?.toString() ?? "0",
-			automatically_graded: updatedData.automatically_graded?.toString() ?? "0",
-		};
-		const formData = new FormData();
-		formData.append("_method", "PUT");
-		formData.append("title", updatedData.title);
-		formData.append("description", updatedData.description || "");
-		formData.append("module_id", updatedData.module_id);
-		formData.append("settings", JSON.stringify(settings));
-		formData.append("type", pricingType);
+// ganti fungsi updateQuiz kamu dengan ini
+const updateQuiz = async (quizId: string, payload: any) => {
+  const formData = new FormData();
 
-		try {
-			const token =
-				typeof window !== "undefined"
-					? localStorage.getItem("access_token")
-					: null;
-			const res = await fetch(
-				`${process.env.NEXT_PUBLIC_BASE_URL}/instructor/courses/quizzes/${quizId}`,
-				{
-					method: "POST",
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-					body: formData,
-				}
-			);
-			const result = await res.json();
-			if (result.success) {
-				console.log("✅ Quiz updated:", result.data);
-				return result.data;
-			}
-		} catch (error) {
-			console.error("❌ Quiz update failed:", error);
-		}
-	};
+  const {
+    title,
+    description,
+    module_id,
+    order,
+    questions,
+    settings = {},
+  } = payload;
+
+  // mapping settings -> field datar sesuai backend
+  const {
+    passing_grade,
+    time_limit,
+    max_attempts,
+    show_correct_answers,
+    automatically_graded,
+  } = settings;
+
+  if (title) formData.append("title", title);
+  if (description != null) formData.append("description", String(description));
+  if (module_id) formData.append("module_id", String(module_id));
+  if (order) formData.append("order", String(order));
+
+  // ✅ field wajib – JANGAN kirim sebagai settings JSON
+  formData.append("passing_grade", String(passing_grade));
+  formData.append("time_limit", String(time_limit));
+  formData.append("max_attempts", String(max_attempts));
+  formData.append("show_correct_answers", show_correct_answers ? "1" : "0");
+  formData.append("automatically_graded", automatically_graded ? "1" : "0");
+
+  if (questions) {
+    formData.append("questions", JSON.stringify(questions));
+  }
+
+  formData.append("_method", "PUT");
+
+  return await fetchData(`/instructor/courses/quizzes/${quizId}`, {
+    method: "POST",
+    body: formData,
+  });
+};
+
+
+
+
 
 	const [editedModuleIndex, setEditedModuleIndex] = useState<number | null>(
 		null
@@ -750,26 +776,116 @@ export function CourseCreator() {
 		});
 	};
 
-	const updateQuizInState = (quizData: any) => {
-		setCourse((prev) => {
-			const modules = [...prev.modules];
-			const targetModule = modules.find((mod) => mod.id === quizData.module_id);
-			if (targetModule) {
-				const contentIndex = targetModule.contents.findIndex(
-					(c) => c.id === quizData.id
-				);
-				if (contentIndex !== -1) {
-					targetModule.contents[contentIndex] = {
-						...targetModule.contents[contentIndex],
-						...quizData,
-					};
-				} else {
-					targetModule.contents.push({ ...quizData, type: "quiz" });
-				}
-			}
-			return { ...prev, modules };
-		});
-	};
+const updateQuizInState = (quizData: any) => {
+  setCourse((prev) => {
+    const modules = [...prev.modules];
+    const targetModule = modules.find(
+      (mod) =>
+        mod.id === quizData.module_id || // cocokkan dengan backend
+        mod.id === quizData.moduleId // fallback ke camelCase jika ada
+    );
+
+    if (targetModule) {
+      const contentIndex = targetModule.contents.findIndex((c) => c.id === quizData.id);
+      if (contentIndex !== -1) {
+        targetModule.contents[contentIndex] = {
+          ...targetModule.contents[contentIndex],
+          ...quizData,
+        };
+      } else {
+        targetModule.contents.push({ ...quizData, type: "quiz" });
+      }
+    }
+
+    return { ...prev, modules };
+  });
+};
+
+
+
+
+
+const addQuiz = async (
+  moduleId: string,
+  quizData: {
+    title: string;
+    order: number;
+    settings?: {
+      passingScore: number;
+      timeLimit: number;
+      attemptsAllowed: number;
+      showAnswers: boolean;
+      autoGrading: boolean;
+    };
+    questions?: {
+      title: string;
+      description?: string;
+      explanation?: string;
+      type: string;
+      points: number;
+      order: number;
+      options?: Record<string, any>;
+    }[];
+  }
+) => {
+  const {
+    title,
+    order,
+    settings = {
+      passingScore: 80,
+      timeLimit: 60,
+      attemptsAllowed: 3,
+      showAnswers: true,
+      autoGrading: true,
+    },
+    questions = [],
+  } = quizData;
+
+  const formData = new FormData();
+  formData.append("title", title);
+  formData.append("module_id", moduleId);
+  formData.append("passing_grade", String(settings.passingScore));
+  formData.append("time_limit", String(settings.timeLimit));
+  formData.append("order", String(order));
+  formData.append("max_attempts", String(settings.attemptsAllowed));
+  formData.append("show_correct_answers", settings.showAnswers ? "1" : "0");
+  formData.append("automatically_graded", settings.autoGrading ? "1" : "0");
+
+  const quizResponse = await fetchData("/instructor/courses/quizzes", {
+    method: "POST",
+    body: formData,
+  });
+
+  const quizId = quizResponse.data?.id;
+
+  if (!quizId) {
+    throw new Error("Quiz ID not returned from backend");
+  }
+
+  // Kirim pertanyaan jika ada
+ for (let i = 0; i < questions.length; i++) {
+  const q = questions[i];
+  const qForm = new FormData();
+  qForm.append("quiz_id", quizId);
+  qForm.append("title", q.title);
+  if (q.description) qForm.append("description", q.description);
+  if (q.explanation) qForm.append("explanation", q.explanation);
+  qForm.append("type", q.type || "true_false");
+  qForm.append("points", `${parseInt(q.points?.toString() || "1")}`);
+  qForm.append("order", `${parseInt(q.order?.toString() || (i + 1).toString())}`);
+  if (q.options) qForm.append("options", JSON.stringify(q.options));
+
+  await fetchData("/instructor/courses/questions", {
+    method: "POST",
+    body: qForm,
+  });
+}
+
+
+  return quizResponse.data;
+};
+
+
 
 	const addContent = async (
 		moduleId: string,
@@ -816,14 +932,30 @@ export function CourseCreator() {
 					video_id: (contentData as any).video_id,
 				});
 			} else if (contentData.type === "quiz") {
-				await addQuiz(moduleId, {
-					title: contentData.title,
-					order: newContent.order,
-					passing_grade: contentData.passing_grade || 80,
-					time_limit: contentData.time_limit || 60,
-					max_attempts: contentData.max_attempts || 3,
-				});
-			}
+ const newQuiz = await addQuiz(moduleId, {
+  title: contentData.title,
+  order: newContent.order,
+  settings: contentData.settings,
+  questions: contentData.data?.questions ?? [],
+});
+
+// ✅ Inject module_id kalau backend tidak mengembalikan
+const quizWithModuleId = {
+  ...newQuiz,
+  module_id: newQuiz.module_id ?? moduleId,
+  type: "quiz",
+};
+
+console.log("✅ Final quiz to update:", quizWithModuleId);
+
+updateQuizInState(quizWithModuleId);
+
+
+  updateQuizInState({
+    ...newQuiz,
+    type: "quiz", // pastikan ditandai
+  });
+}	
 
 			console.log("✅ Content saved successfully");
 
@@ -927,6 +1059,40 @@ export function CourseCreator() {
 		moduleIndex: number;
 		quizIndex: number;
 	} | null>(null);
+
+useEffect(() => {
+  const timeout = setTimeout(() => {
+    if (editedQuizIndex !== null) {
+      const { moduleIndex, quizIndex } = editedQuizIndex;
+      const module = course.modules[moduleIndex];
+      const quiz = module.contents[quizIndex];
+
+      if (quiz && quiz.type === "quiz") {
+        const s = quiz.settings || {};
+        updateQuiz(quiz.id, {
+          title: quiz.title,
+          description: quiz.data?.description || "",
+          module_id: module.id,
+          order: quiz.order || quizIndex + 1,
+          settings: {
+            // ✅ pakai nama yang benar & pastikan ada nilainya
+            passing_grade: s.passingScore ?? 80,
+            time_limit: s.timeLimit ?? 60,
+            max_attempts: (typeof s.attemptsAllowed === "number" ? s.attemptsAllowed : 1),
+            show_correct_answers: !!s.showAnswers,
+            automatically_graded: !!s.autoGrading,
+          },
+        })
+          .then(() => setQuizSaveStatus("✅ Quiz saved successfully"))
+          .catch(() => setQuizSaveStatus("❌ Failed to save quiz"));
+      }
+    }
+  }, 3000);
+
+  return () => clearTimeout(timeout);
+}, [course.modules, editedQuizIndex]);
+
+
 	const [quizSaveStatus, setQuizSaveStatus] = useState("");
 
 	useEffect(() => {
@@ -1038,6 +1204,49 @@ export function CourseCreator() {
 	const setDescription = (value: string) => {
 		handleChangeAndDebounce("description", value);
 	};
+
+const handleDelete = async (
+  type: "module" | "lesson" | "quiz" | "question" | "coupon",
+  id: string
+) => {
+  const endpointMap = {
+    module: `/instructor/courses/modules/${id}`,
+    lesson: `/instructor/courses/modules/lessons/${id}`,
+    quiz: `/instructor/courses/quizzes/${id}`, // ✅ perbaikan path quiz
+    question: `/instructor/courses/quizzes/questions/${id}`,
+    coupon: `/instructor/coupons/${id}`,
+  };
+
+  const result = await Swal.fire({
+    title: "Are you sure?",
+    text: `This will permanently delete the ${type}.`,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Yes, delete it!",
+  });
+
+  if (result.isConfirmed) {
+    try {
+      await fetchData(endpointMap[type], {
+        method: "DELETE",
+      });
+
+      Swal.fire("Deleted!", `${type} has been deleted.`, "success");
+
+      // TODO: Refresh state here if needed
+    } catch (err: any) {
+      const message =
+        err?.response?.data?.error ||
+        err?.message ||
+        `Failed to delete ${type}.`;
+
+      Swal.fire("Error!", message, "error");
+    }
+  }
+};
+
 
 	return (
 		<div className="p-6 space-y-6">
@@ -1441,15 +1650,7 @@ export function CourseCreator() {
 														size="sm"
 														variant="outline"
 														className="text-red-600 bg-transparent"
-														onClick={() => {
-															if (
-																!window.confirm(
-																	"Delete this module and all its contents?"
-																)
-															)
-																return;
-															deleteModule(module.id);
-														}}
+														onClick={() => handleDelete("module", module.id)}
 													>
 														<Trash2 className="w-3 h-3" />
 													</Button>
@@ -1532,10 +1733,13 @@ export function CourseCreator() {
 																		</DialogDescription>
 																	</DialogHeader>
 																	<QuizForm
-																		onSubmit={(data) =>
-																			addContent(module.id, data)
-																		}
-																	/>
+  onSubmit={async (data) => {
+    await addContent(module.id, data);
+    setIsQuizDialogOpen(false); // Tutup dialog setelah submit berhasil
+  }}
+  onClose={() => setIsQuizDialogOpen(false)} // Optional jaga-jaga
+/>
+
 																</DialogContent>
 															</Dialog>
 
@@ -1679,40 +1883,59 @@ export function CourseCreator() {
 																					].contents[editingQuiz.contentIndex]
 																						?.description || "",
 																			}}
-																			onSubmit={(updatedData) => {
-																				const quizId =
-																					course.modules[
-																						editingQuiz.moduleIndex
-																					].contents[editingQuiz.contentIndex]
-																						.id;
+																			onSubmit={async (updatedData) => {
+  try {
+    const quizId =
+      course.modules[editingQuiz.moduleIndex].contents[editingQuiz.contentIndex].id;
 
-																				updateQuiz(quizId, {
-																					...updatedData,
-																					module_id:
-																						course.modules[
-																							editingQuiz.moduleIndex
-																						].id,
-																					order: editingQuiz.contentIndex + 1,
-																				});
+    const moduleId = course.modules[editingQuiz.moduleIndex].id;
 
-																				const updatedModules = [
-																					...course.modules,
-																				];
-																				updatedModules[
-																					editingQuiz.moduleIndex
-																				].contents[editingQuiz.contentIndex] = {
-																					...updatedModules[
-																						editingQuiz.moduleIndex
-																					].contents[editingQuiz.contentIndex],
-																					...updatedData,
-																				};
+    // ✅ Safe destructure settings
+  const {
+  passing_grade = 60,
+  time_limit = 30,
+  max_attempts = 1,
+  show_correct_answers = true,
+  automatically_graded = true,
+} = updatedData.settings || {};
 
-																				setCourse((prev) => ({
-																					...prev,
-																					modules: updatedModules,
-																				}));
-																				setIsEditQuizOpen(false);
-																			}}
+const fullPayload = {
+  ...updatedData,
+  module_id: moduleId,
+  order: editingQuiz.contentIndex + 1,
+  settings: {
+    passing_grade,
+    time_limit,
+    max_attempts,
+    show_correct_answers,
+    automatically_graded,
+  },
+};
+
+
+
+    await updateQuiz(quizId, fullPayload);
+
+    const updatedModules = [...course.modules];
+    updatedModules[editingQuiz.moduleIndex].contents[editingQuiz.contentIndex] = {
+      ...updatedModules[editingQuiz.moduleIndex].contents[editingQuiz.contentIndex],
+      ...updatedData,
+      type: "quiz",
+    };
+
+    setCourse((prev) => ({
+      ...prev,
+      modules: updatedModules,
+    }));
+
+    toast.success("✅ Quiz updated successfully!");
+    setIsEditQuizOpen(false);
+  } catch (error) {
+    console.error("❌ Failed to update quiz:", error);
+    toast.error("Gagal memperbarui quiz. Silakan coba lagi.");
+  }
+}}
+
 																		/>
 																	)}
 																</DialogContent>
@@ -1823,38 +2046,22 @@ export function CourseCreator() {
 																													<span className="text-sm font-medium">
 																														{content.title}
 																													</span>
-																													<Badge
-																														variant="secondary"
-																														className="text-xs ml-2"
-																													>
-																														{content.type}
+																													<Badge variant="secondary" className="text-xs ml-2 capitalize">
+																													{content.type === "quiz" ? "Quiz" : "Lesson"}
 																													</Badge>
+
 																												</div>
 																											</div>
 																											<div className="flex items-center gap-1">
 																												<Button
-																													size="sm"
-																													variant="outline"
-																													className="text-red-600 bg-transparent"
-																													onClick={() => {
-																														if (
-																															!window.confirm(
-																																"Are you sure you want to delete this?"
-																															)
-																														)
-																															return;
+  size="sm"
+  variant="outline"
+  className="text-red-600 bg-transparent"
+  onClick={() => handleDelete(content.type, content.id)}
+>
+  <Trash2 className="w-3 h-3" />
+</Button>
 
-																														if (content.type === "quiz") {
-																															deleteQuiz(
-																																content.id,
-																																moduleIndex,
-																																contentIndex
-																															);
-																														}
-																													}}
-																												>
-																													<Trash2 className="w-3 h-3" />
-																												</Button>
 																											</div>
 																										</div>
 																									)}
@@ -2465,9 +2672,11 @@ function LessonForm({
 
 function QuizForm({
 	onSubmit,
+	onClose,
 	quiz
 }: {
 	onSubmit: (data: Omit<Content, "id" | "order">) => void;
+	onClose?: () => void;
 	quiz?: { title: string, description: string }
 }) {
 	const [formData, setFormData] = useState({
@@ -2549,6 +2758,7 @@ function QuizForm({
 				showAnswers: true,
 			},
 		});
+		if (onClose) onClose();
 	};
 
 	return (
@@ -2982,15 +3192,15 @@ function CouponForm({
 	);
 }
 
-function addQuiz(
-	moduleId: string,
-	arg1: {
-		title: string;
-		order: number;
-		passing_grade: number;
-		time_limit: number;
-		max_attempts: number;
-	}
-) {
-	throw new Error("Function not implemented.");
-}
+// function addQuiz(
+// 	moduleId: string,
+// 	arg1: {
+// 		title: string;
+// 		order: number;
+// 		passing_grade: number;
+// 		time_limit: number;
+// 		max_attempts: number;
+// 	}
+// ) {
+// 	throw new Error("Function not implemented.");
+// }	

@@ -58,6 +58,7 @@ export function IncomeManagement() {
   const [isWithdrawDialogOpen, setIsWithdrawDialogOpen] = useState(false);
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [withdrawals, setWithdrawals] = useState<any[]>([]);
+  const [transactions, setTransactions] = useState<any[]>([]);
 
 
   const dummyTransactions = [
@@ -94,7 +95,7 @@ export function IncomeManagement() {
     },
   ];
 
-  useEffect(() => {
+useEffect(() => {
   const loadIncomeData = async () => {
     try {
       const response = await fetchData("/instructor/income-management");
@@ -102,8 +103,11 @@ export function IncomeManagement() {
       setStats(response.data.statistics);
 
       const withdrawalResponse = await fetchData("/instructor/withdrawal-histories");
-      console.log("withdrawal histories", withdrawalResponse.data.histories);
       setWithdrawals(withdrawalResponse.data.histories);
+
+      const transResponse = await fetchData("/instructor/transaction-histories");
+      console.log("transaction histories", transResponse.data);
+      setTransactions(transResponse.data || []);
     } catch (error) {
       console.error("Failed to load income data", error);
     }
@@ -237,19 +241,18 @@ export function IncomeManagement() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {dummyTransactions.map((tx) => (
-                    <TableRow key={tx.id}>
-                      <TableCell>{tx.date}</TableCell>
-                      <TableCell>{tx.course}</TableCell>
-                      <TableCell>{tx.student}</TableCell>
-                      <TableCell>${tx.amount}</TableCell>
-                      <TableCell className="text-red-600">-${tx.commission}</TableCell>
-                      <TableCell className="font-semibold">${tx.net}</TableCell>
-                      <TableCell>
-                        <Badge variant="outline">{tx.status}</Badge>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                  {transactions.map((tx) => (
+  <TableRow key={tx.id}>
+    <TableCell>{formatDate(tx.created_at)}</TableCell>
+    <TableCell>{tx.course?.title}</TableCell>
+    <TableCell>{tx.student?.user?.fullname}</TableCell>
+    <TableCell>Rp{parseFloat(tx.revenue?.amount || 0).toLocaleString("id-ID")}</TableCell>
+    <TableCell className="text-red-600">-Rp{parseFloat(tx.revenue?.platform_fee || 0).toLocaleString("id-ID")}</TableCell>
+    <TableCell className="font-semibold">Rp{parseFloat(tx.revenue?.net_amount || 0).toLocaleString("id-ID")}</TableCell>
+    <TableCell><Badge variant="outline">{tx.status}</Badge></TableCell>
+  </TableRow>
+))}
+
                 </TableBody>
               </Table>
             </CardContent>
