@@ -7,6 +7,8 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { BookOpen, Clock, Award, Menu, Play } from "lucide-react"
 import { AppSidebar } from "@/components/layout/app-sidebar"
+import { useRouter } from "next/navigation"
+
 
 const myLearningCourses = [
   {
@@ -60,7 +62,15 @@ interface StudentDashboardProps {
 }
 
 export function StudentDashboard({ initialTab = "learning" }: StudentDashboardProps) {
-  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
+   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
+  const router = useRouter() // <-- dan ini
+
+const goToCourseModules = (id: string) => {
+  router.push(`/student/my-learning/${id}`)
+}
+
+
+  
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -176,13 +186,14 @@ export function StudentDashboard({ initialTab = "learning" }: StudentDashboardPr
                         <span>
                           {course.completedLessons}/{course.totalLessons} lessons
                         </span>
-                        <Button
-                          size="sm"
-                          className="bg-midnight-blue-800 hover:bg-midnight-blue-900 text-xs px-2 py-1 h-auto"
-                        >
-                          <Play className="w-3 h-3 mr-1" />
-                          Continue
-                        </Button>
+                       <Button
+    size="sm"
+    className="bg-midnight-blue-800 hover:bg-midnight-blue-900 text-xs px-2 py-1 h-auto"
+    onClick={() => goToCourseModules(course.id)}
+  >
+    <Play className="w-3 h-3 mr-1" />
+    Continue
+  </Button>
                       </div>
                       <p className="text-xs text-midnight-blue-600 font-medium truncate">Next: {course.nextLesson}</p>
                     </div>
@@ -206,10 +217,14 @@ export function StudentDashboard({ initialTab = "learning" }: StudentDashboardPr
                             {course.category}
                           </Badge>
                         </div>
-                        <Button size="sm" className="bg-midnight-blue-800 hover:bg-midnight-blue-900 ml-4 shrink-0">
-                          <Play className="w-4 h-4 mr-2" />
-                          Continue
-                        </Button>
+                         <Button
+    size="sm"
+    className="bg-midnight-blue-800 hover:bg-midnight-blue-900 ml-4 shrink-0"
+    onClick={() => goToCourseModules(course.id)}
+  >
+    <Play className="w-4 h-4 mr-2" />
+    Continue
+  </Button>
                       </div>
 
                       <div className="space-y-2">

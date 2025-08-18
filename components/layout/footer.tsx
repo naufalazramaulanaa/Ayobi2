@@ -29,10 +29,10 @@ export function Footer() {
           {/* Company Info */}
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-yellow-500 rounded-lg flex items-center justify-center">
+              {/* <div className="w-8 h-8 bg-yellow-500 rounded-lg flex items-center justify-center">
                 <GraduationCap className="w-5 h-5 text-black" />
-              </div>
-              <h3 className="text-xl font-bold">EduLMS</h3>
+              </div> */}
+              <img src="/ayobii.png" alt="AyobiLMS Logo" className="h-28 w-28" />
             </div>
             <p className="text-gray-300 text-sm leading-relaxed">
               Empowering learners worldwide with high-quality online education. Join thousands of students advancing
