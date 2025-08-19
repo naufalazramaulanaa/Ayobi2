@@ -13,32 +13,65 @@ import { useRouter } from "next/navigation"
 
 export function InstructorDashboard() {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
-  const [dashboardData, setDashboardData] = useState<any>(null)
+  const [summary, setSummary] = useState<any>(null)
+  const [myCourse, setMyCourse] = useState<any>(null)
+  const [liveClass, setLiveClass] = useState<any>(null)
   const [selectedCourse, setSelectedCourse] = useState<any>(null)
   const [openDetailDialog, setOpenDetailDialog] = useState(false)
   const router = useRouter()
 
-  useEffect(() => {
-    const fetchDashboard = async () => {
-      try {
-        const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null
-        if (!token || token.split(".").length !== 3) return
-        const res = await fetchData("/instructor/dashboard", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        setDashboardData(res.data)
-      } catch (error) {
-        console.error("Failed to load dashboard data", error)
-      }
+  const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null
+
+  const fetchSummary = async () => {
+    try {
+      if (!token || token.split(".").length !== 3) return
+      const res = await fetchData("/instructor/dashboard/summary", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      setSummary(res.data)
+    } catch (error) {
+      console.error("Failed to load dashboard data", error)
     }
-    fetchDashboard()
+  }
+
+  const fetchMyCourse = async () => {
+    try {
+      if (!token || token.split(".").length !== 3) return
+      const res = await fetchData("/instructor/dashboard/my-courses", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      setMyCourse(res.data)
+    } catch (error) {
+      console.error("Failed to load dashboard data", error)
+    }
+  }
+  const fetchLiveClass = async () => {
+    try {
+      if (!token || token.split(".").length !== 3) return
+      const res = await fetchData("/instructor/dashboard/live-classes", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      setLiveClass(res.data)
+    } catch (error) {
+      console.error("Failed to load dashboard data", error)
+    }
+  }
+
+  useEffect(() => {
+    fetchSummary()
+    fetchMyCourse()
+    fetchLiveClass()
   }, [])
 
-  if (!dashboardData) return <div className="p-6">Loading dashboard...</div>
+  if (!summary) return <div className="p-6">Loading dashboard...</div>
 
-  const stats = dashboardData.statistics
+  const stats = summary
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -80,13 +113,13 @@ export function InstructorDashboard() {
 
           <TabsContent value="courses" className="space-y-4 md:space-y-6">
             <div className="grid gap-3 md:gap-4">
-              {(dashboardData?.my_courses ?? []).map((course: any) => (
+              {(myCourse ?? []).map((course: any) => (
                 <Card key={course.id}>
                   <CardContent className="p-4 md:p-6">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                       <div>
                         <h4 className="font-semibold text-base md:text-lg">{course.title}</h4>
-                        <div className="text-sm text-muted-foreground">Max Students: {course.max_students ?? "-"} · {course.reviews?.rating ?? 0}★</div>
+                        <div className="text-sm text-muted-foreground">Max Students: {course.max_students ?? "-"} · {course.average_rating ?? 0}★</div>
                       </div>
                       <div className="flex flex-wrap items-center gap-2">
                         <Badge variant={course.status === "Published" ? "default" : "secondary"} className="text-xs">{course.status}</Badge>
@@ -103,7 +136,7 @@ export function InstructorDashboard() {
           <TabsContent value="live-classes" className="space-y-4 md:space-y-6">
             <h3 className="text-base md:text-lg font-semibold">Upcoming Live Classes</h3>
             <div className="grid gap-3 md:gap-4">
-              {(dashboardData?.live_classes ?? []).map((liveClass: any) => (
+              {(liveClass ?? []).map((liveClass: any) => (
                 <Card key={liveClass.id}>
                   <CardContent className="p-4 md:p-6">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">

@@ -79,6 +79,8 @@ export function LoginForm({
       localStorage.setItem("userEmail", data.user.email);
       localStorage.setItem("userRole", userRole);
 
+      localStorage.setItem("userInfo", JSON.stringify(data.user));
+
       onLogin(email, userRole);
     } catch (err: any) {
       // alert("Login error: " + err.message);
