@@ -79,6 +79,8 @@ export function StudentProfile() {
   const [profileData, setProfileData] = useState(studentData)
   const [activeTab, setActiveTab] = useState("profile")
 
+  
+
   const handleInputChange = (field: string, value: any) => {
     setProfileData((prev) => ({ ...prev, [field]: value }))
   }
